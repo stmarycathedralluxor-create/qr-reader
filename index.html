@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple CRUD App</title>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
 
     body{
@@ -70,164 +70,85 @@
 
 <script>
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzUvpsu-a_AGl7VIA436IUFQftoIe-ZMjHp7Dndq1g0qbpCyMwqYtiFN8DBm9vihh0iYg/exec";
+
+const supabaseUrl = "https://fjmmecgkrvqzrtjnbqqx.supabase.co";
+const supabaseKey = "sb_publishable_X-lOtAYUWCD3vrgpZDVmPw_3afrmz_w";
+
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 
+async function loadData() {
 
-async function loadData(){
-
-  const res = await fetch(API_URL);
-
-  const data = await res.json();
+  let { data, error } = await supabase
+    .from('people')
+    .select('*')
+    .order('created_at', { ascending: false });
 
   const list = document.getElementById("list");
-
   list.innerHTML = "";
 
-
-
-  data.reverse().forEach(item => {
+  data.forEach(item => {
 
     list.innerHTML += `
-
       <div class="item">
-
         <b>Name:</b> ${item.name}<br>
-
         <b>Age:</b> ${item.age}<br>
-
         <b>Phone:</b> ${item.phone}<br><br>
 
-        <button onclick="editData(
-          '${item.id}',
-          '${item.name}',
-          '${item.age}',
-          '${item.phone}'
-        )">
-          Edit
-        </button>
-
-        <button onclick="deleteData('${item.id}')">
-          Delete
-        </button>
-
+        <button onclick="deleteData('${item.id}')">Delete</button>
+        <button onclick="editData('${item.id}','${item.name}','${item.age}','${item.phone}')">Edit</button>
       </div>
-
     `;
-
   });
-
 }
 
 
 
 async function addData(){
 
-  const name =
-    document.getElementById("name").value;
+  const name = document.getElementById("name").value;
+  const age = document.getElementById("age").value;
+  const phone = document.getElementById("phone").value;
 
-  const age =
-    document.getElementById("age").value;
-
-  const phone =
-    document.getElementById("phone").value;
-
-
-
-  await fetch(API_URL, {
-
-    method:"POST",
-
-    body:JSON.stringify({
-
-      action:"add",
-
-      name:name,
-
-      age:age,
-
-      phone:phone
-
-    })
-
-  });
-
-
+  await supabase
+    .from('people')
+    .insert([{ name, age, phone }]);
 
   clearInputs();
-
   loadData();
-
 }
 
 
 
 async function deleteData(id){
 
-  await fetch(API_URL, {
-
-    method:"POST",
-
-    body:JSON.stringify({
-
-      action:"delete",
-
-      id:id
-
-    })
-
-  });
+  await supabase
+    .from('people')
+    .delete()
+    .eq('id', id);
 
   loadData();
-
 }
 
 
 
 async function editData(id,name,age,phone){
 
-  const newName =
-    prompt("Name", name);
+  const newName = prompt("Name", name);
+  const newAge = prompt("Age", age);
+  const newPhone = prompt("Phone", phone);
 
-  const newAge =
-    prompt("Age", age);
-
-  const newPhone =
-    prompt("Phone", phone);
-
-
-
-  if(newName == null) return;
-
-
-
-  await fetch(API_URL, {
-
-    method:"POST",
-
-    body:JSON.stringify({
-
-      action:"update",
-
-      id:id,
-
-      name:newName,
-
-      age:newAge,
-
-      phone:newPhone
-
+  await supabase
+    .from('people')
+    .update({
+      name: newName,
+      age: newAge,
+      phone: newPhone
     })
-
-  });
-
-
+    .eq('id', id);
 
   loadData();
-
 }
-
 
 
 function clearInputs(){
