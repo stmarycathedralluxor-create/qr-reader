@@ -4,49 +4,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple CRUD App</title>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-
-    body{
-      font-family:Arial;
-      background:#f4f4f4;
-      padding:20px;
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
     }
 
-    h1{
-      text-align:center;
+    h1 {
+      text-align: center;
     }
 
-    .box{
-      background:white;
-      padding:20px;
-      border-radius:10px;
-      max-width:500px;
-      margin:auto;
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
     }
 
-    input{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      font-size:16px;
-      box-sizing:border-box;
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
 
-    button{
-      padding:10px 15px;
-      margin-top:10px;
-      cursor:pointer;
-      font-size:16px;
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 16px;
     }
 
-    .item{
-      background:#eee;
-      padding:15px;
-      margin-top:10px;
-      border-radius:10px;
+    .item {
+      background: #eee;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 10px;
     }
-
   </style>
 </head>
 
@@ -57,9 +57,7 @@
 <h1>CRUD App</h1>
 
 <input id="name" placeholder="Name">
-
 <input id="age" placeholder="Age">
-
 <input id="phone" placeholder="Phone">
 
 <button onclick="addData()">Add</button>
@@ -70,21 +68,33 @@
 
 <script>
 
-
 const supabaseUrl = "https://fjmmecgkrvqzrtjnbqqx.supabase.co";
-const supabaseKey = "sb_publishable_X-lOtAYUWCD3vrgpZDVmPw_3afrmz_w";
+const supabaseKey = "YOUR_ANON_KEY_HERE"; // ⚠️ put your real anon key here
 
 const client = supabase.createClient(supabaseUrl, supabaseKey);
 
+
+
+// LOAD DATA
 async function loadData() {
 
-  let { data, error } = await supabase
+  let { data, error } = await client
     .from('people')
     .select('*')
     .order('created_at', { ascending: false });
 
+  if (error) {
+    console.log(error);
+    return;
+  }
+
   const list = document.getElementById("list");
   list.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "<p>No data found</p>";
+    return;
+  }
 
   data.forEach(item => {
 
@@ -103,15 +113,26 @@ async function loadData() {
 
 
 
-async function addData(){
+// ADD DATA
+async function addData() {
 
   const name = document.getElementById("name").value;
   const age = document.getElementById("age").value;
   const phone = document.getElementById("phone").value;
 
-  await supabase
+  if (!name || !age || !phone) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  let { error } = await client
     .from('people')
     .insert([{ name, age, phone }]);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
 
   clearInputs();
   loadData();
@@ -119,25 +140,34 @@ async function addData(){
 
 
 
-async function deleteData(id){
+// DELETE DATA
+async function deleteData(id) {
 
-  await supabase
+  let { error } = await client
     .from('people')
     .delete()
     .eq('id', id);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
 
   loadData();
 }
 
 
 
-async function editData(id,name,age,phone){
+// EDIT DATA
+async function editData(id, name, age, phone) {
 
   const newName = prompt("Name", name);
   const newAge = prompt("Age", age);
   const newPhone = prompt("Phone", phone);
 
-  await supabase
+  if (!newName || !newAge || !newPhone) return;
+
+  let { error } = await client
     .from('people')
     .update({
       name: newName,
@@ -146,26 +176,29 @@ async function editData(id,name,age,phone){
     })
     .eq('id', id);
 
+  if (error) {
+    console.log(error);
+    return;
+  }
+
   loadData();
 }
 
 
-function clearInputs(){
 
+// CLEAR INPUTS
+function clearInputs() {
   document.getElementById("name").value = "";
-
   document.getElementById("age").value = "";
-
   document.getElementById("phone").value = "";
-
 }
 
 
 
+// START
 loadData();
 
 </script>
 
 </body>
-
 </html>
