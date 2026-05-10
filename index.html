@@ -1,159 +1,251 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
-  <title>QR Scanner</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <title>Simple CRUD App</title>
 
   <style>
+
     body{
-      font-family: Arial;
-      text-align:center;
+      font-family:Arial;
       background:#f4f4f4;
       padding:20px;
     }
 
-    video{
-      width:100%;
-      max-width:500px;
+    h1{
+      text-align:center;
+    }
+
+    .box{
+      background:white;
+      padding:20px;
       border-radius:10px;
-      border:3px solid #333;
+      max-width:500px;
+      margin:auto;
     }
 
-    canvas{
-      display:none;
-    }
-
-    #result{
-      margin-top:20px;
-      font-size:22px;
-      font-weight:bold;
-      color:green;
+    input{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      font-size:16px;
+      box-sizing:border-box;
     }
 
     button{
-      padding:12px 20px;
-      font-size:18px;
+      padding:10px 15px;
+      margin-top:10px;
       cursor:pointer;
-      margin-top:20px;
+      font-size:16px;
     }
+
+    .item{
+      background:#eee;
+      padding:15px;
+      margin-top:10px;
+      border-radius:10px;
+    }
+
   </style>
 </head>
 
 <body>
 
-<h1>Bishoy Qr Reader</h1>
+<div class="box">
 
-<video id="video" playsinline></video>
+<h1>CRUD App</h1>
 
-<canvas id="canvas"></canvas>
+<input id="name" placeholder="Name">
 
-<div id="result">مستني الكاميرا يا باشا</div>
+<input id="age" placeholder="Age">
 
-<button onclick="startScanner()">Start Scanner</button>
+<input id="phone" placeholder="Phone">
+
+<button onclick="addData()">Add</button>
+
+<div id="list"></div>
+
+</div>
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwDkJ-QXnj8GIrIyFkpuij2v_WYpLq-d5w2ebDznICd67AGwK9NHYpWBZLM0dmX3NZnoQ/exec";
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwDkJ-QXnj8GIrIyFkpuij2v_WYpLq-d5w2ebDznICd67AGwK9NHYpWBZLM0dmX3NZnoQ/exec";
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 
-let lastCode = "";
 
-async function startScanner() {
+async function loadData(){
 
-  try {
+  const res = await fetch(API_URL);
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: "environment"
-      }
-    });
+  const data = await res.json();
 
-    video.srcObject = stream;
+  const list = document.getElementById("list");
 
-    video.setAttribute("playsinline", true);
+  list.innerHTML = "";
 
-    await video.play();
 
-    requestAnimationFrame(scan);
 
-  } catch(err) {
+  data.reverse().forEach(item => {
 
-    alert("Camera Error: " + err);
+    list.innerHTML += `
 
-  }
+      <div class="item">
+
+        <b>Name:</b> ${item.name}<br>
+
+        <b>Age:</b> ${item.age}<br>
+
+        <b>Phone:</b> ${item.phone}<br><br>
+
+        <button onclick="editData(
+          '${item.id}',
+          '${item.name}',
+          '${item.age}',
+          '${item.phone}'
+        )">
+          Edit
+        </button>
+
+        <button onclick="deleteData('${item.id}')">
+          Delete
+        </button>
+
+      </div>
+
+    `;
+
+  });
+
 }
 
-async function scan() {
 
-  if(video.readyState === video.HAVE_ENOUGH_DATA){
 
-    canvas.height = video.videoHeight;
-    canvas.width = video.videoWidth;
+async function addData(){
 
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const name =
+    document.getElementById("name").value;
 
-    const imageData = ctx.getImageData(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+  const age =
+    document.getElementById("age").value;
 
-    const code = jsQR(
-      imageData.data,
-      imageData.width,
-      imageData.height
-    );
+  const phone =
+    document.getElementById("phone").value;
 
-    if(code){
 
-      if(code.data !== lastCode){
 
-        lastCode = code.data;
+  await fetch(API_URL, {
 
-        document.getElementById("result").innerHTML =
-          "Scanned: " + code.data;
+    method:"POST",
 
-        saveQR(code.data);
+    body:JSON.stringify({
 
-      }
-    }
-  }
+      action:"add",
 
-  requestAnimationFrame(scan);
+      name:name,
+
+      age:age,
+
+      phone:phone
+
+    })
+
+  });
+
+
+
+  clearInputs();
+
+  loadData();
+
 }
 
-async function saveQR(qr){
 
-  try {
 
-    await fetch(API_URL, {
+async function deleteData(id){
 
-      method: "POST",
+  await fetch(API_URL, {
 
-      body: JSON.stringify({
+    method:"POST",
 
-        qr: qr,
+    body:JSON.stringify({
 
-        device: navigator.userAgent
+      action:"delete",
 
-      })
+      id:id
 
-    });
+    })
 
-  } catch(err){
+  });
 
-    console.log(err);
+  loadData();
 
-  }
 }
+
+
+
+async function editData(id,name,age,phone){
+
+  const newName =
+    prompt("Name", name);
+
+  const newAge =
+    prompt("Age", age);
+
+  const newPhone =
+    prompt("Phone", phone);
+
+
+
+  if(newName == null) return;
+
+
+
+  await fetch(API_URL, {
+
+    method:"POST",
+
+    body:JSON.stringify({
+
+      action:"update",
+
+      id:id,
+
+      name:newName,
+
+      age:newAge,
+
+      phone:newPhone
+
+    })
+
+  });
+
+
+
+  loadData();
+
+}
+
+
+
+function clearInputs(){
+
+  document.getElementById("name").value = "";
+
+  document.getElementById("age").value = "";
+
+  document.getElementById("phone").value = "";
+
+}
+
+
+
+loadData();
 
 </script>
 
 </body>
+
 </html>
