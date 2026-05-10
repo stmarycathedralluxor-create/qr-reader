@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QR Scanner</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
+  <style>
+    body{
+      font-family: Arial;
+      text-align:center;
+      background:#f4f4f4;
+      padding:20px;
+    }
+
+    video{
+      width:100%;
+      max-width:500px;
+      border-radius:10px;
+      border:3px solid #333;
+    }
+
+    canvas{
+      display:none;
+    }
+
+    #result{
+      margin-top:20px;
+      font-size:22px;
+      font-weight:bold;
+      color:green;
+    }
+
+    button{
+      padding:12px 20px;
+      font-size:18px;
+      cursor:pointer;
+      margin-top:20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>QR Code Reader</h1>
+
+<video id="video" playsinline></video>
+
+<canvas id="canvas"></canvas>
+
+<div id="result">Waiting for scan...</div>
+
+<button onclick="startScanner()">Start Scanner</button>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwDkJ-QXnj8GIrIyFkpuij2v_WYpLq-d5w2ebDznICd67AGwK9NHYpWBZLM0dmX3NZnoQ/exec";
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let lastCode = "";
+
+async function startScanner() {
+
+  try {
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: "environment"
+      }
+    });
+
+    video.srcObject = stream;
+
+    video.setAttribute("playsinline", true);
+
+    await video.play();
+
+    requestAnimationFrame(scan);
+
+  } catch(err) {
+
+    alert("Camera Error: " + err);
+
+  }
+}
+
+async function scan() {
+
+  if(video.readyState === video.HAVE_ENOUGH_DATA){
+
+    canvas.height = video.videoHeight;
+    canvas.width = video.videoWidth;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    const code = jsQR(
+      imageData.data,
+      imageData.width,
+      imageData.height
+    );
+
+    if(code){
+
+      if(code.data !== lastCode){
+
+        lastCode = code.data;
+
+        document.getElementById("result").innerHTML =
+          "Scanned: " + code.data;
+
+        saveQR(code.data);
+
+      }
+    }
+  }
+
+  requestAnimationFrame(scan);
+}
+
+async function saveQR(qr){
+
+  try {
+
+    await fetch(API_URL, {
+
+      method: "POST",
+
+      body: JSON.stringify({
+
+        qr: qr,
+
+        device: navigator.userAgent
+
+      })
+
+    });
+
+  } catch(err){
+
+    console.log(err);
+
+  }
+}
+
+</script>
+
+</body>
+</html>
