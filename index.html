@@ -1,432 +1,553 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>People CRUD App (Realtime)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Attendance System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    padding: 30px 15px;
+    color: #333;
+  }
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  }
+  h1, h2 { color: #4a4a4a; margin-bottom: 18px; text-align: center; }
+  h3 { margin: 18px 0 10px; color: #555; }
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      min-height: 100vh;
-      padding: 30px 15px;
-      color: #333;
-    }
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #4a4a4a;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      outline: none;
-      transition: border 0.2s;
-    }
-    input:focus { border-color: #667eea; }
-    button {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: opacity 0.2s, transform 0.1s;
-    }
-    button:hover { opacity: 0.9; }
-    button:active { transform: scale(0.97); }
-    .btn-add    { background: #4CAF50; color: white; }
-    .btn-edit   { background: #2196F3; color: white; margin-right: 5px; }
-    .btn-delete { background: #f44336; color: white; }
-    .btn-cancel { background: #9e9e9e; color: white; margin-left: 8px; }
+  input, select {
+    padding: 10px; border: 1px solid #ccc; border-radius: 6px;
+    font-size: 14px; outline: none; width: 100%;
+    transition: border .2s;
+  }
+  input:focus, select:focus { border-color: #667eea; }
 
-    .status {
-      text-align: center;
-      margin: 15px 0;
-      font-style: italic;
-      color: #666;
-    }
+  button {
+    padding: 10px 16px; border: none; border-radius: 6px;
+    cursor: pointer; font-weight: 600;
+    transition: opacity .2s, transform .1s;
+  }
+  button:hover { opacity: .9; }
+  button:active { transform: scale(.97); }
+  .btn-primary { background: #667eea; color: #fff; }
+  .btn-add     { background: #4CAF50; color: #fff; }
+  .btn-edit    { background: #2196F3; color: #fff; margin-right: 5px; }
+  .btn-delete  { background: #f44336; color: #fff; }
+  .btn-cancel  { background: #9e9e9e; color: #fff; margin-left: 8px; }
+  .btn-logout  { background: #555;    color: #fff; }
 
-    .realtime-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .rt-connected   { background: #d4edda; color: #155724; }
-    .rt-disconnected{ background: #f8d7da; color: #721c24; }
-    .rt-connecting  { background: #fff3cd; color: #856404; }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
+  }
+  .form-row {
+    display: grid; gap: 10px; margin-bottom: 18px;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  }
+  @media (max-width: 700px){ .form-row { grid-template-columns: 1fr; } }
 
-    .record-list { list-style: none; margin-top: 20px; }
-    .record-item {
-      background: #f9f9f9;
-      border-left: 4px solid #667eea;
-      padding: 12px 15px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      animation: fadeIn 0.4s ease;
-    }
-    .record-item.flash {
-      animation: flashRow 1.2s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes flashRow {
-      0%   { background: #fff9c4; }
-      100% { background: #f9f9f9; }
-    }
-    .record-info { flex: 1; min-width: 200px; }
-    .record-info strong { color: #333; }
-    .record-info small { color: #888; display: block; margin-top: 4px; }
+  .status { text-align: center; margin: 12px 0; font-style: italic; color: #666; }
 
-    @media (max-width: 600px) {
-      .form-row { grid-template-columns: 1fr; }
-    }
-  </style>
+  .record-list { list-style: none; margin-top: 18px; }
+  .record-item {
+    background: #f9f9f9; border-left: 4px solid #667eea;
+    padding: 12px 15px; margin-bottom: 10px; border-radius: 6px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+  }
+  .record-info { flex: 1; min-width: 220px; }
+  .record-info small { color: #888; display: block; margin-top: 4px; }
+  .badge {
+    display:inline-block; padding:2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; margin-left: 6px;
+  }
+  .b-mgr { background:#ffe0b2; color:#e65100; }
+  .b-emp { background:#c8e6c9; color:#1b5e20; }
+  .b-off { background:#eee;    color:#555; }
+
+  .qr-card {
+    text-align:center; padding:20px; border:1px dashed #aaa;
+    border-radius: 10px; background:#fafafa; margin-top: 10px;
+  }
+  .qr-card canvas, .qr-card img { margin: 10px auto; display: block; }
+  .qr-card .countdown { font-weight: 700; color:#667eea; font-size: 18px; }
+
+  #scanner { width: 100%; max-width: 360px; margin: 0 auto; border-radius: 10px; overflow: hidden; }
+  .small { font-size: 12px; color:#777; }
+  .center { text-align: center; }
+  .hidden { display: none !important; }
+
+  .login-card { max-width: 380px; margin: 60px auto; }
+  .login-card input { margin-bottom: 12px; }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #333; color:#fff; padding: 10px 16px; border-radius: 8px;
+    opacity: 0; transition: opacity .3s; z-index: 9999;
+  }
+  .toast.show { opacity: 1; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>
-      📋 People CRUD App
-      <span id="rtBadge" class="realtime-badge rt-connecting">● connecting</span>
-    </h1>
 
-    <!-- Input form -->
-    <div class="form-row">
-      <input type="text"   id="nameInput"  placeholder="Name" />
-      <input type="number" id="ageInput"   placeholder="Age" />
-      <input type="text"   id="phoneInput" placeholder="Phone" />
-      <button id="actionBtn" class="btn-add" onclick="handleAction()">Add</button>
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen" class="container login-card">
+  <h1>🔐 Login</h1>
+  <input id="loginUser" type="text" placeholder="Username" />
+  <input id="loginPass" type="password" placeholder="Password" />
+  <button class="btn-primary" style="width:100%" onclick="login()">Sign in</button>
+  <p class="small center" style="margin-top:10px;">Default admin: <b>admin</b> / <b>admin123</b></p>
+</div>
+
+<!-- ============ MANAGER ============ -->
+<div id="managerScreen" class="container hidden">
+  <div class="topbar">
+    <h2 style="margin:0">👔 Manager Dashboard</h2>
+    <div>
+      <span id="mgrWho" class="small"></span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
-    <div id="cancelWrapper" style="display:none; text-align:center; margin-bottom:10px;">
-      <button class="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
-    </div>
-
-    <div class="status" id="status">Loading records...</div>
-
-    <ul class="record-list" id="recordList"></ul>
   </div>
 
-  <!-- Supabase JS v2 from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <h3>Add / Edit Employee</h3>
+  <div class="form-row">
+    <input id="empUser"  type="text"     placeholder="Username" />
+    <input id="empPass"  type="password" placeholder="Password" />
+    <input id="empName"  type="text"     placeholder="Full name" />
+    <select id="empRole">
+      <option value="employee">Employee</option>
+      <option value="manager">Manager</option>
+    </select>
+    <button id="empBtn" class="btn-add" onclick="saveEmployee()">Add</button>
+  </div>
+  <div id="empCancelWrap" class="center hidden" style="margin-bottom:10px;">
+    <button class="btn-cancel" onclick="cancelEmpEdit()">Cancel Edit</button>
+  </div>
 
-  <script>
-    /* ===========================================
-       🔑 STEP 1: Replace these with your values
-       =========================================== */
-    const SUPABASE_URL = "https://cjxlwfrqfqwjhugpjdxz.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ";
+  <div class="status" id="empStatus">Loading employees...</div>
+  <ul class="record-list" id="empList"></ul>
 
-    /* ===========================================
-       🔌 Initialize Supabase Client
-       =========================================== */
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <h3 style="margin-top:30px;">📱 Live Check-in QR Code</h3>
+  <p class="small center">A new code is generated every 15 seconds. Employees scan it from their phone after logging in.</p>
+  <div class="qr-card">
+    <div id="qrBox"></div>
+    <div class="countdown">Refresh in: <span id="qrCount">15</span>s</div>
+    <p class="small">Token: <code id="qrTokenText">—</code></p>
+  </div>
 
-    // Track edit mode
-    let editingId = null;
+  <h3 style="margin-top:30px;">🕒 Recent Attendance</h3>
+  <div class="status" id="attStatus">Loading attendance...</div>
+  <ul class="record-list" id="attList"></ul>
+</div>
 
-    // In-memory cache of records, keyed by id, for realtime patching
-    let recordsCache = [];
+<!-- ============ EMPLOYEE ============ -->
+<div id="employeeScreen" class="container hidden">
+  <div class="topbar">
+    <h2 style="margin:0">👤 Employee</h2>
+    <div>
+      <span id="empWho" class="small"></span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
 
-    // DOM references
-    const nameInput  = document.getElementById("nameInput");
-    const ageInput   = document.getElementById("ageInput");
-    const phoneInput = document.getElementById("phoneInput");
-    const actionBtn  = document.getElementById("actionBtn");
-    const recordList = document.getElementById("recordList");
-    const statusEl   = document.getElementById("status");
-    const cancelWrapper = document.getElementById("cancelWrapper");
-    const rtBadge    = document.getElementById("rtBadge");
+  <p class="center">Click below and point your camera at the QR code shown on the manager's screen.</p>
+  <div class="center" style="margin: 14px 0;">
+    <button id="scanBtn" class="btn-primary" onclick="toggleScanner()">Start Scanner</button>
+  </div>
+  <div id="scanner"></div>
+  <div class="status" id="scanStatus"></div>
 
-    /* ===========================================
-       📥 READ: Fetch all records (initial load)
-       =========================================== */
-    async function fetchRecords() {
-      statusEl.textContent = "Loading records...";
-      try {
-        const { data, error } = await client
-          .from("people")
-          .select("*")
-          .order("created_at", { ascending: false });
+  <h3 style="margin-top:24px;">My Recent Activity</h3>
+  <ul class="record-list" id="myAttList"></ul>
+</div>
 
-        if (error) {
-          console.log("Fetch error:", error);
-          statusEl.textContent = "❌ Error loading records. Check console.";
-          return;
-        }
+<div id="toast" class="toast"></div>
 
-        recordsCache = data || [];
-        renderRecords();
-      } catch (err) {
-        console.log("Unexpected fetch error:", err);
-        statusEl.textContent = "❌ Unexpected error. Check console.";
-      }
+<!-- Supabase v2 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- QR code generator (manager side) -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<!-- QR scanner (employee side) -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<script>
+/* ========== Supabase ========== */
+const SUPABASE_URL = "https://cjxlwfrqfqwjhugpjdxz.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ";
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ========== Helpers ========== */
+const $ = id => document.getElementById(id);
+const escapeHtml = s => String(s ?? "")
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+async function sha256(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function saveSession(user) {
+  localStorage.setItem("att_user", JSON.stringify(user));
+}
+function getSession() {
+  try { return JSON.parse(localStorage.getItem("att_user") || "null"); }
+  catch { return null; }
+}
+function clearSession() { localStorage.removeItem("att_user"); }
+
+/* ========== Routing ========== */
+function showScreen(name) {
+  ["loginScreen","managerScreen","employeeScreen"].forEach(id => {
+    $(id).classList.add("hidden");
+  });
+  $(name).classList.remove("hidden");
+}
+
+async function boot() {
+  const u = getSession();
+  if (!u) return showScreen("loginScreen");
+  if (u.role === "manager") {
+    $("mgrWho").textContent = `Signed in as ${u.username}`;
+    showScreen("managerScreen");
+    initManager();
+  } else {
+    $("empWho").textContent = `Signed in as ${u.username}`;
+    showScreen("employeeScreen");
+    initEmployee();
+  }
+}
+
+/* ========== LOGIN ========== */
+async function login() {
+  const username = $("loginUser").value.trim();
+  const password = $("loginPass").value;
+  if (!username || !password) return alert("Enter username and password.");
+
+  const hash = await sha256(password);
+  const { data, error } = await client
+    .from("employees")
+    .select("*")
+    .eq("username", username)
+    .eq("password", hash)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (error) { console.log(error); return alert("Login error. Check console."); }
+  if (!data)  return alert("Invalid credentials.");
+
+  saveSession({ id: data.id, username: data.username, role: data.role, full_name: data.full_name });
+  boot();
+}
+
+function logout() {
+  stopQrLoop();
+  stopScanner();
+  clearSession();
+  showScreen("loginScreen");
+  $("loginUser").value = ""; $("loginPass").value = "";
+}
+
+/* =====================================================
+   MANAGER LOGIC
+   ===================================================== */
+let editingEmpId = null;
+
+async function initManager() {
+  await loadEmployees();
+  startQrLoop();
+  loadAttendance();
+  // refresh attendance every 5s
+  if (window._attTimer) clearInterval(window._attTimer);
+  window._attTimer = setInterval(loadAttendance, 5000);
+}
+
+async function loadEmployees() {
+  $("empStatus").textContent = "Loading employees...";
+  const { data, error } = await client
+    .from("employees").select("*").order("created_at", { ascending: false });
+  if (error) { console.log(error); $("empStatus").textContent = "❌ Load failed."; return; }
+
+  const list = $("empList"); list.innerHTML = "";
+  $("empStatus").textContent = `Total: ${data.length}`;
+  data.forEach(e => {
+    const li = document.createElement("li");
+    li.className = "record-item";
+    const roleBadge = e.role === "manager"
+      ? '<span class="badge b-mgr">Manager</span>'
+      : '<span class="badge b-emp">Employee</span>';
+    const offBadge = e.active ? "" : '<span class="badge b-off">Inactive</span>';
+    li.innerHTML = `
+      <div class="record-info">
+        <strong>${escapeHtml(e.full_name || e.username)}</strong> ${roleBadge} ${offBadge}
+        <small>@${escapeHtml(e.username)} • Added ${new Date(e.created_at).toLocaleString()}</small>
+      </div>
+      <div>
+        <button class="btn-edit"   onclick="editEmployee('${e.id}')">Edit</button>
+        <button class="btn-delete" onclick="deleteEmployee('${e.id}')">Delete</button>
+      </div>`;
+    list.appendChild(li);
+  });
+}
+
+async function saveEmployee() {
+  const username = $("empUser").value.trim();
+  const password = $("empPass").value;
+  const full_name = $("empName").value.trim();
+  const role = $("empRole").value;
+
+  if (!username) return alert("Username is required.");
+  if (!editingEmpId && !password) return alert("Password is required for new employees.");
+
+  try {
+    if (editingEmpId) {
+      const patch = { username, full_name, role };
+      if (password) patch.password = await sha256(password);
+      const { error } = await client.from("employees").update(patch).eq("id", editingEmpId);
+      if (error) throw error;
+      toast("Employee updated");
+      cancelEmpEdit();
+    } else {
+      const hash = await sha256(password);
+      const { error } = await client.from("employees")
+        .insert([{ username, password: hash, full_name, role }]);
+      if (error) throw error;
+      toast("Employee added");
+      clearEmpForm();
     }
+    loadEmployees();
+  } catch (err) {
+    console.log(err);
+    alert("Save failed: " + (err.message || "see console"));
+  }
+}
 
-    /* ===========================================
-       🖼️ Render records from the cache
-       =========================================== */
-    function renderRecords(flashId = null) {
-      recordList.innerHTML = "";
+async function editEmployee(id) {
+  const { data, error } = await client.from("employees").select("*").eq("id", id).single();
+  if (error || !data) return alert("Could not load employee.");
+  editingEmpId = id;
+  $("empUser").value = data.username;
+  $("empPass").value = "";
+  $("empPass").placeholder = "New password (leave blank to keep)";
+  $("empName").value = data.full_name || "";
+  $("empRole").value = data.role;
+  $("empBtn").textContent = "Update";
+  $("empBtn").classList.remove("btn-add");
+  $("empBtn").style.background = "#ff9800";
+  $("empCancelWrap").classList.remove("hidden");
+  $("empUser").focus();
+}
 
-      if (!recordsCache || recordsCache.length === 0) {
-        statusEl.textContent = "No records yet. Add your first person above!";
-        return;
-      }
+function cancelEmpEdit() {
+  editingEmpId = null;
+  $("empBtn").textContent = "Add";
+  $("empBtn").classList.add("btn-add");
+  $("empBtn").style.background = "";
+  $("empCancelWrap").classList.add("hidden");
+  $("empPass").placeholder = "Password";
+  clearEmpForm();
+}
 
-      statusEl.textContent = `Total records: ${recordsCache.length}`;
+function clearEmpForm() {
+  $("empUser").value = ""; $("empPass").value = "";
+  $("empName").value = ""; $("empRole").value = "employee";
+}
 
-      recordsCache.forEach((p) => {
-        const li = document.createElement("li");
-        li.className = "record-item" + (p.id === flashId ? " flash" : "");
+async function deleteEmployee(id) {
+  if (!confirm("Delete this employee? Their attendance history will also be removed.")) return;
+  const { error } = await client.from("employees").delete().eq("id", id);
+  if (error) { console.log(error); return alert("Delete failed."); }
+  if (editingEmpId === id) cancelEmpEdit();
+  loadEmployees();
+}
 
-        const safeName  = p.name  ?? "(no name)";
-        const safeAge   = p.age   ?? "—";
-        const safePhone = p.phone ?? "—";
-        const safeDate  = p.created_at
-          ? new Date(p.created_at).toLocaleString()
-          : "";
+/* ========== Dynamic QR ========== */
+let qrInstance = null;
+let qrTimer = null;
+let qrCountdown = 0;
+const QR_TTL_SEC = 15;
 
-        li.innerHTML = `
-          <div class="record-info">
-            <strong>${escapeHtml(safeName)}</strong>
-            — Age: ${escapeHtml(String(safeAge))}
-            — 📞 ${escapeHtml(String(safePhone))}
-            <small>Added: ${escapeHtml(safeDate)}</small>
-          </div>
-          <div>
-            <button class="btn-edit"   onclick="startEdit('${p.id}')">Edit</button>
-            <button class="btn-delete" onclick="deleteRecord('${p.id}')">Delete</button>
-          </div>
-        `;
-        recordList.appendChild(li);
-      });
-    }
+async function startQrLoop() {
+  await rotateQrToken();
+  if (qrTimer) clearInterval(qrTimer);
+  qrTimer = setInterval(() => {
+    qrCountdown--;
+    $("qrCount").textContent = qrCountdown;
+    if (qrCountdown <= 0) rotateQrToken();
+  }, 1000);
+}
+function stopQrLoop() { if (qrTimer) { clearInterval(qrTimer); qrTimer = null; } }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+async function rotateQrToken() {
+  const token = crypto.randomUUID();
+  const expires = new Date(Date.now() + QR_TTL_SEC * 1000).toISOString();
 
-    /* ===========================================
-       ➕ CREATE / ✏️ UPDATE
-       =========================================== */
-    async function handleAction() {
-      const name  = nameInput.value.trim();
-      const ageV  = ageInput.value.trim();
-      const phone = phoneInput.value.trim();
+  const { error } = await client.from("qr_tokens")
+    .insert([{ token, expires_at: expires }]);
+  if (error) { console.log(error); return; }
 
-      if (!name) {
-        alert("Name is required.");
-        return;
-      }
+  // Render
+  const box = $("qrBox");
+  box.innerHTML = "";
+  qrInstance = new QRCode(box, {
+    text: token,
+    width: 220, height: 220,
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  $("qrTokenText").textContent = token.slice(0, 8) + "…";
+  qrCountdown = QR_TTL_SEC;
+  $("qrCount").textContent = qrCountdown;
+}
 
-      const age = ageV === "" ? null : parseInt(ageV, 10);
-      if (ageV !== "" && Number.isNaN(age)) {
-        alert("Age must be a number.");
-        return;
-      }
+/* ========== Attendance feed ========== */
+async function loadAttendance() {
+  const { data, error } = await client
+    .from("attendance")
+    .select("id, action, created_at, employee:employees(username, full_name)")
+    .order("created_at", { ascending: false })
+    .limit(20);
+  if (error) { console.log(error); $("attStatus").textContent = "❌ Failed."; return; }
 
-      try {
-        if (editingId) {
-          const { error } = await client
-            .from("people")
-            .update({ name, age, phone })
-            .eq("id", editingId);
+  $("attStatus").textContent = `Last ${data.length} events`;
+  const list = $("attList"); list.innerHTML = "";
+  data.forEach(a => {
+    const who = a.employee?.full_name || a.employee?.username || "Unknown";
+    const li = document.createElement("li");
+    li.className = "record-item";
+    const badge = a.action === "check_in"
+      ? '<span class="badge b-emp">Check-in</span>'
+      : '<span class="badge b-mgr">Check-out</span>';
+    li.innerHTML = `
+      <div class="record-info">
+        <strong>${escapeHtml(who)}</strong> ${badge}
+        <small>${new Date(a.created_at).toLocaleString()}</small>
+      </div>`;
+    list.appendChild(li);
+  });
+}
 
-          if (error) {
-            console.log("Update error:", error);
-            alert("Update failed. Check console.");
-            return;
-          }
-          cancelEdit();
-        } else {
-          const { error } = await client
-            .from("people")
-            .insert([{ name, age, phone }]);
+/* =====================================================
+   EMPLOYEE LOGIC
+   ===================================================== */
+let scanner = null;
+let scanning = false;
+let lastScanToken = null;
 
-          if (error) {
-            console.log("Insert error:", error);
-            alert("Insert failed. Check console.");
-            return;
-          }
-        }
+async function initEmployee() {
+  loadMyAttendance();
+  if (window._myAttTimer) clearInterval(window._myAttTimer);
+  window._myAttTimer = setInterval(loadMyAttendance, 5000);
+}
 
-        clearForm();
-        // No need to call fetchRecords() — realtime will deliver the change.
-      } catch (err) {
-        console.log("Unexpected action error:", err);
-      }
-    }
+async function loadMyAttendance() {
+  const u = getSession(); if (!u) return;
+  const { data, error } = await client
+    .from("attendance").select("*")
+    .eq("employee_id", u.id)
+    .order("created_at", { ascending: false })
+    .limit(10);
+  if (error) { console.log(error); return; }
+  const list = $("myAttList"); list.innerHTML = "";
+  data.forEach(a => {
+    const li = document.createElement("li");
+    li.className = "record-item";
+    const badge = a.action === "check_in"
+      ? '<span class="badge b-emp">Check-in</span>'
+      : '<span class="badge b-mgr">Check-out</span>';
+    li.innerHTML = `<div class="record-info">${badge}
+      <small>${new Date(a.created_at).toLocaleString()}</small></div>`;
+    list.appendChild(li);
+  });
+}
 
-    /* ===========================================
-       ✏️ Begin editing
-       =========================================== */
-    async function startEdit(id) {
-      try {
-        const { data, error } = await client
-          .from("people")
-          .select("*")
-          .eq("id", id)
-          .single();
+function toggleScanner() {
+  if (scanning) stopScanner(); else startScanner();
+}
 
-        if (error || !data) {
-          console.log("Load-for-edit error:", error);
-          alert("Could not load record for editing.");
-          return;
-        }
+async function startScanner() {
+  if (scanning) return;
+  scanner = new Html5Qrcode("scanner");
+  try {
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 240, height: 240 } },
+      onQrScanned,
+      () => {} // ignore decode errors
+    );
+    scanning = true;
+    $("scanBtn").textContent = "Stop Scanner";
+    $("scanStatus").textContent = "Point camera at the manager's QR code...";
+  } catch (e) {
+    console.log(e);
+    alert("Could not start camera: " + e);
+  }
+}
 
-        editingId = id;
-        nameInput.value  = data.name  ?? "";
-        ageInput.value   = data.age   ?? "";
-        phoneInput.value = data.phone ?? "";
+async function stopScanner() {
+  if (!scanning || !scanner) return;
+  try { await scanner.stop(); await scanner.clear(); } catch(e) {}
+  scanning = false;
+  $("scanBtn").textContent = "Start Scanner";
+}
 
-        actionBtn.textContent = "Update";
-        actionBtn.classList.remove("btn-add");
-        actionBtn.style.background = "#ff9800";
-        cancelWrapper.style.display = "block";
+async function onQrScanned(decoded) {
+  if (!decoded || decoded === lastScanToken) return;
+  lastScanToken = decoded;
+  // Validate token
+  const { data: tok, error } = await client
+    .from("qr_tokens").select("*")
+    .eq("token", decoded).maybeSingle();
 
-        nameInput.focus();
-      } catch (err) {
-        console.log("Unexpected edit error:", err);
-      }
-    }
+  if (error)         { console.log(error); $("scanStatus").textContent = "❌ Lookup error."; return; }
+  if (!tok)          { $("scanStatus").textContent = "❌ Invalid QR."; return; }
+  if (new Date(tok.expires_at) < new Date()) {
+    $("scanStatus").textContent = "❌ QR expired — ask manager for a fresh one.";
+    return;
+  }
 
-    function cancelEdit() {
-      editingId = null;
-      actionBtn.textContent = "Add";
-      actionBtn.classList.add("btn-add");
-      actionBtn.style.background = "";
-      cancelWrapper.style.display = "none";
-      clearForm();
-    }
+  const u = getSession();
 
-    /* ===========================================
-       🗑️ DELETE
-       =========================================== */
-    async function deleteRecord(id) {
-      if (!confirm("Delete this record?")) return;
+  // Determine next action: alternate based on the most recent record
+  const { data: last } = await client.from("attendance")
+    .select("action").eq("employee_id", u.id)
+    .order("created_at", { ascending: false }).limit(1);
+  const nextAction = (last && last[0] && last[0].action === "check_in")
+    ? "check_out" : "check_in";
 
-      try {
-        const { error } = await client.from("people").delete().eq("id", id);
-        if (error) {
-          console.log("Delete error:", error);
-          alert("Delete failed. Check console.");
-          return;
-        }
+  const { error: insErr } = await client.from("attendance").insert([{
+    employee_id: u.id, action: nextAction, token: decoded
+  }]);
+  if (insErr) { console.log(insErr); $("scanStatus").textContent = "❌ Save failed."; return; }
 
-        if (editingId === id) cancelEdit();
-        // Realtime will remove it from the list automatically.
-      } catch (err) {
-        console.log("Unexpected delete error:", err);
-      }
-    }
+  $("scanStatus").textContent = `✅ ${nextAction.replace("_"," ").toUpperCase()} recorded at ${new Date().toLocaleTimeString()}`;
+  toast(nextAction === "check_in" ? "Checked in!" : "Checked out!");
+  loadMyAttendance();
+  // Stop after one successful scan
+  stopScanner();
+  // Allow same code if scanned again later (within TTL it's still valid)
+  setTimeout(() => { lastScanToken = null; }, 3000);
+}
 
-    function clearForm() {
-      nameInput.value  = "";
-      ageInput.value   = "";
-      phoneInput.value = "";
-    }
-
-    /* ===========================================
-       📡 REALTIME: subscribe to changes on `people`
-       =========================================== */
-    function setRtStatus(state) {
-      rtBadge.classList.remove("rt-connected", "rt-disconnected", "rt-connecting");
-      if (state === "connected") {
-        rtBadge.classList.add("rt-connected");
-        rtBadge.textContent = "● live";
-      } else if (state === "connecting") {
-        rtBadge.classList.add("rt-connecting");
-        rtBadge.textContent = "● connecting";
-      } else {
-        rtBadge.classList.add("rt-disconnected");
-        rtBadge.textContent = "● offline";
-      }
-    }
-
-    function handleRealtimeEvent(payload) {
-      const { eventType, new: newRow, old: oldRow } = payload;
-
-      if (eventType === "INSERT") {
-        // Avoid duplicates if the row somehow already exists
-        if (!recordsCache.find(r => r.id === newRow.id)) {
-          recordsCache.unshift(newRow); // newest first
-        }
-        renderRecords(newRow.id);
-      } else if (eventType === "UPDATE") {
-        const idx = recordsCache.findIndex(r => r.id === newRow.id);
-        if (idx !== -1) {
-          recordsCache[idx] = newRow;
-        } else {
-          recordsCache.unshift(newRow);
-        }
-        renderRecords(newRow.id);
-      } else if (eventType === "DELETE") {
-        recordsCache = recordsCache.filter(r => r.id !== oldRow.id);
-        renderRecords();
-      }
-    }
-
-    function subscribeRealtime() {
-      setRtStatus("connecting");
-
-      const channel = client
-        .channel("people-changes")
-        .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "people" },
-          handleRealtimeEvent
-        )
-        .subscribe((status) => {
-          console.log("Realtime status:", status);
-          if (status === "SUBSCRIBED") {
-            setRtStatus("connected");
-          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
-            setRtStatus("disconnected");
-          }
-        });
-
-      // Optional: clean up on page unload
-      window.addEventListener("beforeunload", () => {
-        client.removeChannel(channel);
-      });
-    }
-
-    // Boot
-    fetchRecords();
-    subscribeRealtime();
-  </script>
+/* ========== Boot ========== */
+boot();
+</script>
 </body>
 </html>
