@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>People CRUD App</title>
+  <title>People CRUD App (Realtime)</title>
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,6 +64,19 @@
       color: #666;
     }
 
+    .realtime-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .rt-connected   { background: #d4edda; color: #155724; }
+    .rt-disconnected{ background: #f8d7da; color: #721c24; }
+    .rt-connecting  { background: #fff3cd; color: #856404; }
+
     .record-list { list-style: none; margin-top: 20px; }
     .record-item {
       background: #f9f9f9;
@@ -76,6 +89,18 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+      animation: fadeIn 0.4s ease;
+    }
+    .record-item.flash {
+      animation: flashRow 1.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes flashRow {
+      0%   { background: #fff9c4; }
+      100% { background: #f9f9f9; }
     }
     .record-info { flex: 1; min-width: 200px; }
     .record-info strong { color: #333; }
@@ -88,7 +113,10 @@
 </head>
 <body>
   <div class="container">
-    <h1>📋 People CRUD App</h1>
+    <h1>
+      📋 People CRUD App
+      <span id="rtBadge" class="realtime-badge rt-connecting">● connecting</span>
+    </h1>
 
     <!-- Input form -->
     <div class="form-row">
@@ -124,6 +152,9 @@
     // Track edit mode
     let editingId = null;
 
+    // In-memory cache of records, keyed by id, for realtime patching
+    let recordsCache = [];
+
     // DOM references
     const nameInput  = document.getElementById("nameInput");
     const ageInput   = document.getElementById("ageInput");
@@ -132,9 +163,10 @@
     const recordList = document.getElementById("recordList");
     const statusEl   = document.getElementById("status");
     const cancelWrapper = document.getElementById("cancelWrapper");
+    const rtBadge    = document.getElementById("rtBadge");
 
     /* ===========================================
-       📥 READ: Fetch all records (newest first)
+       📥 READ: Fetch all records (initial load)
        =========================================== */
     async function fetchRecords() {
       statusEl.textContent = "Loading records...";
@@ -150,7 +182,8 @@
           return;
         }
 
-        renderRecords(data || []);
+        recordsCache = data || [];
+        renderRecords();
       } catch (err) {
         console.log("Unexpected fetch error:", err);
         statusEl.textContent = "❌ Unexpected error. Check console.";
@@ -158,23 +191,22 @@
     }
 
     /* ===========================================
-       🖼️ Render records to the DOM
+       🖼️ Render records from the cache
        =========================================== */
-    function renderRecords(records) {
+    function renderRecords(flashId = null) {
       recordList.innerHTML = "";
 
-      if (!records || records.length === 0) {
+      if (!recordsCache || recordsCache.length === 0) {
         statusEl.textContent = "No records yet. Add your first person above!";
         return;
       }
 
-      statusEl.textContent = `Total records: ${records.length}`;
+      statusEl.textContent = `Total records: ${recordsCache.length}`;
 
-      records.forEach((p) => {
+      recordsCache.forEach((p) => {
         const li = document.createElement("li");
-        li.className = "record-item";
+        li.className = "record-item" + (p.id === flashId ? " flash" : "");
 
-        // Safely handle nulls
         const safeName  = p.name  ?? "(no name)";
         const safeAge   = p.age   ?? "—";
         const safePhone = p.phone ?? "—";
@@ -198,7 +230,6 @@
       });
     }
 
-    // Tiny helper to avoid HTML injection from DB values
     function escapeHtml(str) {
       return String(str)
         .replaceAll("&", "&amp;")
@@ -209,7 +240,7 @@
     }
 
     /* ===========================================
-       ➕ CREATE / ✏️ UPDATE (handled by one button)
+       ➕ CREATE / ✏️ UPDATE
        =========================================== */
     async function handleAction() {
       const name  = nameInput.value.trim();
@@ -229,7 +260,6 @@
 
       try {
         if (editingId) {
-          // UPDATE existing record
           const { error } = await client
             .from("people")
             .update({ name, age, phone })
@@ -242,7 +272,6 @@
           }
           cancelEdit();
         } else {
-          // CREATE new record
           const { error } = await client
             .from("people")
             .insert([{ name, age, phone }]);
@@ -255,14 +284,14 @@
         }
 
         clearForm();
-        fetchRecords();
+        // No need to call fetchRecords() — realtime will deliver the change.
       } catch (err) {
         console.log("Unexpected action error:", err);
       }
     }
 
     /* ===========================================
-       ✏️ Begin editing a record
+       ✏️ Begin editing
        =========================================== */
     async function startEdit(id) {
       try {
@@ -304,7 +333,7 @@
     }
 
     /* ===========================================
-       🗑️ DELETE record
+       🗑️ DELETE
        =========================================== */
     async function deleteRecord(id) {
       if (!confirm("Delete this record?")) return;
@@ -317,26 +346,87 @@
           return;
         }
 
-        // If deleting the record currently being edited, cancel edit mode
         if (editingId === id) cancelEdit();
-
-        fetchRecords();
+        // Realtime will remove it from the list automatically.
       } catch (err) {
         console.log("Unexpected delete error:", err);
       }
     }
 
-    /* ===========================================
-       🧹 Helpers
-       =========================================== */
     function clearForm() {
       nameInput.value  = "";
       ageInput.value   = "";
       phoneInput.value = "";
     }
 
-    // Initial load
+    /* ===========================================
+       📡 REALTIME: subscribe to changes on `people`
+       =========================================== */
+    function setRtStatus(state) {
+      rtBadge.classList.remove("rt-connected", "rt-disconnected", "rt-connecting");
+      if (state === "connected") {
+        rtBadge.classList.add("rt-connected");
+        rtBadge.textContent = "● live";
+      } else if (state === "connecting") {
+        rtBadge.classList.add("rt-connecting");
+        rtBadge.textContent = "● connecting";
+      } else {
+        rtBadge.classList.add("rt-disconnected");
+        rtBadge.textContent = "● offline";
+      }
+    }
+
+    function handleRealtimeEvent(payload) {
+      const { eventType, new: newRow, old: oldRow } = payload;
+
+      if (eventType === "INSERT") {
+        // Avoid duplicates if the row somehow already exists
+        if (!recordsCache.find(r => r.id === newRow.id)) {
+          recordsCache.unshift(newRow); // newest first
+        }
+        renderRecords(newRow.id);
+      } else if (eventType === "UPDATE") {
+        const idx = recordsCache.findIndex(r => r.id === newRow.id);
+        if (idx !== -1) {
+          recordsCache[idx] = newRow;
+        } else {
+          recordsCache.unshift(newRow);
+        }
+        renderRecords(newRow.id);
+      } else if (eventType === "DELETE") {
+        recordsCache = recordsCache.filter(r => r.id !== oldRow.id);
+        renderRecords();
+      }
+    }
+
+    function subscribeRealtime() {
+      setRtStatus("connecting");
+
+      const channel = client
+        .channel("people-changes")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "people" },
+          handleRealtimeEvent
+        )
+        .subscribe((status) => {
+          console.log("Realtime status:", status);
+          if (status === "SUBSCRIBED") {
+            setRtStatus("connected");
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+            setRtStatus("disconnected");
+          }
+        });
+
+      // Optional: clean up on page unload
+      window.addEventListener("beforeunload", () => {
+        client.removeChannel(channel);
+      });
+    }
+
+    // Boot
     fetchRecords();
+    subscribeRealtime();
   </script>
 </body>
 </html>
