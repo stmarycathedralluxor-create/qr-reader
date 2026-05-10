@@ -9,16 +9,11 @@
   body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
     background: linear-gradient(135deg, #667eea, #764ba2);
-    min-height: 100vh;
-    padding: 30px 15px;
-    color: #333;
+    min-height: 100vh; padding: 30px 15px; color: #333;
   }
   .container {
-    max-width: 880px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
+    max-width: 920px; margin: 0 auto; background: #fff;
+    padding: 30px; border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,.2);
   }
   h1, h2 { color: #4a4a4a; margin-bottom: 18px; text-align: center; }
@@ -36,7 +31,7 @@
     cursor: pointer; font-weight: 600;
     transition: opacity .2s, transform .1s;
   }
-  button:hover { opacity: .9; }
+  button:hover  { opacity: .9; }
   button:active { transform: scale(.97); }
   .btn-primary { background: #667eea; color: #fff; }
   .btn-add     { background: #4CAF50; color: #fff; }
@@ -67,22 +62,37 @@
   .record-info { flex: 1; min-width: 220px; }
   .record-info small { color: #888; display: block; margin-top: 4px; }
   .badge {
-    display:inline-block; padding:2px 8px; border-radius: 10px;
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
     font-size: 11px; font-weight: 700; margin-left: 6px;
   }
-  .b-mgr { background:#ffe0b2; color:#e65100; }
-  .b-emp { background:#c8e6c9; color:#1b5e20; }
-  .b-off { background:#eee;    color:#555; }
+  .b-in   { background: #c8e6c9; color: #1b5e20; }
+  .b-out  { background: #ffe0b2; color: #e65100; }
+  .b-mgr  { background: #d1c4e9; color: #311b92; }
+  .b-emp  { background: #b3e5fc; color: #01579b; }
+  .b-off  { background: #eee;    color: #555;    }
+
+  .qr-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;
+  }
+  @media (max-width: 700px){ .qr-grid { grid-template-columns: 1fr; } }
 
   .qr-card {
-    text-align:center; padding:20px; border:1px dashed #aaa;
-    border-radius: 10px; background:#fafafa; margin-top: 10px;
+    text-align: center; padding: 20px; border-radius: 12px;
+    background: #fafafa; border: 2px dashed #bbb;
   }
-  .qr-card canvas, .qr-card img { margin: 10px auto; display: block; }
-  .qr-card .countdown { font-weight: 700; color:#667eea; font-size: 18px; }
+  .qr-card.in  { border-color: #4CAF50; }
+  .qr-card.out { border-color: #ff9800; }
+  .qr-card h4 { margin-bottom: 10px; font-size: 16px; }
+  .qr-card.in  h4 { color: #2e7d32; }
+  .qr-card.out h4 { color: #e65100; }
+  .qr-card canvas, .qr-card img { margin: 8px auto; display: block; }
+  .qr-card .countdown { font-weight: 700; font-size: 16px; margin-top: 4px; }
+  .qr-card.in  .countdown { color: #2e7d32; }
+  .qr-card.out .countdown { color: #e65100; }
 
-  #scanner { width: 100%; max-width: 360px; margin: 0 auto; border-radius: 10px; overflow: hidden; }
-  .small { font-size: 12px; color:#777; }
+  #scanner { width: 100%; max-width: 360px; margin: 0 auto;
+             border-radius: 10px; overflow: hidden; }
+  .small  { font-size: 12px; color: #777; }
   .center { text-align: center; }
   .hidden { display: none !important; }
 
@@ -91,7 +101,7 @@
 
   .toast {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: #333; color:#fff; padding: 10px 16px; border-radius: 8px;
+    background: #333; color: #fff; padding: 10px 16px; border-radius: 8px;
     opacity: 0; transition: opacity .3s; z-index: 9999;
   }
   .toast.show { opacity: 1; }
@@ -105,7 +115,9 @@
   <input id="loginUser" type="text" placeholder="Username" />
   <input id="loginPass" type="password" placeholder="Password" />
   <button class="btn-primary" style="width:100%" onclick="login()">Sign in</button>
-  <p class="small center" style="margin-top:10px;">Default admin: <b>admin</b> / <b>admin123</b></p>
+  <p class="small center" style="margin-top:10px;">
+    Default admin: <b>admin</b> / <b>admin123</b>
+  </p>
 </div>
 
 <!-- ============ MANAGER ============ -->
@@ -136,12 +148,23 @@
   <div class="status" id="empStatus">Loading employees...</div>
   <ul class="record-list" id="empList"></ul>
 
-  <h3 style="margin-top:30px;">📱 Live Check-in QR Code</h3>
-  <p class="small center">A new code is generated every 15 seconds. Employees scan it from their phone after logging in.</p>
-  <div class="qr-card">
-    <div id="qrBox"></div>
-    <div class="countdown">Refresh in: <span id="qrCount">15</span>s</div>
-    <p class="small">Token: <code id="qrTokenText">—</code></p>
+  <h3 style="margin-top:30px;">📱 Live QR Codes</h3>
+  <p class="small center">
+    Two codes rotate every 15 seconds — employees scan the appropriate one.
+  </p>
+  <div class="qr-grid">
+    <div class="qr-card in">
+      <h4>🟢 CHECK-IN</h4>
+      <div id="qrInBox"></div>
+      <div class="countdown">Refreshes in <span id="qrInCount">15</span>s</div>
+      <p class="small">Token: <code id="qrInText">—</code></p>
+    </div>
+    <div class="qr-card out">
+      <h4>🟠 CHECK-OUT</h4>
+      <div id="qrOutBox"></div>
+      <div class="countdown">Refreshes in <span id="qrOutCount">15</span>s</div>
+      <p class="small">Token: <code id="qrOutText">—</code></p>
+    </div>
   </div>
 
   <h3 style="margin-top:30px;">🕒 Recent Attendance</h3>
@@ -159,7 +182,10 @@
     </div>
   </div>
 
-  <p class="center">Click below and point your camera at the QR code shown on the manager's screen.</p>
+  <p class="center">
+    Start the scanner and point at either the <b style="color:#2e7d32">green Check-in</b>
+    or <b style="color:#e65100">orange Check-out</b> code on the manager's screen.
+  </p>
   <div class="center" style="margin: 14px 0;">
     <button id="scanBtn" class="btn-primary" onclick="toggleScanner()">Start Scanner</button>
   </div>
@@ -172,11 +198,9 @@
 
 <div id="toast" class="toast"></div>
 
-<!-- Supabase v2 -->
+<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- QR code generator (manager side) -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<!-- QR scanner (employee side) -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <script>
@@ -205,20 +229,14 @@ async function sha256(text) {
     .map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-function saveSession(user) {
-  localStorage.setItem("att_user", JSON.stringify(user));
-}
-function getSession() {
-  try { return JSON.parse(localStorage.getItem("att_user") || "null"); }
-  catch { return null; }
-}
-function clearSession() { localStorage.removeItem("att_user"); }
+const saveSession  = u  => localStorage.setItem("att_user", JSON.stringify(u));
+const getSession   = () => { try { return JSON.parse(localStorage.getItem("att_user") || "null"); } catch { return null; } };
+const clearSession = () => localStorage.removeItem("att_user");
 
 /* ========== Routing ========== */
 function showScreen(name) {
-  ["loginScreen","managerScreen","employeeScreen"].forEach(id => {
-    $(id).classList.add("hidden");
-  });
+  ["loginScreen","managerScreen","employeeScreen"]
+    .forEach(id => $(id).classList.add("hidden"));
   $(name).classList.remove("hidden");
 }
 
@@ -259,8 +277,10 @@ async function login() {
 }
 
 function logout() {
-  stopQrLoop();
+  stopQrLoops();
   stopScanner();
+  if (window._attTimer)   clearInterval(window._attTimer);
+  if (window._myAttTimer) clearInterval(window._myAttTimer);
   clearSession();
   showScreen("loginScreen");
   $("loginUser").value = ""; $("loginPass").value = "";
@@ -273,9 +293,8 @@ let editingEmpId = null;
 
 async function initManager() {
   await loadEmployees();
-  startQrLoop();
+  startQrLoops();
   loadAttendance();
-  // refresh attendance every 5s
   if (window._attTimer) clearInterval(window._attTimer);
   window._attTimer = setInterval(loadAttendance, 5000);
 }
@@ -309,10 +328,10 @@ async function loadEmployees() {
 }
 
 async function saveEmployee() {
-  const username = $("empUser").value.trim();
-  const password = $("empPass").value;
+  const username  = $("empUser").value.trim();
+  const password  = $("empPass").value;
   const full_name = $("empName").value.trim();
-  const role = $("empRole").value;
+  const role      = $("empRole").value;
 
   if (!username) return alert("Username is required.");
   if (!editingEmpId && !password) return alert("Password is required for new employees.");
@@ -379,45 +398,69 @@ async function deleteEmployee(id) {
   loadEmployees();
 }
 
-/* ========== Dynamic QR ========== */
-let qrInstance = null;
-let qrTimer = null;
-let qrCountdown = 0;
+/* ========== Dynamic QR Codes (two of them) ========== */
 const QR_TTL_SEC = 15;
+let qrInTimer = null, qrOutTimer = null;
+let qrInCountdown = 0, qrOutCountdown = 0;
+let qrInInstance = null, qrOutInstance = null;
 
-async function startQrLoop() {
-  await rotateQrToken();
-  if (qrTimer) clearInterval(qrTimer);
-  qrTimer = setInterval(() => {
-    qrCountdown--;
-    $("qrCount").textContent = qrCountdown;
-    if (qrCountdown <= 0) rotateQrToken();
+async function startQrLoops() {
+  await rotateQr("check_in");
+  await rotateQr("check_out");
+
+  if (qrInTimer)  clearInterval(qrInTimer);
+  if (qrOutTimer) clearInterval(qrOutTimer);
+
+  qrInTimer = setInterval(() => {
+    qrInCountdown--;
+    $("qrInCount").textContent = qrInCountdown;
+    if (qrInCountdown <= 0) rotateQr("check_in");
+  }, 1000);
+
+  qrOutTimer = setInterval(() => {
+    qrOutCountdown--;
+    $("qrOutCount").textContent = qrOutCountdown;
+    if (qrOutCountdown <= 0) rotateQr("check_out");
   }, 1000);
 }
-function stopQrLoop() { if (qrTimer) { clearInterval(qrTimer); qrTimer = null; } }
 
-async function rotateQrToken() {
-  const token = crypto.randomUUID();
+function stopQrLoops() {
+  if (qrInTimer)  { clearInterval(qrInTimer);  qrInTimer = null; }
+  if (qrOutTimer) { clearInterval(qrOutTimer); qrOutTimer = null; }
+}
+
+async function rotateQr(action) {
+  const token   = crypto.randomUUID();
   const expires = new Date(Date.now() + QR_TTL_SEC * 1000).toISOString();
 
   const { error } = await client.from("qr_tokens")
-    .insert([{ token, expires_at: expires }]);
+    .insert([{ token, action, expires_at: expires }]);
   if (error) { console.log(error); return; }
 
-  // Render
-  const box = $("qrBox");
-  box.innerHTML = "";
-  qrInstance = new QRCode(box, {
-    text: token,
-    width: 220, height: 220,
-    correctLevel: QRCode.CorrectLevel.M
-  });
-  $("qrTokenText").textContent = token.slice(0, 8) + "…";
-  qrCountdown = QR_TTL_SEC;
-  $("qrCount").textContent = qrCountdown;
+  if (action === "check_in") {
+    const box = $("qrInBox"); box.innerHTML = "";
+    qrInInstance = new QRCode(box, {
+      text: token, width: 200, height: 200,
+      colorDark: "#2e7d32", colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    $("qrInText").textContent = token.slice(0, 8) + "…";
+    qrInCountdown = QR_TTL_SEC;
+    $("qrInCount").textContent = qrInCountdown;
+  } else {
+    const box = $("qrOutBox"); box.innerHTML = "";
+    qrOutInstance = new QRCode(box, {
+      text: token, width: 200, height: 200,
+      colorDark: "#e65100", colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    $("qrOutText").textContent = token.slice(0, 8) + "…";
+    qrOutCountdown = QR_TTL_SEC;
+    $("qrOutCount").textContent = qrOutCountdown;
+  }
 }
 
-/* ========== Attendance feed ========== */
+/* ========== Attendance feed (manager) ========== */
 async function loadAttendance() {
   const { data, error } = await client
     .from("attendance")
@@ -433,8 +476,8 @@ async function loadAttendance() {
     const li = document.createElement("li");
     li.className = "record-item";
     const badge = a.action === "check_in"
-      ? '<span class="badge b-emp">Check-in</span>'
-      : '<span class="badge b-mgr">Check-out</span>';
+      ? '<span class="badge b-in">Check-in</span>'
+      : '<span class="badge b-out">Check-out</span>';
     li.innerHTML = `
       <div class="record-info">
         <strong>${escapeHtml(who)}</strong> ${badge}
@@ -470,17 +513,15 @@ async function loadMyAttendance() {
     const li = document.createElement("li");
     li.className = "record-item";
     const badge = a.action === "check_in"
-      ? '<span class="badge b-emp">Check-in</span>'
-      : '<span class="badge b-mgr">Check-out</span>';
+      ? '<span class="badge b-in">Check-in</span>'
+      : '<span class="badge b-out">Check-out</span>';
     li.innerHTML = `<div class="record-info">${badge}
       <small>${new Date(a.created_at).toLocaleString()}</small></div>`;
     list.appendChild(li);
   });
 }
 
-function toggleScanner() {
-  if (scanning) stopScanner(); else startScanner();
-}
+function toggleScanner() { scanning ? stopScanner() : startScanner(); }
 
 async function startScanner() {
   if (scanning) return;
@@ -490,11 +531,11 @@ async function startScanner() {
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 240, height: 240 } },
       onQrScanned,
-      () => {} // ignore decode errors
+      () => {}
     );
     scanning = true;
     $("scanBtn").textContent = "Stop Scanner";
-    $("scanStatus").textContent = "Point camera at the manager's QR code...";
+    $("scanStatus").textContent = "Point camera at the green or orange QR code...";
   } catch (e) {
     console.log(e);
     alert("Could not start camera: " + e);
@@ -511,38 +552,51 @@ async function stopScanner() {
 async function onQrScanned(decoded) {
   if (!decoded || decoded === lastScanToken) return;
   lastScanToken = decoded;
-  // Validate token
+
+  // 1) Validate token + read its action
   const { data: tok, error } = await client
     .from("qr_tokens").select("*")
     .eq("token", decoded).maybeSingle();
 
-  if (error)         { console.log(error); $("scanStatus").textContent = "❌ Lookup error."; return; }
-  if (!tok)          { $("scanStatus").textContent = "❌ Invalid QR."; return; }
+  if (error)  { console.log(error); $("scanStatus").textContent = "❌ Lookup error."; return; }
+  if (!tok)   { $("scanStatus").textContent = "❌ Invalid QR code."; return; }
   if (new Date(tok.expires_at) < new Date()) {
-    $("scanStatus").textContent = "❌ QR expired — ask manager for a fresh one.";
+    $("scanStatus").textContent = "❌ QR expired — ask the manager for a fresh one.";
     return;
   }
 
   const u = getSession();
+  const action = tok.action; // 'check_in' or 'check_out'
 
-  // Determine next action: alternate based on the most recent record
+  // 2) Enforce alternation: must be opposite of last action
   const { data: last } = await client.from("attendance")
     .select("action").eq("employee_id", u.id)
     .order("created_at", { ascending: false }).limit(1);
-  const nextAction = (last && last[0] && last[0].action === "check_in")
-    ? "check_out" : "check_in";
 
+  const lastAction = last && last[0] ? last[0].action : null;
+
+  if (action === "check_in" && lastAction === "check_in") {
+    $("scanStatus").textContent = "⚠️ You're already checked in. Scan the orange Check-out code.";
+    return;
+  }
+  if (action === "check_out" && lastAction !== "check_in") {
+    $("scanStatus").textContent = "⚠️ You must check in first before checking out.";
+    return;
+  }
+
+  // 3) Insert attendance
   const { error: insErr } = await client.from("attendance").insert([{
-    employee_id: u.id, action: nextAction, token: decoded
+    employee_id: u.id, action, token: decoded
   }]);
   if (insErr) { console.log(insErr); $("scanStatus").textContent = "❌ Save failed."; return; }
 
-  $("scanStatus").textContent = `✅ ${nextAction.replace("_"," ").toUpperCase()} recorded at ${new Date().toLocaleTimeString()}`;
-  toast(nextAction === "check_in" ? "Checked in!" : "Checked out!");
+  const pretty = action === "check_in" ? "CHECK-IN" : "CHECK-OUT";
+  $("scanStatus").textContent = `✅ ${pretty} recorded at ${new Date().toLocaleTimeString()}`;
+  toast(action === "check_in" ? "Checked in!" : "Checked out!");
   loadMyAttendance();
-  // Stop after one successful scan
   stopScanner();
-  // Allow same code if scanned again later (within TTL it's still valid)
+
+  // allow same token to be scanned again later (until it expires)
   setTimeout(() => { lastScanToken = null; }, 3000);
 }
 
