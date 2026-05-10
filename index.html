@@ -1,747 +1,900 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ministry Manager ✦ Servants & Children</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e;
-  --acc:#ffd86b; --acc2:#ff8c42; --pink:#ff5e87;
-  --green:#22d3a4; --red:#ff5470; --blue:#6ad1ff;
-  --glass:rgba(255,255,255,0.08);
-  --glass-b:rgba(255,255,255,0.18);
-  --text:#f4f4ff; --muted:#b8b8d4;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Poppins',sans-serif;color:var(--text);}
-body{
-  min-height:100vh;
-  background: radial-gradient(circle at 20% 10%, #4a2d8a 0%, transparent 40%),
-              radial-gradient(circle at 80% 80%, #ff5e87 0%, transparent 40%),
-              radial-gradient(circle at 50% 50%, #1a1740 0%, #0a0820 100%);
-  background-attachment:fixed;
-  overflow-x:hidden;
-}
-body::before{
-  content:""; position:fixed; inset:0; pointer-events:none;
-  background-image:
-    radial-gradient(2px 2px at 20% 30%, #fff, transparent),
-    radial-gradient(2px 2px at 60% 70%, #fff, transparent),
-    radial-gradient(1px 1px at 50% 20%, #fff, transparent),
-    radial-gradient(1px 1px at 80% 10%, #fff, transparent),
-    radial-gradient(2px 2px at 30% 80%, #fff, transparent),
-    radial-gradient(1px 1px at 90% 60%, #fff, transparent);
-  background-size:200% 200%; opacity:.35; animation:twinkle 8s linear infinite;
-}
-@keyframes twinkle{0%{background-position:0 0}100%{background-position:200% 200%}}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ministry Manager ✦ Realtime Edition</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0b1c;
+      --bg2:#11132d;
+      --panel:rgba(18,22,48,.72);
+      --panel-2:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.12);
+      --line-2:rgba(255,255,255,.18);
+      --text:#f6f7ff;
+      --muted:#b6bdd7;
+      --gold:#ffd66b;
+      --orange:#ff9b53;
+      --green:#24d49f;
+      --blue:#70d5ff;
+      --pink:#ff6a92;
+      --danger:#ff5d79;
+      --shadow:0 24px 60px rgba(0,0,0,.35);
+      --radius:22px;
+      --radius-sm:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;min-height:100%;font-family:Inter,system-ui,sans-serif;color:var(--text)}
+    body{
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124,58,237,.28), transparent 28%),
+        radial-gradient(circle at 90% 12%, rgba(255,106,146,.22), transparent 25%),
+        radial-gradient(circle at 80% 80%, rgba(36,212,159,.16), transparent 24%),
+        linear-gradient(135deg, #080a16 0%, #10152d 45%, #080a16 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+      background-image:
+        radial-gradient(2px 2px at 12% 22%, #fff, transparent),
+        radial-gradient(1px 1px at 70% 18%, #fff, transparent),
+        radial-gradient(2px 2px at 84% 64%, #fff, transparent),
+        radial-gradient(1px 1px at 34% 76%, #fff, transparent),
+        radial-gradient(1px 1px at 54% 40%, #fff, transparent);
+      animation:stars 16s linear infinite;
+    }
+    @keyframes stars{from{transform:translateY(0)}to{transform:translateY(-20px)}}
+    a{color:inherit}
 
-/* ===== Login Page ===== */
-.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
-.auth-card{
-  width:100%;max-width:440px;padding:48px 38px;border-radius:28px;
-  background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
-  border:1px solid var(--glass-b);
-  backdrop-filter: blur(22px);
-  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.2);
-  position:relative; overflow:hidden;
-}
-.auth-card::before{
-  content:""; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
-  background: conic-gradient(from 0deg, transparent, rgba(255,216,107,.15), transparent 30%);
-  animation: spin 12s linear infinite; z-index:-1;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.logo{
-  width:78px;height:78px;border-radius:20px;margin:0 auto 18px;
-  background:linear-gradient(135deg,var(--acc),var(--acc2));
-  display:flex;align-items:center;justify-content:center;font-size:38px;
-  box-shadow:0 12px 30px rgba(255,140,66,.4);
-}
-.auth-title{font-family:'Playfair Display',serif;font-size:30px;text-align:center;margin-bottom:6px}
-.auth-sub{text-align:center;color:var(--muted);margin-bottom:30px;font-size:14px}
+    .hidden{display:none!important}
+    .shell{display:none;min-height:100vh}
+    .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .auth-card,
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      border:1px solid var(--line);
+      backdrop-filter:blur(22px);
+      box-shadow:var(--shadow);
+    }
+    .auth-card{
+      width:min(460px,100%);
+      border-radius:30px;
+      padding:34px;
+      position:relative;
+      overflow:hidden;
+    }
+    .auth-card::after{
+      content:"";position:absolute;inset:auto -30% -45% auto;width:260px;height:260px;border-radius:50%;
+      background:radial-gradient(circle, rgba(255,214,107,.18), transparent 60%);
+      pointer-events:none;
+    }
+    .hero-logo,
+    .mini-logo{
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--gold),var(--orange));
+      color:#2a1800;font-weight:900;
+      box-shadow:0 14px 32px rgba(255,155,83,.35);
+    }
+    .hero-logo{width:82px;height:82px;border-radius:24px;margin:0 auto 18px;font-size:36px}
+    .mini-logo{width:44px;height:44px;border-radius:14px;font-size:20px;flex:none}
+    h1,h2,h3{margin:0}
+    .title{font-family:"Playfair Display",serif;font-size:34px;text-align:center;margin-bottom:8px}
+    .sub{color:var(--muted);text-align:center;margin:0 0 24px;font-size:14px;line-height:1.6}
 
-.field{position:relative;margin-bottom:16px}
-.field input, .field select{
-  width:100%;padding:14px 16px 14px 46px;border-radius:14px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  color:var(--text);font-size:15px;font-family:inherit;outline:none;
-  transition:.25s;
-}
-.field input:focus, .field select:focus{
-  border-color:var(--acc);background:rgba(255,255,255,.1);
-  box-shadow:0 0 0 4px rgba(255,216,107,.15);
-}
-.field .icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;opacity:.7}
-.field label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted);font-weight:500}
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:12px;color:var(--muted);margin:0 0 7px;padding-left:2px;letter-spacing:.2px}
+    :is(input,select,textarea){
+      width:100%;border:none;outline:none;
+      color:var(--text);font:inherit;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      padding:14px 15px;
+      transition:.2s ease;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.18);
+    }
+    :is(input,select,textarea):hover{border-color:rgba(255,255,255,.22)}
+    :is(input,select,textarea):focus{
+      border-color:rgba(255,214,107,.7);
+      box-shadow:0 0 0 4px rgba(255,214,107,.13), inset 0 1px 0 rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+    }
+    ::placeholder{color:#aab2cf}
+    select{
+      appearance:none;
+      -webkit-appearance:none;
+      padding-right:44px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--gold) 50%),
+        linear-gradient(135deg, var(--gold) 50%, transparent 50%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      background-position:
+        calc(100% - 22px) calc(50% - 3px),
+        calc(100% - 16px) calc(50% - 3px),
+        0 0;
+      background-size:6px 6px, 6px 6px, 100% 100%;
+      background-repeat:no-repeat;
+    }
+    select option{background:#171a36;color:var(--text)}
+    textarea{min-height:110px;resize:vertical}
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    select:-webkit-autofill{
+      -webkit-text-fill-color:var(--text);
+      transition:background-color 9999s ease-in-out 0s;
+      box-shadow:0 0 0 1000px rgba(28,32,66,.95) inset !important;
+      border:1px solid rgba(255,214,107,.4);
+    }
 
-.btn{
-  width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
-  font-family:inherit;font-weight:600;font-size:15px;letter-spacing:.3px;
-  background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#2a1a00;transition:.25s;
-  box-shadow:0 10px 25px rgba(255,140,66,.35);
-}
-.btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,140,66,.5)}
-.btn:active{transform:translateY(0)}
-.btn.secondary{background:rgba(255,255,255,.1);color:var(--text);box-shadow:none;border:1px solid var(--glass-b)}
-.btn.danger{background:linear-gradient(135deg,#ff5470,#c11d4d);color:#fff;box-shadow:0 10px 25px rgba(255,84,112,.35)}
-.btn.success{background:linear-gradient(135deg,#22d3a4,#0f9b75);color:#04261c;box-shadow:0 10px 25px rgba(34,211,164,.35)}
-.btn.small{padding:8px 14px;font-size:13px;width:auto;border-radius:10px}
+    .btn{
+      border:none;cursor:pointer;font:inherit;font-weight:700;
+      border-radius:16px;padding:13px 18px;transition:.18s ease;
+      color:#231400;background:linear-gradient(135deg,var(--gold),var(--orange));
+      box-shadow:0 12px 30px rgba(255,155,83,.28);
+    }
+    .btn:hover{transform:translateY(-1px);filter:saturate(1.08)}
+    .btn.secondary{background:rgba(255,255,255,.07);color:var(--text);box-shadow:none;border:1px solid var(--line)}
+    .btn.green{background:linear-gradient(135deg,#57f1c4,#17bb87);color:#04261a}
+    .btn.red{background:linear-gradient(135deg,#ff6a92,#e93a63);color:#fff}
+    .btn.small{padding:9px 12px;border-radius:12px;font-size:13px}
+    .btn.block{width:100%}
 
-.alert{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
-.alert.err{background:rgba(255,84,112,.15);border:1px solid rgba(255,84,112,.4);color:#ffb1c0}
-.alert.ok{background:rgba(34,211,164,.15);border:1px solid rgba(34,211,164,.4);color:#a8f0d5}
+    .alert{display:none;margin:0 0 14px;padding:12px 14px;border-radius:14px;font-size:13px;border:1px solid transparent}
+    .alert.show{display:block}
+    .alert.error{background:rgba(255,93,121,.14);color:#ffd0da;border-color:rgba(255,93,121,.35)}
+    .alert.ok{background:rgba(36,212,159,.14);color:#baf7e5;border-color:rgba(36,212,159,.35)}
 
-/* ===== App Shell ===== */
-.app{display:none;min-height:100vh}
-.topbar{
-  position:sticky;top:0;z-index:50;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 28px;
-  background:rgba(15,12,41,.7);backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--glass-b);
-}
-.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
-.brand .logo{width:42px;height:42px;border-radius:12px;font-size:22px;margin:0;box-shadow:0 6px 14px rgba(255,140,66,.4)}
-.userchip{display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:50px;background:var(--glass);border:1px solid var(--glass-b)}
-.userchip .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6ad1ff,#a78bfa);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#0a0820}
-.role-badge{padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.5px}
-.role-badge.manager{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#2a1a00}
-.role-badge.servant{background:linear-gradient(135deg,#6ad1ff,#a78bfa);color:#0a0820}
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      display:flex;justify-content:space-between;align-items:center;gap:16px;
+      padding:14px 22px;margin:14px; border-radius:22px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand h2{font-size:18px}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .live-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:12px;color:#d8ffef;background:rgba(36,212,159,.12);border:1px solid rgba(36,212,159,.28);
+      padding:7px 10px;border-radius:999px;
+    }
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(36,212,159,.6);animation:pulse 1.8s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(36,212,159,.6)}70%{box-shadow:0 0 0 10px rgba(36,212,159,0)}100%{box-shadow:0 0 0 0 rgba(36,212,159,0)}}
 
-.container{max-width:1280px;margin:0 auto;padding:28px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;background:var(--glass);padding:6px;border-radius:16px;border:1px solid var(--glass-b);width:fit-content}
-.tab{
-  padding:10px 20px;border-radius:11px;cursor:pointer;font-weight:500;font-size:14px;
-  transition:.2s;color:var(--muted);
-}
-.tab:hover{color:var(--text)}
-.tab.active{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#2a1a00;font-weight:600;box-shadow:0 6px 16px rgba(255,140,66,.3)}
+    .user-box{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+    .user-chip{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+    .avatar{width:38px;height:38px;border-radius:14px;display:grid;place-items:center;font-weight:800;color:#120a00}
+    .role{font-size:11px;padding:4px 9px;border-radius:999px;font-weight:800;letter-spacing:.4px}
+    .role.manager{background:linear-gradient(135deg,var(--gold),var(--orange));color:#281600}
+    .role.servant{background:linear-gradient(135deg,var(--blue),#8d9fff);color:#0b1730}
 
-.page{display:none;animation:fadeIn .4s ease}
-.page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .container{max-width:1320px;margin:0 auto;padding:0 18px 28px}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+    .tab{
+      cursor:pointer;padding:12px 16px;border-radius:14px;
+      color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--line);
+      font-weight:700;font-size:14px;
+    }
+    .tab.active{background:linear-gradient(135deg,var(--gold),var(--orange));color:#291700;border-color:transparent}
 
-.section-title{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:6px}
-.section-sub{color:var(--muted);margin-bottom:22px;font-size:14px}
+    .page{display:none}
+    .page.active{display:block;animation:up .22s ease}
+    @keyframes up{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-.grid{display:grid;gap:18px}
-.grid-3{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.grid-2{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+    .section-title{font-family:"Playfair Display",serif;font-size:30px;margin-bottom:8px}
+    .section-sub{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 20px}
 
-.card{
-  background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-  border:1px solid var(--glass-b);border-radius:20px;padding:22px;
-  backdrop-filter:blur(14px);
-  transition:.25s;position:relative;overflow:hidden;
-}
-.card:hover{transform:translateY(-3px);border-color:rgba(255,216,107,.35);box-shadow:0 14px 30px rgba(0,0,0,.3)}
-.card .ribbon{position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right, rgba(255,216,107,.2), transparent 60%);pointer-events:none}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:18px 0 24px}
+    .stat,.card,.form-card,.table-shell{border-radius:var(--radius);padding:20px}
+    .stat,.card,.form-card,.table-shell,.topbar{background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));border:1px solid var(--line);backdrop-filter:blur(16px);box-shadow:var(--shadow)}
+    .stat{position:relative;overflow:hidden}
+    .stat .icon{position:absolute;right:18px;top:18px;font-size:28px;opacity:.4}
+    .stat .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.7px}
+    .stat .value{font-family:"Playfair Display",serif;font-size:38px;margin-top:8px}
 
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:26px}
-.stat{
-  padding:22px;border-radius:18px;
-  background:linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
-  border:1px solid var(--glass-b);position:relative;overflow:hidden;
-}
-.stat .ic{position:absolute;right:18px;top:18px;font-size:32px;opacity:.4}
-.stat .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
-.stat .val{font-size:34px;font-weight:700;font-family:'Playfair Display',serif;margin-top:6px}
-.stat.purple{background:linear-gradient(135deg,#7c3aed40,#7c3aed10)}
-.stat.amber{background:linear-gradient(135deg,#ff8c4240,#ff8c4210)}
-.stat.green{background:linear-gradient(135deg,#22d3a440,#22d3a410)}
-.stat.blue{background:linear-gradient(135deg,#6ad1ff40,#6ad1ff10)}
+    .grid{display:grid;gap:16px}
+    .grid.kids{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+    .grid.classes{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+    .form-card h3{font-size:20px;margin:0 0 14px;font-family:"Playfair Display",serif}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+    .toolbar > *{flex:1 1 180px}
 
-.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
-.form-card{padding:24px;border-radius:18px;background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--glass-b);margin-bottom:24px}
-.form-card h3{font-family:'Playfair Display',serif;margin-bottom:14px;font-size:20px}
+    .kid-card{padding:18px;border-radius:22px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));border:1px solid var(--line);box-shadow:var(--shadow)}
+    .kid-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .kid-meta{display:grid;gap:8px;color:var(--muted);font-size:13px}
+    .kid-name{font-size:18px;font-weight:800;margin-bottom:4px}
+    .points{margin-left:auto;white-space:nowrap;padding:8px 12px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#251400;font-weight:800}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .chip-btn{border:none;cursor:pointer;border-radius:12px;padding:10px 12px;font-weight:800;font-size:13px}
+    .chip-btn.ok{background:linear-gradient(135deg,#57f1c4,#17bb87);color:#03281c}
+    .chip-btn.done{background:rgba(36,212,159,.16);color:#c7fff0;border:1px solid rgba(36,212,159,.34)}
+    .chip-btn.soft{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--line)}
+    .chip-btn.red{background:rgba(255,93,121,.14);color:#ffd0da;border:1px solid rgba(255,93,121,.35)}
 
-table{width:100%;border-collapse:collapse;font-size:14px}
-.table-wrap{background:var(--glass);border-radius:18px;border:1px solid var(--glass-b);overflow:hidden;overflow-x:auto}
-th{text-align:left;padding:14px 16px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:rgba(0,0,0,.2)}
-td{padding:14px 16px;border-top:1px solid rgba(255,255,255,.06)}
-tr:hover td{background:rgba(255,255,255,.03)}
+    .class-card h4{margin:0 0 6px;font-size:18px}
+    .class-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .class-meta{margin:12px 0 14px;color:#fff;font-weight:700;font-size:13px}
 
-.kid-card{
-  padding:20px;border-radius:18px;
-  background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-  border:1px solid var(--glass-b);
-  display:flex;flex-direction:column;gap:12px;transition:.25s;position:relative;overflow:hidden;
-}
-.kid-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.3);border-color:rgba(255,216,107,.4)}
-.kid-head{display:flex;align-items:center;gap:14px}
-.kid-av{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#0a0820;flex-shrink:0}
-.kid-name{font-weight:600;font-size:17px}
-.kid-meta{font-size:12px;color:var(--muted)}
-.points-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:50px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#2a1a00;font-weight:700;font-size:13px}
-.kid-info{font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:center}
-.kid-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-.icon-btn{
-  width:36px;height:36px;border-radius:10px;border:1px solid var(--glass-b);
-  background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
-  font-size:15px;transition:.2s;
-}
-.icon-btn:hover{background:rgba(255,255,255,.14);transform:scale(1.08)}
-.icon-btn.green{color:#22d3a4;border-color:rgba(34,211,164,.3)}
-.icon-btn.red{color:#ff5470;border-color:rgba(255,84,112,.3)}
-.icon-btn.blue{color:#6ad1ff;border-color:rgba(106,209,255,.3)}
+    .table-shell{overflow:auto}
+    table{width:100%;border-collapse:collapse;min-width:780px}
+    th,td{padding:14px 12px;text-align:left}
+    th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--line)}
+    td{border-bottom:1px solid rgba(255,255,255,.06);font-size:14px}
+    tr:last-child td{border-bottom:none}
 
-/* Modal */
-.modal-bg{
-  position:fixed;inset:0;background:rgba(5,3,20,.7);backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;z-index:200;padding:20px;
-}
-.modal-bg.show{display:flex;animation:fadeIn .25s}
-.modal{
-  width:100%;max-width:480px;background:linear-gradient(135deg,#1a1740,#2a1f5c);
-  border:1px solid var(--glass-b);border-radius:24px;padding:30px;
-  box-shadow:0 30px 80px rgba(0,0,0,.6);
-}
-.modal h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:14px}
-.modal-actions{display:flex;gap:10px;margin-top:18px}
+    .empty{padding:34px 16px;text-align:center;color:var(--muted);font-size:14px}
+    .empty .emoji{display:block;font-size:40px;margin-bottom:10px;opacity:.6}
 
-.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
-.filter-bar input, .filter-bar select{
-  padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06);
-  border:1px solid var(--glass-b);color:var(--text);font-family:inherit;font-size:14px;outline:none;
-}
-.filter-bar input:focus, .filter-bar select:focus{border-color:var(--acc)}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(3,5,15,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
+    .modal-backdrop.show{display:flex}
+    .modal{width:min(520px,100%);padding:24px;border-radius:28px;background:linear-gradient(180deg, rgba(18,22,48,.96), rgba(16,19,43,.94));border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+    .modal h3{font-family:"Playfair Display",serif;font-size:24px;margin-bottom:14px}
+    .modal .row{display:grid;gap:12px}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
 
-.empty{padding:40px;text-align:center;color:var(--muted);font-size:14px}
-.empty .em{font-size:48px;display:block;margin-bottom:10px;opacity:.4}
+    .toast{position:fixed;right:18px;bottom:18px;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg,#57f1c4,#17bb87);color:#03281c;font-weight:800;box-shadow:0 16px 40px rgba(0,0,0,.35);transform:translateY(120px);transition:.25s;z-index:40}
+    .toast.show{transform:translateY(0)}
+    .toast.err{background:linear-gradient(135deg,#ff7a9f,#e93a63);color:#fff}
 
-.attend-btn{padding:8px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;font-size:12px;transition:.2s;font-family:inherit}
-.attend-yes{background:rgba(34,211,164,.2);color:#a8f0d5;border:1px solid rgba(34,211,164,.4)}
-.attend-yes:hover{background:rgba(34,211,164,.3)}
-.attend-mark{background:linear-gradient(135deg,#22d3a4,#0f9b75);color:#fff}
-
-.toast{
-  position:fixed;bottom:24px;right:24px;padding:14px 22px;border-radius:14px;
-  background:linear-gradient(135deg,#22d3a4,#0f9b75);color:#04261c;font-weight:600;
-  box-shadow:0 14px 30px rgba(34,211,164,.4);z-index:300;
-  transform:translateY(120%);transition:.4s cubic-bezier(.34,1.56,.64,1);
-}
-.toast.show{transform:translateY(0)}
-.toast.err{background:linear-gradient(135deg,#ff5470,#c11d4d);color:#fff;box-shadow:0 14px 30px rgba(255,84,112,.4)}
-
-@media (max-width:640px){
-  .container{padding:18px}
-  .topbar{padding:12px 16px}
-  .userchip span.uname{display:none}
-}
-</style>
+    @media (max-width:840px){
+      .topbar{flex-direction:column;align-items:flex-start}
+      .user-box{width:100%;justify-content:space-between}
+    }
+    @media (max-width:640px){
+      .auth-card{padding:24px}
+      .title{font-size:28px}
+      .section-title{font-size:26px}
+      .stats{grid-template-columns:1fr 1fr}
+      .container{padding:0 14px 24px}
+      .topbar{margin:10px}
+    }
+  </style>
 </head>
 <body>
-
-<!-- ============ LOGIN ============ -->
-<div id="authView" class="auth-wrap">
-  <div class="auth-card">
-    <div class="logo">✦</div>
-    <h1 class="auth-title">Ministry Manager</h1>
-    <p class="auth-sub">Servants of the Vineyard — Sign in to continue</p>
-    <div id="authAlert" class="alert err"></div>
-    <div class="field">
-      <span class="icon">📧</span>
-      <input id="loginEmail" type="email" placeholder="Email address" autocomplete="username"/>
-    </div>
-    <div class="field">
-      <span class="icon">🔒</span>
-      <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password"/>
-    </div>
-    <button class="btn" onclick="doLogin()">Sign In</button>
-    <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--muted)">
-      Default Manager → <b>manager@ministry.app</b> / <b>manager123</b>
-    </p>
-  </div>
-</div>
-
-<!-- ============ APP ============ -->
-<div id="appView" class="app">
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo">✦</div>
-      <div>
-        <div>Ministry Manager</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:400">Servants Control Panel</div>
+  <div id="authView" class="auth-wrap">
+    <div class="auth-card glass">
+      <div class="hero-logo">✦</div>
+      <h1 class="title">Ministry Manager</h1>
+      <p class="sub">Realtime servants dashboard with beautiful child management, attendance, points, and class control.</p>
+      <div id="authAlert" class="alert error"></div>
+      <div class="field">
+        <label>Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="manager@ministry.app">
       </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="userchip">
-        <div class="av" id="userAv">?</div>
-        <span class="uname"><b id="userName">User</b> <span id="userRole" class="role-badge servant">SERVANT</span></span>
+      <div class="field">
+        <label>Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••">
       </div>
-      <button class="btn secondary small" onclick="doLogout()">Logout</button>
+      <button class="btn block" onclick="login()">Sign In</button>
+      <p class="sub" style="margin:14px 0 0">Default manager: <b>manager@ministry.app</b> / <b>manager123</b></p>
     </div>
   </div>
 
-  <div class="container">
-    <div class="tabs" id="tabs">
-      <div class="tab active" data-page="dashboard">Dashboard</div>
-      <div class="tab" data-page="children">Children</div>
-      <div class="tab" data-page="classes">Classes</div>
-      <div class="tab manager-only" data-page="servants">Servants</div>
-    </div>
-
-    <!-- Dashboard -->
-    <div class="page active" id="page-dashboard">
-      <h2 class="section-title">Welcome back, <span id="welcomeName">friend</span> ✨</h2>
-      <p class="section-sub">An overview of your ministry today</p>
-      <div class="stat-grid">
-        <div class="stat purple"><span class="ic">👶</span><div class="lbl">Children</div><div class="val" id="statChildren">0</div></div>
-        <div class="stat amber"><span class="ic">⛪</span><div class="lbl">Classes</div><div class="val" id="statClasses">0</div></div>
-        <div class="stat green"><span class="ic">🙋</span><div class="lbl">Servants</div><div class="val" id="statServants">0</div></div>
-        <div class="stat blue"><span class="ic">⭐</span><div class="lbl">Total Points</div><div class="val" id="statPoints">0</div></div>
-      </div>
-
-      <h3 class="section-title" style="font-size:20px">Recent Attendance</h3>
-      <p class="section-sub">Today's recorded check-ins</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Child</th><th>Class</th><th>Date</th><th>Recorded by</th></tr></thead>
-          <tbody id="recentAttend"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Children -->
-    <div class="page" id="page-children">
-      <h2 class="section-title">Children</h2>
-      <p class="section-sub">Manage children profiles, points and attendance</p>
-
-      <div class="form-card">
-        <h3>➕ Add a New Child</h3>
-        <div class="form-row">
-          <input id="cName" placeholder="Full name"/>
-          <input id="cBirth" type="date" placeholder="Birth date"/>
-          <input id="cPhone" placeholder="Phone"/>
-          <select id="cClass"></select>
+  <div id="appView" class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="mini-logo">✦</div>
+        <div>
+          <h2>Ministry Manager</h2>
+          <p>Servants • Classes • Children • Attendance • Points</p>
         </div>
-        <button class="btn" onclick="addChild()">Add Child</button>
       </div>
-
-      <div class="filter-bar">
-        <input id="kidSearch" placeholder="🔍 Search by name..." oninput="renderChildren()"/>
-        <select id="kidClassFilter" onchange="renderChildren()"><option value="">All Classes</option></select>
+      <div class="user-box">
+        <div class="live-badge"><span class="live-dot"></span><span>Realtime sync on</span></div>
+        <div class="user-chip">
+          <div id="userAvatar" class="avatar">M</div>
+          <div>
+            <div id="userName" style="font-weight:800">User</div>
+            <div id="userRole" class="role servant">SERVANT</div>
+          </div>
+        </div>
+        <button class="btn secondary small" onclick="logout()">Logout</button>
       </div>
-
-      <div class="grid grid-3" id="childrenGrid"></div>
     </div>
 
-    <!-- Classes -->
-    <div class="page" id="page-classes">
-      <h2 class="section-title">Classes</h2>
-      <p class="section-sub">Organize children into groups</p>
-      <div class="form-card manager-only">
-        <h3>➕ Create a Class</h3>
-        <div class="form-row">
-          <input id="className" placeholder="Class name (e.g. Sunday A)"/>
-          <input id="classDesc" placeholder="Description (optional)"/>
-        </div>
-        <button class="btn" onclick="addClass()">Create Class</button>
-      </div>
-      <div class="grid grid-2" id="classesGrid"></div>
-    </div>
+    <div class="container">
+      <div class="tabs" id="tabs"></div>
 
-    <!-- Servants (manager only) -->
-    <div class="page" id="page-servants">
-      <h2 class="section-title">Servants</h2>
-      <p class="section-sub">Add and manage ministry servants</p>
-      <div class="form-card">
-        <h3>➕ Add a New Servant</h3>
-        <div class="form-row">
-          <input id="sName" placeholder="Servant full name"/>
-          <input id="sEmail" type="email" placeholder="Email address"/>
-          <input id="sPhone" placeholder="Phone (optional)"/>
-          <input id="sPass" type="text" placeholder="Initial password (min 6)"/>
+      <section id="page-dashboard" class="page active">
+        <h2 class="section-title">Dashboard</h2>
+        <p class="section-sub">Live ministry overview. Any update from another open browser window appears automatically here.</p>
+        <div class="stats">
+          <div class="stat"><div class="icon">👶</div><div class="label">Children</div><div id="statChildren" class="value">0</div></div>
+          <div class="stat"><div class="icon">⛪</div><div class="label">Classes</div><div id="statClasses" class="value">0</div></div>
+          <div class="stat"><div class="icon">🙋</div><div class="label">Servants</div><div id="statServants" class="value">0</div></div>
+          <div class="stat"><div class="icon">⭐</div><div class="label">Total Points</div><div id="statPoints" class="value">0</div></div>
         </div>
-        <button class="btn" onclick="addServant()">Add Servant</button>
-        <p style="font-size:12px;color:var(--muted);margin-top:10px">⚠️ Servant accounts are created via Supabase Auth signup. They can change their password later.</p>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Actions</th></tr></thead>
-          <tbody id="servantsTable"></tbody>
-        </table>
+        <div class="table-shell">
+          <table>
+            <thead><tr><th>Child</th><th>Class</th><th>Date</th><th>Recorded By</th></tr></thead>
+            <tbody id="recentAttendance"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="page-children" class="page">
+        <h2 class="section-title">Children</h2>
+        <p class="section-sub">Add children, edit details, register attendance, and adjust points instantly across all open windows.</p>
+        <div class="form-card">
+          <h3>Add New Child</h3>
+          <div class="form-grid">
+            <div class="field"><label>Name</label><input id="childName" placeholder="Child full name"></div>
+            <div class="field"><label>Birth Date</label><input id="childBirth" type="date"></div>
+            <div class="field"><label>Phone</label><input id="childPhone" placeholder="Phone"></div>
+            <div class="field"><label>Class</label><select id="childClass"></select></div>
+          </div>
+          <button class="btn" onclick="addChild()">Add Child</button>
+        </div>
+        <div class="toolbar">
+          <input id="searchChildren" placeholder="Search child by name" oninput="renderChildren()">
+          <select id="filterClass" onchange="renderChildren()"></select>
+        </div>
+        <div id="childrenGrid" class="grid kids"></div>
+      </section>
+
+      <section id="page-classes" class="page">
+        <h2 class="section-title">Classes</h2>
+        <p class="section-sub">Organize children into ministry groups.</p>
+        <div id="classForm" class="form-card manager-only">
+          <h3>Create Class</h3>
+          <div class="form-grid">
+            <div class="field"><label>Class Name</label><input id="className" placeholder="Sunday A"></div>
+            <div class="field"><label>Description</label><input id="classDescription" placeholder="Small notes about this class"></div>
+          </div>
+          <button class="btn" onclick="addClass()">Create Class</button>
+        </div>
+        <div id="classesGrid" class="grid classes"></div>
+      </section>
+
+      <section id="page-servants" class="page manager-only">
+        <h2 class="section-title">Servants</h2>
+        <p class="section-sub">Manager-only control panel for servants.</p>
+        <div class="form-card">
+          <h3>Add Servant</h3>
+          <div class="form-grid">
+            <div class="field"><label>Name</label><input id="servantName" placeholder="Servant full name"></div>
+            <div class="field"><label>Email</label><input id="servantEmail" type="email" placeholder="servant@example.com"></div>
+            <div class="field"><label>Phone</label><input id="servantPhone" placeholder="Phone"></div>
+            <div class="field"><label>Initial Password</label><input id="servantPassword" placeholder="Minimum 6 characters"></div>
+          </div>
+          <button class="btn" onclick="addServant()">Create Servant Account</button>
+        </div>
+        <div class="table-shell">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Actions</th></tr></thead>
+            <tbody id="servantsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <h3 id="modalTitle">Edit</h3>
+      <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button class="btn secondary" onclick="closeModal()">Cancel</button>
+        <button id="modalConfirm" class="btn">Save</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal -->
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <h3 id="modalTitle">Title</h3>
-    <div id="modalBody"></div>
-    <div class="modal-actions">
-      <button class="btn secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn" id="modalOk">Confirm</button>
-    </div>
-  </div>
-</div>
+  <div id="toast" class="toast">Saved</div>
 
-<div class="toast" id="toast">Done!</div>
+  <script>
+    const SUPABASE_URL = "https://cjxlwfrqfqwjhugpjdxz.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-<script>
-/* ============ Supabase ============ */
-const SUPABASE_URL = "https://cjxlwfrqfqwjhugpjdxz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ";
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let currentUser = null;       // auth user
-let currentProfile = null;    // row from servants table
-let CACHE = { children:[], classes:[], servants:[], attendance:[] };
-
-/* ============ Helpers ============ */
-const $ = id => document.getElementById(id);
-const toast = (msg, isErr=false) => {
-  const t = $('toast'); t.textContent = msg; t.classList.toggle('err', isErr); t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2400);
-};
-const showAlert = (msg, type='err') => {
-  const a = $('authAlert'); a.className = 'alert ' + type; a.textContent = msg; a.style.display='block';
-};
-const avatarColor = (s='?') => {
-  const colors = ['#ff8c42','#6ad1ff','#22d3a4','#a78bfa','#ff5e87','#ffd86b','#f87171','#34d399'];
-  let h=0; for (let c of s) h = (h*31 + c.charCodeAt(0)) % colors.length;
-  return colors[h];
-};
-const initials = (n='?') => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
-const fmtDate = d => d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-const age = d => { if(!d) return '—'; const a=Math.floor((Date.now()-new Date(d))/31557600000); return a+' yrs'; };
-
-/* ============ Auth ============ */
-async function doLogin(){
-  const email = $('loginEmail').value.trim();
-  const pass = $('loginPass').value;
-  if(!email || !pass){ showAlert('Please enter email and password.'); return; }
-  $('authAlert').style.display='none';
-  const { data, error } = await client.auth.signInWithPassword({ email, password: pass });
-  if(error){ showAlert(error.message); return; }
-  await loadProfileAndStart(data.user);
-}
-async function doLogout(){
-  await client.auth.signOut();
-  currentUser = null; currentProfile = null;
-  $('appView').style.display='none';
-  $('authView').style.display='flex';
-}
-async function loadProfileAndStart(user){
-  currentUser = user;
-  let { data: prof, error } = await client.from('servants').select('*').eq('user_id', user.id).maybeSingle();
-  if(error){ showAlert('Profile load error: '+error.message); return; }
-  if(!prof){
-    // Auto-create profile for manager bootstrap or new servant
-    const fallbackName = user.email.split('@')[0];
-    const role = (user.email === 'manager@ministry.app') ? 'manager' : 'servant';
-    const ins = await client.from('servants').insert({ user_id:user.id, name:fallbackName, email:user.email, role }).select().single();
-    if(ins.error){ showAlert('Could not create profile: '+ins.error.message); return; }
-    prof = ins.data;
-  }
-  currentProfile = prof;
-  startApp();
-}
-
-/* ============ Init App ============ */
-async function startApp(){
-  $('authView').style.display='none';
-  $('appView').style.display='block';
-
-  $('userName').textContent = currentProfile.name;
-  $('welcomeName').textContent = currentProfile.name.split(' ')[0];
-  $('userAv').textContent = initials(currentProfile.name);
-  $('userAv').style.background = `linear-gradient(135deg, ${avatarColor(currentProfile.name)}, #a78bfa)`;
-  const isManager = currentProfile.role === 'manager';
-  $('userRole').textContent = isManager ? 'MANAGER' : 'SERVANT';
-  $('userRole').className = 'role-badge ' + (isManager?'manager':'servant');
-  document.querySelectorAll('.manager-only').forEach(el=> el.style.display = isManager ? '' : 'none');
-
-  // tabs
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.onclick = () => {
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      $('page-'+t.dataset.page).classList.add('active');
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      authUser: null,
+      profile: null,
+      children: [],
+      classes: [],
+      servants: [],
+      attendance: [],
+      channel: null,
+      reloadTimer: null
     };
-  });
 
-  await reloadAll();
-}
+    function toast(message, isError = false){
+      const el = $('toast');
+      el.textContent = message;
+      el.classList.toggle('err', isError);
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 2400);
+    }
 
-async function reloadAll(){
-  const [chRes, clRes, svRes, atRes] = await Promise.all([
-    client.from('children').select('*').order('created_at',{ascending:false}),
-    client.from('classes').select('*').order('name'),
-    client.from('servants').select('*').order('name'),
-    client.from('attendance').select('*').order('attended_at',{ascending:false}).limit(20),
-  ]);
-  CACHE.children = chRes.data || [];
-  CACHE.classes  = clRes.data || [];
-  CACHE.servants = svRes.data || [];
-  CACHE.attendance = atRes.data || [];
+    function authAlert(message, ok = false){
+      const el = $('authAlert');
+      el.textContent = message;
+      el.className = 'alert show ' + (ok ? 'ok' : 'error');
+    }
 
-  // class dropdowns
-  const opts = '<option value="">— Select class —</option>' + CACHE.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  $('cClass').innerHTML = opts;
-  $('kidClassFilter').innerHTML = '<option value="">All Classes</option>' + CACHE.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    function initials(name = '?'){
+      return name.trim().split(/\s+/).slice(0,2).map(v => v[0]?.toUpperCase() || '').join('') || '?';
+    }
 
-  renderDashboard();
-  renderChildren();
-  renderClasses();
-  renderServants();
-}
+    function gradientSeed(text='X'){
+      const pairs = [
+        ['#ffd66b','#ff9b53'], ['#70d5ff','#8d9fff'], ['#57f1c4','#17bb87'], ['#ff8fb1','#d9466f'], ['#c69dff','#7c3aed']
+      ];
+      let hash = 0; for (const ch of text) hash = (hash * 31 + ch.charCodeAt(0)) % pairs.length;
+      return pairs[hash];
+    }
 
-/* ============ Dashboard ============ */
-function renderDashboard(){
-  $('statChildren').textContent = CACHE.children.length;
-  $('statClasses').textContent  = CACHE.classes.length;
-  $('statServants').textContent = CACHE.servants.length;
-  $('statPoints').textContent   = CACHE.children.reduce((s,c)=>s+(c.points||0),0);
+    function avatarStyle(text){
+      const [a,b] = gradientSeed(text);
+      return `background:linear-gradient(135deg, ${a}, ${b})`;
+    }
 
-  const tbody = $('recentAttend');
-  if(!CACHE.attendance.length){ tbody.innerHTML = `<tr><td colspan="4" class="empty"><span class="em">📭</span>No attendance recorded yet</td></tr>`; return; }
-  tbody.innerHTML = CACHE.attendance.slice(0,10).map(a=>{
-    const ch = CACHE.children.find(c=>c.id===a.child_id);
-    const cl = ch ? CACHE.classes.find(c=>c.id===ch.class_id) : null;
-    const sv = CACHE.servants.find(s=>s.id===a.recorded_by);
-    return `<tr>
-      <td><b>${ch?.name||'—'}</b></td>
-      <td>${cl?.name||'—'}</td>
-      <td>${fmtDate(a.attended_at)}</td>
-      <td>${sv?.name||'—'}</td>
-    </tr>`;
-  }).join('');
-}
+    function fmtDate(value){
+      if(!value) return '—';
+      return new Date(value).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    }
 
-/* ============ Children ============ */
-async function addChild(){
-  const name = $('cName').value.trim();
-  const birth = $('cBirth').value || null;
-  const phone = $('cPhone').value.trim();
-  const class_id = $('cClass').value || null;
-  if(!name){ toast('Name is required', true); return; }
-  const { error } = await client.from('children').insert({ name, birth_date:birth, phone, class_id, points:0 });
-  if(error){ toast(error.message, true); return; }
-  $('cName').value=''; $('cBirth').value=''; $('cPhone').value=''; $('cClass').value='';
-  toast('Child added ✨');
-  await reloadAll();
-}
+    function getAge(value){
+      if(!value) return '—';
+      const ms = Date.now() - new Date(value).getTime();
+      return Math.max(0, Math.floor(ms / 31557600000)) + ' yrs';
+    }
 
-function renderChildren(){
-  const q = $('kidSearch').value.trim().toLowerCase();
-  const filter = $('kidClassFilter').value;
-  const grid = $('childrenGrid');
-  let list = CACHE.children;
-  if(q) list = list.filter(c=>c.name.toLowerCase().includes(q));
-  if(filter) list = list.filter(c=>c.class_id===filter);
-  if(!list.length){ grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="em">👶</span>No children yet — add the first one!</div>`; return; }
-  grid.innerHTML = list.map(c=>{
-    const cl = CACHE.classes.find(x=>x.id===c.class_id);
-    const col = avatarColor(c.name);
-    return `<div class="kid-card">
-      <div class="kid-head">
-        <div class="kid-av" style="background:linear-gradient(135deg,${col},#a78bfa)">${initials(c.name)}</div>
-        <div style="flex:1">
-          <div class="kid-name">${c.name}</div>
-          <div class="kid-meta">${cl?.name||'No class'} · ${age(c.birth_date)}</div>
+    function classNameById(id){
+      return state.classes.find(c => c.id === id)?.name || 'No class';
+    }
+
+    function servantNameById(id){
+      return state.servants.find(s => s.id === id)?.name || '—';
+    }
+
+    async function login(){
+      const email = $('loginEmail').value.trim();
+      const password = $('loginPassword').value;
+      if(!email || !password){ authAlert('Please enter both email and password.'); return; }
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if(error){ authAlert(error.message); return; }
+      await loadProfile(data.user);
+    }
+
+    async function logout(){
+      stopRealtime();
+      await client.auth.signOut();
+      state.authUser = null;
+      state.profile = null;
+      $('appView').style.display = 'none';
+      $('authView').style.display = 'flex';
+    }
+
+    async function loadProfile(user){
+      state.authUser = user;
+      let { data: profile, error } = await client.from('servants').select('*').eq('user_id', user.id).maybeSingle();
+      if(error){ authAlert(error.message); return; }
+      if(!profile){
+        const role = user.email === 'manager@ministry.app' ? 'manager' : 'servant';
+        const { data: created, error: createErr } = await client.from('servants').insert({
+          user_id: user.id,
+          name: user.email.split('@')[0],
+          email: user.email,
+          role
+        }).select().single();
+        if(createErr){ authAlert(createErr.message); return; }
+        profile = created;
+      }
+      state.profile = profile;
+      bootApp();
+      await reloadAll();
+      startRealtime();
+    }
+
+    function bootApp(){
+      $('authView').style.display = 'none';
+      $('appView').style.display = 'block';
+      $('userName').textContent = state.profile.name;
+      $('userRole').textContent = state.profile.role.toUpperCase();
+      $('userRole').className = 'role ' + state.profile.role;
+      $('userAvatar').textContent = initials(state.profile.name);
+      $('userAvatar').style = avatarStyle(state.profile.name);
+
+      document.querySelectorAll('.manager-only').forEach(el => {
+        el.classList.toggle('hidden', state.profile.role !== 'manager');
+      });
+
+      const tabs = [
+        ['dashboard','Dashboard'],
+        ['children','Children'],
+        ['classes','Classes'],
+        ...(state.profile.role === 'manager' ? [['servants','Servants']] : [])
+      ];
+      $('tabs').innerHTML = tabs.map((t, i) => `<button class="tab ${i===0 ? 'active' : ''}" data-page="${t[0]}">${t[1]}</button>`).join('');
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.onclick = () => {
+          document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+          document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+          tab.classList.add('active');
+          $('page-' + tab.dataset.page).classList.add('active');
+        };
+      });
+    }
+
+    function stopRealtime(){
+      if(state.channel){
+        client.removeChannel(state.channel);
+        state.channel = null;
+      }
+      if(state.reloadTimer) clearTimeout(state.reloadTimer);
+    }
+
+    function scheduleReload(){
+      clearTimeout(state.reloadTimer);
+      state.reloadTimer = setTimeout(() => reloadAll(true), 220);
+    }
+
+    function startRealtime(){
+      stopRealtime();
+      state.channel = client.channel('ministry-realtime')
+        .on('postgres_changes', { event:'*', schema:'public', table:'children' }, scheduleReload)
+        .on('postgres_changes', { event:'*', schema:'public', table:'classes' }, scheduleReload)
+        .on('postgres_changes', { event:'*', schema:'public', table:'servants' }, scheduleReload)
+        .on('postgres_changes', { event:'*', schema:'public', table:'attendance' }, scheduleReload)
+        .subscribe();
+    }
+
+    async function reloadAll(silent = false){
+      const [childrenRes, classesRes, servantsRes, attendanceRes] = await Promise.all([
+        client.from('children').select('*').order('created_at', { ascending: false }),
+        client.from('classes').select('*').order('name'),
+        client.from('servants').select('*').order('name'),
+        client.from('attendance').select('*').order('attended_at', { ascending: false }).limit(40)
+      ]);
+
+      if(childrenRes.error || classesRes.error || servantsRes.error || attendanceRes.error){
+        if(!silent) toast('Could not load one of the lists', true);
+        return;
+      }
+
+      state.children = childrenRes.data || [];
+      state.classes = classesRes.data || [];
+      state.servants = servantsRes.data || [];
+      state.attendance = attendanceRes.data || [];
+
+      fillSelects();
+      renderDashboard();
+      renderChildren();
+      renderClasses();
+      renderServants();
+    }
+
+    function fillSelects(){
+      const classOptions = '<option value="">Select class</option>' + state.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      $('childClass').innerHTML = classOptions;
+      $('filterClass').innerHTML = '<option value="">All classes</option>' + state.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    function renderDashboard(){
+      $('statChildren').textContent = state.children.length;
+      $('statClasses').textContent = state.classes.length;
+      $('statServants').textContent = state.servants.length;
+      $('statPoints').textContent = state.children.reduce((sum, c) => sum + (c.points || 0), 0);
+
+      const tbody = $('recentAttendance');
+      if(!state.attendance.length){
+        tbody.innerHTML = `<tr><td colspan="4"><div class="empty"><span class="emoji">📭</span>No attendance recorded yet.</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = state.attendance.slice(0, 12).map(a => {
+        const child = state.children.find(c => c.id === a.child_id);
+        return `<tr>
+          <td><b>${child?.name || '—'}</b></td>
+          <td>${classNameById(child?.class_id)}</td>
+          <td>${fmtDate(a.attended_at)}</td>
+          <td>${servantNameById(a.recorded_by)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function childAttendedToday(childId){
+      const today = new Date().toISOString().slice(0,10);
+      return state.attendance.some(a => a.child_id === childId && a.attended_at === today);
+    }
+
+    function renderChildren(){
+      const q = $('searchChildren').value.trim().toLowerCase();
+      const classId = $('filterClass').value;
+      let list = [...state.children];
+      if(q) list = list.filter(c => c.name.toLowerCase().includes(q));
+      if(classId) list = list.filter(c => c.class_id === classId);
+
+      const grid = $('childrenGrid');
+      if(!list.length){
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="emoji">👶</span>No children found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(child => {
+        const attended = childAttendedToday(child.id);
+        return `
+          <div class="kid-card">
+            <div class="kid-top">
+              <div class="avatar" style="width:54px;height:54px;border-radius:18px;${avatarStyle(child.name)}">${initials(child.name)}</div>
+              <div style="flex:1;min-width:0">
+                <div class="kid-name">${child.name}</div>
+                <div class="kid-meta">
+                  <div>⛪ ${classNameById(child.class_id)}</div>
+                  <div>📅 ${fmtDate(child.birth_date)} • ${getAge(child.birth_date)}</div>
+                  <div>📞 ${child.phone || '—'}</div>
+                  <div>🆔 ${child.id}</div>
+                </div>
+              </div>
+              <div class="points">⭐ ${child.points || 0}</div>
+            </div>
+            <div class="actions">
+              <button class="chip-btn ${attended ? 'done' : 'ok'}" onclick="markAttendance('${child.id}')">${attended ? 'Attended Today' : 'Register Attendance'}</button>
+              <button class="chip-btn soft" onclick="changePoints('${child.id}', 1)">+1 Point</button>
+              <button class="chip-btn soft" onclick="changePoints('${child.id}', -1)">-1 Point</button>
+              <button class="chip-btn soft" onclick="openEditChild('${child.id}')">Edit</button>
+              <button class="chip-btn red" onclick="deleteChild('${child.id}', ${JSON.stringify(child.name)})">Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    async function addChild(){
+      const name = $('childName').value.trim();
+      const birth_date = $('childBirth').value || null;
+      const phone = $('childPhone').value.trim();
+      const class_id = $('childClass').value || null;
+      if(!name){ toast('Child name is required', true); return; }
+      const { error } = await client.from('children').insert({ name, birth_date, phone, class_id, points: 0 });
+      if(error){ toast(error.message, true); return; }
+      $('childName').value = '';
+      $('childBirth').value = '';
+      $('childPhone').value = '';
+      $('childClass').value = '';
+      toast('Child added');
+      await reloadAll(true);
+    }
+
+    async function changePoints(id, delta){
+      const child = state.children.find(c => c.id === id);
+      if(!child) return;
+      const points = Math.max(0, (child.points || 0) + delta);
+      const { error } = await client.from('children').update({ points }).eq('id', id);
+      if(error){ toast(error.message, true); return; }
+      toast(delta > 0 ? 'Point added' : 'Point removed');
+      await reloadAll(true);
+    }
+
+    async function markAttendance(childId){
+      const today = new Date().toISOString().slice(0,10);
+      if(childAttendedToday(childId)){ toast('Attendance already registered today'); return; }
+      const { error } = await client.from('attendance').insert({ child_id: childId, attended_at: today, recorded_by: state.profile.id });
+      if(error){ toast(error.message, true); return; }
+      toast('Attendance registered');
+      await reloadAll(true);
+    }
+
+    function openEditChild(id){
+      const child = state.children.find(c => c.id === id);
+      if(!child) return;
+      $('modalTitle').textContent = 'Edit Child';
+      $('modalBody').innerHTML = `
+        <div class="row">
+          <div class="field"><label>Name</label><input id="mChildName" value="${escapeHtml(child.name)}"></div>
+          <div class="field"><label>Birth Date</label><input id="mChildBirth" type="date" value="${child.birth_date || ''}"></div>
+          <div class="field"><label>Phone</label><input id="mChildPhone" value="${escapeHtml(child.phone || '')}"></div>
+          <div class="field"><label>Class</label>
+            <select id="mChildClass">
+              <option value="">No class</option>
+              ${state.classes.map(c => `<option value="${c.id}" ${c.id === child.class_id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>Points</label><input id="mChildPoints" type="number" min="0" value="${child.points || 0}"></div>
+        </div>`;
+      $('modalConfirm').onclick = async () => {
+        const payload = {
+          name: $('mChildName').value.trim(),
+          birth_date: $('mChildBirth').value || null,
+          phone: $('mChildPhone').value.trim(),
+          class_id: $('mChildClass').value || null,
+          points: Math.max(0, parseInt($('mChildPoints').value || '0', 10))
+        };
+        if(!payload.name){ toast('Name is required', true); return; }
+        const { error } = await client.from('children').update(payload).eq('id', id);
+        if(error){ toast(error.message, true); return; }
+        closeModal();
+        toast('Child updated');
+        await reloadAll(true);
+      };
+      $('modalBackdrop').classList.add('show');
+    }
+
+    async function deleteChild(id, name){
+      if(!confirm(`Delete ${name}? Attendance records for this child will be removed too.`)) return;
+      await client.from('attendance').delete().eq('child_id', id);
+      const { error } = await client.from('children').delete().eq('id', id);
+      if(error){ toast(error.message, true); return; }
+      toast('Child deleted');
+      await reloadAll(true);
+    }
+
+    async function addClass(){
+      if(state.profile.role !== 'manager'){ toast('Only manager can add classes', true); return; }
+      const name = $('className').value.trim();
+      const description = $('classDescription').value.trim();
+      if(!name){ toast('Class name is required', true); return; }
+      const { error } = await client.from('classes').insert({ name, description });
+      if(error){ toast(error.message, true); return; }
+      $('className').value = '';
+      $('classDescription').value = '';
+      toast('Class created');
+      await reloadAll(true);
+    }
+
+    function renderClasses(){
+      const grid = $('classesGrid');
+      if(!state.classes.length){
+        grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="emoji">⛪</span>No classes yet.</div>`;
+        return;
+      }
+      const manager = state.profile.role === 'manager';
+      grid.innerHTML = state.classes.map(c => `
+        <div class="card class-card">
+          <h4>${escapeHtml(c.name)}</h4>
+          <p>${escapeHtml(c.description || 'No description')}</p>
+          <div class="class-meta">${state.children.filter(ch => ch.class_id === c.id).length} children</div>
+          ${manager ? `
+            <div class="actions">
+              <button class="chip-btn soft" onclick="renameClass('${c.id}')">Rename</button>
+              <button class="chip-btn red" onclick="deleteClass('${c.id}', ${JSON.stringify(c.name)})">Delete</button>
+            </div>` : ''}
         </div>
-        <div class="points-pill">⭐ ${c.points||0}</div>
-      </div>
-      <div class="kid-info">📅 ${fmtDate(c.birth_date)}</div>
-      <div class="kid-info">📞 ${c.phone||'—'}</div>
-      <div class="kid-actions">
-        <button class="attend-btn attend-mark" onclick="markAttendance('${c.id}')">✓ Attend</button>
-        <button class="icon-btn green" title="+1 point" onclick="changePoints('${c.id}',1)">＋</button>
-        <button class="icon-btn red" title="-1 point" onclick="changePoints('${c.id}',-1)">－</button>
-        <button class="icon-btn blue" title="Edit" onclick="editChild('${c.id}')">✎</button>
-        <button class="icon-btn red" title="Delete" onclick="deleteChild('${c.id}','${c.name.replace(/'/g,"\\'")}')">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
+      `).join('');
+    }
 
-async function changePoints(id, delta){
-  const c = CACHE.children.find(x=>x.id===id); if(!c) return;
-  const newP = Math.max(0,(c.points||0)+delta);
-  const { error } = await client.from('children').update({ points:newP }).eq('id',id);
-  if(error){ toast(error.message,true); return; }
-  c.points = newP;
-  renderChildren(); renderDashboard();
-  toast(delta>0?'+1 ⭐':'-1 ⭐');
-}
+    function renameClass(id){
+      const item = state.classes.find(c => c.id === id);
+      if(!item) return;
+      $('modalTitle').textContent = 'Edit Class';
+      $('modalBody').innerHTML = `
+        <div class="row">
+          <div class="field"><label>Class Name</label><input id="mClassName" value="${escapeHtml(item.name)}"></div>
+          <div class="field"><label>Description</label><input id="mClassDescription" value="${escapeHtml(item.description || '')}"></div>
+        </div>`;
+      $('modalConfirm').onclick = async () => {
+        const name = $('mClassName').value.trim();
+        const description = $('mClassDescription').value.trim();
+        if(!name){ toast('Class name is required', true); return; }
+        const { error } = await client.from('classes').update({ name, description }).eq('id', id);
+        if(error){ toast(error.message, true); return; }
+        closeModal();
+        toast('Class updated');
+        await reloadAll(true);
+      };
+      $('modalBackdrop').classList.add('show');
+    }
 
-async function markAttendance(id){
-  const today = new Date().toISOString().slice(0,10);
-  const { error } = await client.from('attendance').insert({ child_id:id, attended_at:today, recorded_by:currentProfile.id });
-  if(error){ toast(error.message,true); return; }
-  toast('Attendance recorded ✓');
-  const at = await client.from('attendance').select('*').order('attended_at',{ascending:false}).limit(20);
-  CACHE.attendance = at.data || [];
-  renderDashboard();
-}
+    async function deleteClass(id, name){
+      if(!confirm(`Delete class ${name}? Children in it will become unassigned.`)) return;
+      await client.from('children').update({ class_id: null }).eq('class_id', id);
+      const { error } = await client.from('classes').delete().eq('id', id);
+      if(error){ toast(error.message, true); return; }
+      toast('Class deleted');
+      await reloadAll(true);
+    }
 
-function editChild(id){
-  const c = CACHE.children.find(x=>x.id===id); if(!c) return;
-  const opts = CACHE.classes.map(cl=>`<option value="${cl.id}" ${cl.id===c.class_id?'selected':''}>${cl.name}</option>`).join('');
-  openModal('Edit Child', `
-    <div class="field"><label>Name</label><input id="eName" value="${c.name}"/></div>
-    <div class="field"><label>Birth date</label><input id="eBirth" type="date" value="${c.birth_date||''}"/></div>
-    <div class="field"><label>Phone</label><input id="ePhone" value="${c.phone||''}"/></div>
-    <div class="field"><label>Class</label><select id="eClass"><option value="">— None —</option>${opts}</select></div>
-    <div class="field"><label>Points</label><input id="ePoints" type="number" min="0" value="${c.points||0}"/></div>
-  `, async ()=>{
-    const upd = {
-      name:$('eName').value.trim(),
-      birth_date:$('eBirth').value||null,
-      phone:$('ePhone').value.trim(),
-      class_id:$('eClass').value||null,
-      points:parseInt($('ePoints').value)||0
-    };
-    if(!upd.name){ toast('Name required',true); return; }
-    const { error } = await client.from('children').update(upd).eq('id',id);
-    if(error){ toast(error.message,true); return; }
-    closeModal(); toast('Child updated ✨'); await reloadAll();
-  });
-}
+    async function addServant(){
+      if(state.profile.role !== 'manager'){ toast('Only manager can add servants', true); return; }
+      const name = $('servantName').value.trim();
+      const email = $('servantEmail').value.trim();
+      const phone = $('servantPhone').value.trim();
+      const password = $('servantPassword').value;
+      if(!name || !email || password.length < 6){ toast('Fill all fields and use password with at least 6 characters', true); return; }
 
-async function deleteChild(id,name){
-  if(!confirm(`Delete "${name}"? This also removes their attendance records.`)) return;
-  await client.from('attendance').delete().eq('child_id',id);
-  const { error } = await client.from('children').delete().eq('id',id);
-  if(error){ toast(error.message,true); return; }
-  toast('Child removed');
-  await reloadAll();
-}
+      const { data, error } = await client.auth.signUp({ email, password });
+      if(error){ toast(error.message, true); return; }
+      const { error: profileError } = await client.from('servants').insert({
+        user_id: data.user?.id,
+        name,
+        email,
+        phone,
+        role: 'servant'
+      });
+      if(profileError){ toast(profileError.message, true); return; }
 
-/* ============ Classes ============ */
-async function addClass(){
-  if(currentProfile.role!=='manager'){ toast('Only managers can add classes',true); return; }
-  const name = $('className').value.trim();
-  const description = $('classDesc').value.trim();
-  if(!name){ toast('Class name required',true); return; }
-  const { error } = await client.from('classes').insert({ name, description });
-  if(error){ toast(error.message,true); return; }
-  $('className').value=''; $('classDesc').value='';
-  toast('Class created ⛪'); await reloadAll();
-}
+      $('servantName').value = '';
+      $('servantEmail').value = '';
+      $('servantPhone').value = '';
+      $('servantPassword').value = '';
+      toast('Servant created');
+      await reloadAll(true);
+      alert('Supabase signup may switch the current session to the new servant. If that happens, just log out and log in again as manager.');
+    }
 
-function renderClasses(){
-  const grid = $('classesGrid');
-  const isManager = currentProfile.role==='manager';
-  if(!CACHE.classes.length){ grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="em">⛪</span>No classes yet</div>`; return; }
-  grid.innerHTML = CACHE.classes.map(cl=>{
-    const count = CACHE.children.filter(c=>c.class_id===cl.id).length;
-    return `<div class="card">
-      <div class="ribbon"></div>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div style="width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,${avatarColor(cl.name)},#a78bfa);display:flex;align-items:center;justify-content:center;font-size:22px">⛪</div>
-        <div style="flex:1">
-          <div style="font-weight:600;font-size:18px">${cl.name}</div>
-          <div style="font-size:12px;color:var(--muted)">${count} children</div>
-        </div>
-      </div>
-      <div style="font-size:13px;color:var(--muted);min-height:36px">${cl.description||'No description'}</div>
-      ${isManager?`<div style="margin-top:12px;display:flex;gap:8px">
-        <button class="btn small secondary" onclick="renameClass('${cl.id}')">Rename</button>
-        <button class="btn small danger" onclick="deleteClass('${cl.id}','${cl.name.replace(/'/g,"\\'")}')">Delete</button>
-      </div>`:''}
-    </div>`;
-  }).join('');
-}
-function renameClass(id){
-  const cl = CACHE.classes.find(x=>x.id===id); if(!cl) return;
-  openModal('Edit Class',`
-    <div class="field"><label>Name</label><input id="rcName" value="${cl.name}"/></div>
-    <div class="field"><label>Description</label><input id="rcDesc" value="${cl.description||''}"/></div>
-  `, async ()=>{
-    const { error } = await client.from('classes').update({ name:$('rcName').value.trim(), description:$('rcDesc').value.trim() }).eq('id',id);
-    if(error){ toast(error.message,true); return; }
-    closeModal(); toast('Updated'); await reloadAll();
-  });
-}
-async function deleteClass(id,name){
-  if(!confirm(`Delete class "${name}"? Children in it will become unassigned.`)) return;
-  await client.from('children').update({ class_id:null }).eq('class_id',id);
-  const { error } = await client.from('classes').delete().eq('id',id);
-  if(error){ toast(error.message,true); return; }
-  toast('Class removed'); await reloadAll();
-}
+    function renderServants(){
+      const body = $('servantsBody');
+      if(!body) return;
+      if(!state.servants.length){
+        body.innerHTML = `<tr><td colspan="5"><div class="empty"><span class="emoji">🙋</span>No servants yet.</div></td></tr>`;
+        return;
+      }
+      body.innerHTML = state.servants.map(s => `
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar" style="width:38px;height:38px;${avatarStyle(s.name)}">${initials(s.name)}</div>
+              <div><b>${escapeHtml(s.name)}</b></div>
+            </div>
+          </td>
+          <td>${escapeHtml(s.email || '—')}</td>
+          <td>${escapeHtml(s.phone || '—')}</td>
+          <td><span class="role ${s.role}">${s.role.toUpperCase()}</span></td>
+          <td>
+            ${state.profile.role === 'manager' && s.id !== state.profile.id ? `
+              <button class="btn small secondary" onclick="toggleServantRole('${s.id}', '${s.role}')">${s.role === 'manager' ? 'Demote' : 'Promote'}</button>
+              <button class="btn small red" onclick="deleteServant('${s.id}', ${JSON.stringify(s.name)})">Remove</button>
+            ` : '—'}
+          </td>
+        </tr>
+      `).join('');
+    }
 
-/* ============ Servants ============ */
-async function addServant(){
-  if(currentProfile.role!=='manager'){ toast('Only managers can add servants',true); return; }
-  const name = $('sName').value.trim();
-  const email = $('sEmail').value.trim();
-  const phone = $('sPhone').value.trim();
-  const pass = $('sPass').value;
-  if(!name||!email||!pass||pass.length<6){ toast('Fill all fields, password ≥ 6 chars',true); return; }
+    async function toggleServantRole(id, currentRole){
+      const role = currentRole === 'manager' ? 'servant' : 'manager';
+      const { error } = await client.from('servants').update({ role }).eq('id', id);
+      if(error){ toast(error.message, true); return; }
+      toast('Role updated');
+      await reloadAll(true);
+    }
 
-  // Create auth user via signUp (uses anon key — captcha must be disabled in Supabase Auth settings)
-  const { data, error } = await client.auth.signUp({ email, password: pass });
-  if(error){ toast('Auth error: '+error.message,true); return; }
+    async function deleteServant(id, name){
+      if(!confirm(`Remove servant ${name}? This removes only the profile row, not the auth account.`)) return;
+      const { error } = await client.from('servants').delete().eq('id', id);
+      if(error){ toast(error.message, true); return; }
+      toast('Servant removed');
+      await reloadAll(true);
+    }
 
-  // Insert profile row (RLS must permit this — see SQL)
-  const userId = data.user?.id;
-  const ins = await client.from('servants').insert({ user_id:userId, name, email, phone, role:'servant' });
-  if(ins.error){ toast('Profile error: '+ins.error.message,true); return; }
+    function closeModal(){
+      $('modalBackdrop').classList.remove('show');
+    }
 
-  $('sName').value=''; $('sEmail').value=''; $('sPhone').value=''; $('sPass').value='';
-  toast('Servant added 🙋'); await reloadAll();
+    function escapeHtml(value=''){
+      return String(value)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#39;');
+    }
 
-  // signUp logs in the new user — re-login as manager
-  alert('Servant created! Note: Supabase may have signed you in as the new servant. Please log out and log back in as manager if needed.');
-}
+    $('modalBackdrop').addEventListener('click', (e) => {
+      if(e.target.id === 'modalBackdrop') closeModal();
+    });
 
-function renderServants(){
-  const tbody = $('servantsTable');
-  if(!CACHE.servants.length){ tbody.innerHTML = `<tr><td colspan="5" class="empty"><span class="em">🙋</span>No servants yet</td></tr>`; return; }
-  tbody.innerHTML = CACHE.servants.map(s=>`
-    <tr>
-      <td><div style="display:flex;align-items:center;gap:10px">
-        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,${avatarColor(s.name)},#a78bfa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0820">${initials(s.name)}</div>
-        <b>${s.name}</b></div></td>
-      <td>${s.email||'—'}</td>
-      <td>${s.phone||'—'}</td>
-      <td><span class="role-badge ${s.role==='manager'?'manager':'servant'}">${s.role.toUpperCase()}</span></td>
-      <td>
-        ${currentProfile.role==='manager' && s.id!==currentProfile.id ? `
-          <button class="btn small secondary" onclick="toggleRole('${s.id}','${s.role}')">${s.role==='manager'?'Demote':'Promote'}</button>
-          <button class="btn small danger" onclick="deleteServant('${s.id}','${s.name.replace(/'/g,"\\'")}')">Remove</button>
-        ` : '—'}
-      </td>
-    </tr>
-  `).join('');
-}
-async function toggleRole(id,curr){
-  const next = curr==='manager'?'servant':'manager';
-  const { error } = await client.from('servants').update({ role:next }).eq('id',id);
-  if(error){ toast(error.message,true); return; }
-  toast('Role updated'); await reloadAll();
-}
-async function deleteServant(id,name){
-  if(!confirm(`Remove servant "${name}"? Their auth account remains; only the profile is deleted.`)) return;
-  const { error } = await client.from('servants').delete().eq('id',id);
-  if(error){ toast(error.message,true); return; }
-  toast('Servant removed'); await reloadAll();
-}
+    client.auth.onAuthStateChange(async (_event, session) => {
+      if(!session?.user){
+        stopRealtime();
+        $('appView').style.display = 'none';
+        $('authView').style.display = 'flex';
+      }
+    });
 
-/* ============ Modal ============ */
-function openModal(title, body, onOk){
-  $('modalTitle').textContent = title;
-  $('modalBody').innerHTML = body;
-  $('modalOk').onclick = onOk;
-  $('modal').classList.add('show');
-}
-function closeModal(){ $('modal').classList.remove('show'); }
-
-/* ============ Boot ============ */
-(async ()=>{
-  const { data:{ session } } = await client.auth.getSession();
-  if(session?.user) await loadProfileAndStart(session.user);
-})();
-</script>
+    (async function init(){
+      const { data: { session } } = await client.auth.getSession();
+      if(session?.user){
+        await loadProfile(session.user);
+      }
+    })();
+  </script>
 </body>
 </html>
