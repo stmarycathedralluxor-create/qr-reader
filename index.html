@@ -2,606 +2,746 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Attendance System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ministry Manager ✦ Servants & Children</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    min-height: 100vh; padding: 30px 15px; color: #333;
-  }
-  .container {
-    max-width: 920px; margin: 0 auto; background: #fff;
-    padding: 30px; border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.2);
-  }
-  h1, h2 { color: #4a4a4a; margin-bottom: 18px; text-align: center; }
-  h3 { margin: 18px 0 10px; color: #555; }
+:root{
+  --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e;
+  --acc:#ffd86b; --acc2:#ff8c42; --pink:#ff5e87;
+  --green:#22d3a4; --red:#ff5470; --blue:#6ad1ff;
+  --glass:rgba(255,255,255,0.08);
+  --glass-b:rgba(255,255,255,0.18);
+  --text:#f4f4ff; --muted:#b8b8d4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Poppins',sans-serif;color:var(--text);}
+body{
+  min-height:100vh;
+  background: radial-gradient(circle at 20% 10%, #4a2d8a 0%, transparent 40%),
+              radial-gradient(circle at 80% 80%, #ff5e87 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, #1a1740 0%, #0a0820 100%);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+    radial-gradient(2px 2px at 60% 70%, #fff, transparent),
+    radial-gradient(1px 1px at 50% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 80% 10%, #fff, transparent),
+    radial-gradient(2px 2px at 30% 80%, #fff, transparent),
+    radial-gradient(1px 1px at 90% 60%, #fff, transparent);
+  background-size:200% 200%; opacity:.35; animation:twinkle 8s linear infinite;
+}
+@keyframes twinkle{0%{background-position:0 0}100%{background-position:200% 200%}}
 
-  input, select {
-    padding: 10px; border: 1px solid #ccc; border-radius: 6px;
-    font-size: 14px; outline: none; width: 100%;
-    transition: border .2s;
-  }
-  input:focus, select:focus { border-color: #667eea; }
+/* ===== Login Page ===== */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.auth-card{
+  width:100%;max-width:440px;padding:48px 38px;border-radius:28px;
+  background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+  border:1px solid var(--glass-b);
+  backdrop-filter: blur(22px);
+  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.2);
+  position:relative; overflow:hidden;
+}
+.auth-card::before{
+  content:""; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background: conic-gradient(from 0deg, transparent, rgba(255,216,107,.15), transparent 30%);
+  animation: spin 12s linear infinite; z-index:-1;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.logo{
+  width:78px;height:78px;border-radius:20px;margin:0 auto 18px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:flex;align-items:center;justify-content:center;font-size:38px;
+  box-shadow:0 12px 30px rgba(255,140,66,.4);
+}
+.auth-title{font-family:'Playfair Display',serif;font-size:30px;text-align:center;margin-bottom:6px}
+.auth-sub{text-align:center;color:var(--muted);margin-bottom:30px;font-size:14px}
 
-  button {
-    padding: 10px 16px; border: none; border-radius: 6px;
-    cursor: pointer; font-weight: 600;
-    transition: opacity .2s, transform .1s;
-  }
-  button:hover  { opacity: .9; }
-  button:active { transform: scale(.97); }
-  .btn-primary { background: #667eea; color: #fff; }
-  .btn-add     { background: #4CAF50; color: #fff; }
-  .btn-edit    { background: #2196F3; color: #fff; margin-right: 5px; }
-  .btn-delete  { background: #f44336; color: #fff; }
-  .btn-cancel  { background: #9e9e9e; color: #fff; margin-left: 8px; }
-  .btn-logout  { background: #555;    color: #fff; }
+.field{position:relative;margin-bottom:16px}
+.field input, .field select{
+  width:100%;padding:14px 16px 14px 46px;border-radius:14px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  color:var(--text);font-size:15px;font-family:inherit;outline:none;
+  transition:.25s;
+}
+.field input:focus, .field select:focus{
+  border-color:var(--acc);background:rgba(255,255,255,.1);
+  box-shadow:0 0 0 4px rgba(255,216,107,.15);
+}
+.field .icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;opacity:.7}
+.field label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted);font-weight:500}
 
-  .topbar {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
-  }
-  .form-row {
-    display: grid; gap: 10px; margin-bottom: 18px;
-    grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  }
-  @media (max-width: 700px){ .form-row { grid-template-columns: 1fr; } }
+.btn{
+  width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
+  font-family:inherit;font-weight:600;font-size:15px;letter-spacing:.3px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#2a1a00;transition:.25s;
+  box-shadow:0 10px 25px rgba(255,140,66,.35);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,140,66,.5)}
+.btn:active{transform:translateY(0)}
+.btn.secondary{background:rgba(255,255,255,.1);color:var(--text);box-shadow:none;border:1px solid var(--glass-b)}
+.btn.danger{background:linear-gradient(135deg,#ff5470,#c11d4d);color:#fff;box-shadow:0 10px 25px rgba(255,84,112,.35)}
+.btn.success{background:linear-gradient(135deg,#22d3a4,#0f9b75);color:#04261c;box-shadow:0 10px 25px rgba(34,211,164,.35)}
+.btn.small{padding:8px 14px;font-size:13px;width:auto;border-radius:10px}
 
-  .status { text-align: center; margin: 12px 0; font-style: italic; color: #666; }
+.alert{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+.alert.err{background:rgba(255,84,112,.15);border:1px solid rgba(255,84,112,.4);color:#ffb1c0}
+.alert.ok{background:rgba(34,211,164,.15);border:1px solid rgba(34,211,164,.4);color:#a8f0d5}
 
-  .record-list { list-style: none; margin-top: 18px; }
-  .record-item {
-    background: #f9f9f9; border-left: 4px solid #667eea;
-    padding: 12px 15px; margin-bottom: 10px; border-radius: 6px;
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 10px;
-  }
-  .record-info { flex: 1; min-width: 220px; }
-  .record-info small { color: #888; display: block; margin-top: 4px; }
-  .badge {
-    display: inline-block; padding: 2px 8px; border-radius: 10px;
-    font-size: 11px; font-weight: 700; margin-left: 6px;
-  }
-  .b-in   { background: #c8e6c9; color: #1b5e20; }
-  .b-out  { background: #ffe0b2; color: #e65100; }
-  .b-mgr  { background: #d1c4e9; color: #311b92; }
-  .b-emp  { background: #b3e5fc; color: #01579b; }
-  .b-off  { background: #eee;    color: #555;    }
+/* ===== App Shell ===== */
+.app{display:none;min-height:100vh}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;
+  background:rgba(15,12,41,.7);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--glass-b);
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+.brand .logo{width:42px;height:42px;border-radius:12px;font-size:22px;margin:0;box-shadow:0 6px 14px rgba(255,140,66,.4)}
+.userchip{display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:50px;background:var(--glass);border:1px solid var(--glass-b)}
+.userchip .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6ad1ff,#a78bfa);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#0a0820}
+.role-badge{padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.5px}
+.role-badge.manager{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#2a1a00}
+.role-badge.servant{background:linear-gradient(135deg,#6ad1ff,#a78bfa);color:#0a0820}
 
-  .qr-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;
-  }
-  @media (max-width: 700px){ .qr-grid { grid-template-columns: 1fr; } }
+.container{max-width:1280px;margin:0 auto;padding:28px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;background:var(--glass);padding:6px;border-radius:16px;border:1px solid var(--glass-b);width:fit-content}
+.tab{
+  padding:10px 20px;border-radius:11px;cursor:pointer;font-weight:500;font-size:14px;
+  transition:.2s;color:var(--muted);
+}
+.tab:hover{color:var(--text)}
+.tab.active{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#2a1a00;font-weight:600;box-shadow:0 6px 16px rgba(255,140,66,.3)}
 
-  .qr-card {
-    text-align: center; padding: 20px; border-radius: 12px;
-    background: #fafafa; border: 2px dashed #bbb;
-  }
-  .qr-card.in  { border-color: #4CAF50; }
-  .qr-card.out { border-color: #ff9800; }
-  .qr-card h4 { margin-bottom: 10px; font-size: 16px; }
-  .qr-card.in  h4 { color: #2e7d32; }
-  .qr-card.out h4 { color: #e65100; }
-  .qr-card canvas, .qr-card img { margin: 8px auto; display: block; }
-  .qr-card .countdown { font-weight: 700; font-size: 16px; margin-top: 4px; }
-  .qr-card.in  .countdown { color: #2e7d32; }
-  .qr-card.out .countdown { color: #e65100; }
+.page{display:none;animation:fadeIn .4s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  #scanner { width: 100%; max-width: 360px; margin: 0 auto;
-             border-radius: 10px; overflow: hidden; }
-  .small  { font-size: 12px; color: #777; }
-  .center { text-align: center; }
-  .hidden { display: none !important; }
+.section-title{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:6px}
+.section-sub{color:var(--muted);margin-bottom:22px;font-size:14px}
 
-  .login-card { max-width: 380px; margin: 60px auto; }
-  .login-card input { margin-bottom: 12px; }
+.grid{display:grid;gap:18px}
+.grid-3{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.grid-2{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
 
-  .toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: #333; color: #fff; padding: 10px 16px; border-radius: 8px;
-    opacity: 0; transition: opacity .3s; z-index: 9999;
-  }
-  .toast.show { opacity: 1; }
+.card{
+  background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  border:1px solid var(--glass-b);border-radius:20px;padding:22px;
+  backdrop-filter:blur(14px);
+  transition:.25s;position:relative;overflow:hidden;
+}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,216,107,.35);box-shadow:0 14px 30px rgba(0,0,0,.3)}
+.card .ribbon{position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right, rgba(255,216,107,.2), transparent 60%);pointer-events:none}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:26px}
+.stat{
+  padding:22px;border-radius:18px;
+  background:linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
+  border:1px solid var(--glass-b);position:relative;overflow:hidden;
+}
+.stat .ic{position:absolute;right:18px;top:18px;font-size:32px;opacity:.4}
+.stat .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.stat .val{font-size:34px;font-weight:700;font-family:'Playfair Display',serif;margin-top:6px}
+.stat.purple{background:linear-gradient(135deg,#7c3aed40,#7c3aed10)}
+.stat.amber{background:linear-gradient(135deg,#ff8c4240,#ff8c4210)}
+.stat.green{background:linear-gradient(135deg,#22d3a440,#22d3a410)}
+.stat.blue{background:linear-gradient(135deg,#6ad1ff40,#6ad1ff10)}
+
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.form-card{padding:24px;border-radius:18px;background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--glass-b);margin-bottom:24px}
+.form-card h3{font-family:'Playfair Display',serif;margin-bottom:14px;font-size:20px}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+.table-wrap{background:var(--glass);border-radius:18px;border:1px solid var(--glass-b);overflow:hidden;overflow-x:auto}
+th{text-align:left;padding:14px 16px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:rgba(0,0,0,.2)}
+td{padding:14px 16px;border-top:1px solid rgba(255,255,255,.06)}
+tr:hover td{background:rgba(255,255,255,.03)}
+
+.kid-card{
+  padding:20px;border-radius:18px;
+  background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border:1px solid var(--glass-b);
+  display:flex;flex-direction:column;gap:12px;transition:.25s;position:relative;overflow:hidden;
+}
+.kid-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.3);border-color:rgba(255,216,107,.4)}
+.kid-head{display:flex;align-items:center;gap:14px}
+.kid-av{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#0a0820;flex-shrink:0}
+.kid-name{font-weight:600;font-size:17px}
+.kid-meta{font-size:12px;color:var(--muted)}
+.points-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:50px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#2a1a00;font-weight:700;font-size:13px}
+.kid-info{font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.kid-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;border:1px solid var(--glass-b);
+  background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  font-size:15px;transition:.2s;
+}
+.icon-btn:hover{background:rgba(255,255,255,.14);transform:scale(1.08)}
+.icon-btn.green{color:#22d3a4;border-color:rgba(34,211,164,.3)}
+.icon-btn.red{color:#ff5470;border-color:rgba(255,84,112,.3)}
+.icon-btn.blue{color:#6ad1ff;border-color:rgba(106,209,255,.3)}
+
+/* Modal */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(5,3,20,.7);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;z-index:200;padding:20px;
+}
+.modal-bg.show{display:flex;animation:fadeIn .25s}
+.modal{
+  width:100%;max-width:480px;background:linear-gradient(135deg,#1a1740,#2a1f5c);
+  border:1px solid var(--glass-b);border-radius:24px;padding:30px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+.modal h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:14px}
+.modal-actions{display:flex;gap:10px;margin-top:18px}
+
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.filter-bar input, .filter-bar select{
+  padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06);
+  border:1px solid var(--glass-b);color:var(--text);font-family:inherit;font-size:14px;outline:none;
+}
+.filter-bar input:focus, .filter-bar select:focus{border-color:var(--acc)}
+
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:14px}
+.empty .em{font-size:48px;display:block;margin-bottom:10px;opacity:.4}
+
+.attend-btn{padding:8px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;font-size:12px;transition:.2s;font-family:inherit}
+.attend-yes{background:rgba(34,211,164,.2);color:#a8f0d5;border:1px solid rgba(34,211,164,.4)}
+.attend-yes:hover{background:rgba(34,211,164,.3)}
+.attend-mark{background:linear-gradient(135deg,#22d3a4,#0f9b75);color:#fff}
+
+.toast{
+  position:fixed;bottom:24px;right:24px;padding:14px 22px;border-radius:14px;
+  background:linear-gradient(135deg,#22d3a4,#0f9b75);color:#04261c;font-weight:600;
+  box-shadow:0 14px 30px rgba(34,211,164,.4);z-index:300;
+  transform:translateY(120%);transition:.4s cubic-bezier(.34,1.56,.64,1);
+}
+.toast.show{transform:translateY(0)}
+.toast.err{background:linear-gradient(135deg,#ff5470,#c11d4d);color:#fff;box-shadow:0 14px 30px rgba(255,84,112,.4)}
+
+@media (max-width:640px){
+  .container{padding:18px}
+  .topbar{padding:12px 16px}
+  .userchip span.uname{display:none}
+}
 </style>
 </head>
 <body>
 
 <!-- ============ LOGIN ============ -->
-<div id="loginScreen" class="container login-card">
-  <h1>🔐 Login</h1>
-  <input id="loginUser" type="text" placeholder="Username" />
-  <input id="loginPass" type="password" placeholder="Password" />
-  <button class="btn-primary" style="width:100%" onclick="login()">Sign in</button>
-  <p class="small center" style="margin-top:10px;">
-    Default admin: <b>admin</b> / <b>admin123</b>
-  </p>
+<div id="authView" class="auth-wrap">
+  <div class="auth-card">
+    <div class="logo">✦</div>
+    <h1 class="auth-title">Ministry Manager</h1>
+    <p class="auth-sub">Servants of the Vineyard — Sign in to continue</p>
+    <div id="authAlert" class="alert err"></div>
+    <div class="field">
+      <span class="icon">📧</span>
+      <input id="loginEmail" type="email" placeholder="Email address" autocomplete="username"/>
+    </div>
+    <div class="field">
+      <span class="icon">🔒</span>
+      <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password"/>
+    </div>
+    <button class="btn" onclick="doLogin()">Sign In</button>
+    <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--muted)">
+      Default Manager → <b>manager@ministry.app</b> / <b>manager123</b>
+    </p>
+  </div>
 </div>
 
-<!-- ============ MANAGER ============ -->
-<div id="managerScreen" class="container hidden">
+<!-- ============ APP ============ -->
+<div id="appView" class="app">
   <div class="topbar">
-    <h2 style="margin:0">👔 Manager Dashboard</h2>
-    <div>
-      <span id="mgrWho" class="small"></span>
-      <button class="btn-logout" onclick="logout()">Logout</button>
+    <div class="brand">
+      <div class="logo">✦</div>
+      <div>
+        <div>Ministry Manager</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:400">Servants Control Panel</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="userchip">
+        <div class="av" id="userAv">?</div>
+        <span class="uname"><b id="userName">User</b> <span id="userRole" class="role-badge servant">SERVANT</span></span>
+      </div>
+      <button class="btn secondary small" onclick="doLogout()">Logout</button>
     </div>
   </div>
 
-  <h3>Add / Edit Employee</h3>
-  <div class="form-row">
-    <input id="empUser"  type="text"     placeholder="Username" />
-    <input id="empPass"  type="password" placeholder="Password" />
-    <input id="empName"  type="text"     placeholder="Full name" />
-    <select id="empRole">
-      <option value="employee">Employee</option>
-      <option value="manager">Manager</option>
-    </select>
-    <button id="empBtn" class="btn-add" onclick="saveEmployee()">Add</button>
-  </div>
-  <div id="empCancelWrap" class="center hidden" style="margin-bottom:10px;">
-    <button class="btn-cancel" onclick="cancelEmpEdit()">Cancel Edit</button>
-  </div>
-
-  <div class="status" id="empStatus">Loading employees...</div>
-  <ul class="record-list" id="empList"></ul>
-
-  <h3 style="margin-top:30px;">📱 Live QR Codes</h3>
-  <p class="small center">
-    Two codes rotate every 15 seconds — employees scan the appropriate one.
-  </p>
-  <div class="qr-grid">
-    <div class="qr-card in">
-      <h4>🟢 CHECK-IN</h4>
-      <div id="qrInBox"></div>
-      <div class="countdown">Refreshes in <span id="qrInCount">15</span>s</div>
-      <p class="small">Token: <code id="qrInText">—</code></p>
+  <div class="container">
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-page="dashboard">Dashboard</div>
+      <div class="tab" data-page="children">Children</div>
+      <div class="tab" data-page="classes">Classes</div>
+      <div class="tab manager-only" data-page="servants">Servants</div>
     </div>
-    <div class="qr-card out">
-      <h4>🟠 CHECK-OUT</h4>
-      <div id="qrOutBox"></div>
-      <div class="countdown">Refreshes in <span id="qrOutCount">15</span>s</div>
-      <p class="small">Token: <code id="qrOutText">—</code></p>
+
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+      <h2 class="section-title">Welcome back, <span id="welcomeName">friend</span> ✨</h2>
+      <p class="section-sub">An overview of your ministry today</p>
+      <div class="stat-grid">
+        <div class="stat purple"><span class="ic">👶</span><div class="lbl">Children</div><div class="val" id="statChildren">0</div></div>
+        <div class="stat amber"><span class="ic">⛪</span><div class="lbl">Classes</div><div class="val" id="statClasses">0</div></div>
+        <div class="stat green"><span class="ic">🙋</span><div class="lbl">Servants</div><div class="val" id="statServants">0</div></div>
+        <div class="stat blue"><span class="ic">⭐</span><div class="lbl">Total Points</div><div class="val" id="statPoints">0</div></div>
+      </div>
+
+      <h3 class="section-title" style="font-size:20px">Recent Attendance</h3>
+      <p class="section-sub">Today's recorded check-ins</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Child</th><th>Class</th><th>Date</th><th>Recorded by</th></tr></thead>
+          <tbody id="recentAttend"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Children -->
+    <div class="page" id="page-children">
+      <h2 class="section-title">Children</h2>
+      <p class="section-sub">Manage children profiles, points and attendance</p>
+
+      <div class="form-card">
+        <h3>➕ Add a New Child</h3>
+        <div class="form-row">
+          <input id="cName" placeholder="Full name"/>
+          <input id="cBirth" type="date" placeholder="Birth date"/>
+          <input id="cPhone" placeholder="Phone"/>
+          <select id="cClass"></select>
+        </div>
+        <button class="btn" onclick="addChild()">Add Child</button>
+      </div>
+
+      <div class="filter-bar">
+        <input id="kidSearch" placeholder="🔍 Search by name..." oninput="renderChildren()"/>
+        <select id="kidClassFilter" onchange="renderChildren()"><option value="">All Classes</option></select>
+      </div>
+
+      <div class="grid grid-3" id="childrenGrid"></div>
+    </div>
+
+    <!-- Classes -->
+    <div class="page" id="page-classes">
+      <h2 class="section-title">Classes</h2>
+      <p class="section-sub">Organize children into groups</p>
+      <div class="form-card manager-only">
+        <h3>➕ Create a Class</h3>
+        <div class="form-row">
+          <input id="className" placeholder="Class name (e.g. Sunday A)"/>
+          <input id="classDesc" placeholder="Description (optional)"/>
+        </div>
+        <button class="btn" onclick="addClass()">Create Class</button>
+      </div>
+      <div class="grid grid-2" id="classesGrid"></div>
+    </div>
+
+    <!-- Servants (manager only) -->
+    <div class="page" id="page-servants">
+      <h2 class="section-title">Servants</h2>
+      <p class="section-sub">Add and manage ministry servants</p>
+      <div class="form-card">
+        <h3>➕ Add a New Servant</h3>
+        <div class="form-row">
+          <input id="sName" placeholder="Servant full name"/>
+          <input id="sEmail" type="email" placeholder="Email address"/>
+          <input id="sPhone" placeholder="Phone (optional)"/>
+          <input id="sPass" type="text" placeholder="Initial password (min 6)"/>
+        </div>
+        <button class="btn" onclick="addServant()">Add Servant</button>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px">⚠️ Servant accounts are created via Supabase Auth signup. They can change their password later.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Actions</th></tr></thead>
+          <tbody id="servantsTable"></tbody>
+        </table>
+      </div>
     </div>
   </div>
-
-  <h3 style="margin-top:30px;">🕒 Recent Attendance</h3>
-  <div class="status" id="attStatus">Loading attendance...</div>
-  <ul class="record-list" id="attList"></ul>
 </div>
 
-<!-- ============ EMPLOYEE ============ -->
-<div id="employeeScreen" class="container hidden">
-  <div class="topbar">
-    <h2 style="margin:0">👤 Employee</h2>
-    <div>
-      <span id="empWho" class="small"></span>
-      <button class="btn-logout" onclick="logout()">Logout</button>
+<!-- Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">Title</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn" id="modalOk">Confirm</button>
     </div>
   </div>
-
-  <p class="center">
-    Start the scanner and point at either the <b style="color:#2e7d32">green Check-in</b>
-    or <b style="color:#e65100">orange Check-out</b> code on the manager's screen.
-  </p>
-  <div class="center" style="margin: 14px 0;">
-    <button id="scanBtn" class="btn-primary" onclick="toggleScanner()">Start Scanner</button>
-  </div>
-  <div id="scanner"></div>
-  <div class="status" id="scanStatus"></div>
-
-  <h3 style="margin-top:24px;">My Recent Activity</h3>
-  <ul class="record-list" id="myAttList"></ul>
 </div>
 
-<div id="toast" class="toast"></div>
-
-<!-- Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<div class="toast" id="toast">Done!</div>
 
 <script>
-/* ========== Supabase ========== */
+/* ============ Supabase ============ */
 const SUPABASE_URL = "https://cjxlwfrqfqwjhugpjdxz.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ========== Helpers ========== */
+let currentUser = null;       // auth user
+let currentProfile = null;    // row from servants table
+let CACHE = { children:[], classes:[], servants:[], attendance:[] };
+
+/* ============ Helpers ============ */
 const $ = id => document.getElementById(id);
-const escapeHtml = s => String(s ?? "")
-  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+const toast = (msg, isErr=false) => {
+  const t = $('toast'); t.textContent = msg; t.classList.toggle('err', isErr); t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
+};
+const showAlert = (msg, type='err') => {
+  const a = $('authAlert'); a.className = 'alert ' + type; a.textContent = msg; a.style.display='block';
+};
+const avatarColor = (s='?') => {
+  const colors = ['#ff8c42','#6ad1ff','#22d3a4','#a78bfa','#ff5e87','#ffd86b','#f87171','#34d399'];
+  let h=0; for (let c of s) h = (h*31 + c.charCodeAt(0)) % colors.length;
+  return colors[h];
+};
+const initials = (n='?') => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
+const fmtDate = d => d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+const age = d => { if(!d) return '—'; const a=Math.floor((Date.now()-new Date(d))/31557600000); return a+' yrs'; };
 
-function toast(msg) {
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2200);
+/* ============ Auth ============ */
+async function doLogin(){
+  const email = $('loginEmail').value.trim();
+  const pass = $('loginPass').value;
+  if(!email || !pass){ showAlert('Please enter email and password.'); return; }
+  $('authAlert').style.display='none';
+  const { data, error } = await client.auth.signInWithPassword({ email, password: pass });
+  if(error){ showAlert(error.message); return; }
+  await loadProfileAndStart(data.user);
 }
-
-async function sha256(text) {
-  const buf = new TextEncoder().encode(text);
-  const hash = await crypto.subtle.digest("SHA-256", buf);
-  return Array.from(new Uint8Array(hash))
-    .map(b => b.toString(16).padStart(2, "0")).join("");
+async function doLogout(){
+  await client.auth.signOut();
+  currentUser = null; currentProfile = null;
+  $('appView').style.display='none';
+  $('authView').style.display='flex';
 }
-
-const saveSession  = u  => localStorage.setItem("att_user", JSON.stringify(u));
-const getSession   = () => { try { return JSON.parse(localStorage.getItem("att_user") || "null"); } catch { return null; } };
-const clearSession = () => localStorage.removeItem("att_user");
-
-/* ========== Routing ========== */
-function showScreen(name) {
-  ["loginScreen","managerScreen","employeeScreen"]
-    .forEach(id => $(id).classList.add("hidden"));
-  $(name).classList.remove("hidden");
-}
-
-async function boot() {
-  const u = getSession();
-  if (!u) return showScreen("loginScreen");
-  if (u.role === "manager") {
-    $("mgrWho").textContent = `Signed in as ${u.username}`;
-    showScreen("managerScreen");
-    initManager();
-  } else {
-    $("empWho").textContent = `Signed in as ${u.username}`;
-    showScreen("employeeScreen");
-    initEmployee();
+async function loadProfileAndStart(user){
+  currentUser = user;
+  let { data: prof, error } = await client.from('servants').select('*').eq('user_id', user.id).maybeSingle();
+  if(error){ showAlert('Profile load error: '+error.message); return; }
+  if(!prof){
+    // Auto-create profile for manager bootstrap or new servant
+    const fallbackName = user.email.split('@')[0];
+    const role = (user.email === 'manager@ministry.app') ? 'manager' : 'servant';
+    const ins = await client.from('servants').insert({ user_id:user.id, name:fallbackName, email:user.email, role }).select().single();
+    if(ins.error){ showAlert('Could not create profile: '+ins.error.message); return; }
+    prof = ins.data;
   }
+  currentProfile = prof;
+  startApp();
 }
 
-/* ========== LOGIN ========== */
-async function login() {
-  const username = $("loginUser").value.trim();
-  const password = $("loginPass").value;
-  if (!username || !password) return alert("Enter username and password.");
+/* ============ Init App ============ */
+async function startApp(){
+  $('authView').style.display='none';
+  $('appView').style.display='block';
 
-  const hash = await sha256(password);
-  const { data, error } = await client
-    .from("employees")
-    .select("*")
-    .eq("username", username)
-    .eq("password", hash)
-    .eq("active", true)
-    .maybeSingle();
+  $('userName').textContent = currentProfile.name;
+  $('welcomeName').textContent = currentProfile.name.split(' ')[0];
+  $('userAv').textContent = initials(currentProfile.name);
+  $('userAv').style.background = `linear-gradient(135deg, ${avatarColor(currentProfile.name)}, #a78bfa)`;
+  const isManager = currentProfile.role === 'manager';
+  $('userRole').textContent = isManager ? 'MANAGER' : 'SERVANT';
+  $('userRole').className = 'role-badge ' + (isManager?'manager':'servant');
+  document.querySelectorAll('.manager-only').forEach(el=> el.style.display = isManager ? '' : 'none');
 
-  if (error) { console.log(error); return alert("Login error. Check console."); }
-  if (!data)  return alert("Invalid credentials.");
+  // tabs
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.onclick = () => {
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      $('page-'+t.dataset.page).classList.add('active');
+    };
+  });
 
-  saveSession({ id: data.id, username: data.username, role: data.role, full_name: data.full_name });
-  boot();
+  await reloadAll();
 }
 
-function logout() {
-  stopQrLoops();
-  stopScanner();
-  if (window._attTimer)   clearInterval(window._attTimer);
-  if (window._myAttTimer) clearInterval(window._myAttTimer);
-  clearSession();
-  showScreen("loginScreen");
-  $("loginUser").value = ""; $("loginPass").value = "";
+async function reloadAll(){
+  const [chRes, clRes, svRes, atRes] = await Promise.all([
+    client.from('children').select('*').order('created_at',{ascending:false}),
+    client.from('classes').select('*').order('name'),
+    client.from('servants').select('*').order('name'),
+    client.from('attendance').select('*').order('attended_at',{ascending:false}).limit(20),
+  ]);
+  CACHE.children = chRes.data || [];
+  CACHE.classes  = clRes.data || [];
+  CACHE.servants = svRes.data || [];
+  CACHE.attendance = atRes.data || [];
+
+  // class dropdowns
+  const opts = '<option value="">— Select class —</option>' + CACHE.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  $('cClass').innerHTML = opts;
+  $('kidClassFilter').innerHTML = '<option value="">All Classes</option>' + CACHE.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+
+  renderDashboard();
+  renderChildren();
+  renderClasses();
+  renderServants();
 }
 
-/* =====================================================
-   MANAGER LOGIC
-   ===================================================== */
-let editingEmpId = null;
+/* ============ Dashboard ============ */
+function renderDashboard(){
+  $('statChildren').textContent = CACHE.children.length;
+  $('statClasses').textContent  = CACHE.classes.length;
+  $('statServants').textContent = CACHE.servants.length;
+  $('statPoints').textContent   = CACHE.children.reduce((s,c)=>s+(c.points||0),0);
 
-async function initManager() {
-  await loadEmployees();
-  startQrLoops();
-  loadAttendance();
-  if (window._attTimer) clearInterval(window._attTimer);
-  window._attTimer = setInterval(loadAttendance, 5000);
+  const tbody = $('recentAttend');
+  if(!CACHE.attendance.length){ tbody.innerHTML = `<tr><td colspan="4" class="empty"><span class="em">📭</span>No attendance recorded yet</td></tr>`; return; }
+  tbody.innerHTML = CACHE.attendance.slice(0,10).map(a=>{
+    const ch = CACHE.children.find(c=>c.id===a.child_id);
+    const cl = ch ? CACHE.classes.find(c=>c.id===ch.class_id) : null;
+    const sv = CACHE.servants.find(s=>s.id===a.recorded_by);
+    return `<tr>
+      <td><b>${ch?.name||'—'}</b></td>
+      <td>${cl?.name||'—'}</td>
+      <td>${fmtDate(a.attended_at)}</td>
+      <td>${sv?.name||'—'}</td>
+    </tr>`;
+  }).join('');
 }
 
-async function loadEmployees() {
-  $("empStatus").textContent = "Loading employees...";
-  const { data, error } = await client
-    .from("employees").select("*").order("created_at", { ascending: false });
-  if (error) { console.log(error); $("empStatus").textContent = "❌ Load failed."; return; }
+/* ============ Children ============ */
+async function addChild(){
+  const name = $('cName').value.trim();
+  const birth = $('cBirth').value || null;
+  const phone = $('cPhone').value.trim();
+  const class_id = $('cClass').value || null;
+  if(!name){ toast('Name is required', true); return; }
+  const { error } = await client.from('children').insert({ name, birth_date:birth, phone, class_id, points:0 });
+  if(error){ toast(error.message, true); return; }
+  $('cName').value=''; $('cBirth').value=''; $('cPhone').value=''; $('cClass').value='';
+  toast('Child added ✨');
+  await reloadAll();
+}
 
-  const list = $("empList"); list.innerHTML = "";
-  $("empStatus").textContent = `Total: ${data.length}`;
-  data.forEach(e => {
-    const li = document.createElement("li");
-    li.className = "record-item";
-    const roleBadge = e.role === "manager"
-      ? '<span class="badge b-mgr">Manager</span>'
-      : '<span class="badge b-emp">Employee</span>';
-    const offBadge = e.active ? "" : '<span class="badge b-off">Inactive</span>';
-    li.innerHTML = `
-      <div class="record-info">
-        <strong>${escapeHtml(e.full_name || e.username)}</strong> ${roleBadge} ${offBadge}
-        <small>@${escapeHtml(e.username)} • Added ${new Date(e.created_at).toLocaleString()}</small>
+function renderChildren(){
+  const q = $('kidSearch').value.trim().toLowerCase();
+  const filter = $('kidClassFilter').value;
+  const grid = $('childrenGrid');
+  let list = CACHE.children;
+  if(q) list = list.filter(c=>c.name.toLowerCase().includes(q));
+  if(filter) list = list.filter(c=>c.class_id===filter);
+  if(!list.length){ grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="em">👶</span>No children yet — add the first one!</div>`; return; }
+  grid.innerHTML = list.map(c=>{
+    const cl = CACHE.classes.find(x=>x.id===c.class_id);
+    const col = avatarColor(c.name);
+    return `<div class="kid-card">
+      <div class="kid-head">
+        <div class="kid-av" style="background:linear-gradient(135deg,${col},#a78bfa)">${initials(c.name)}</div>
+        <div style="flex:1">
+          <div class="kid-name">${c.name}</div>
+          <div class="kid-meta">${cl?.name||'No class'} · ${age(c.birth_date)}</div>
+        </div>
+        <div class="points-pill">⭐ ${c.points||0}</div>
       </div>
-      <div>
-        <button class="btn-edit"   onclick="editEmployee('${e.id}')">Edit</button>
-        <button class="btn-delete" onclick="deleteEmployee('${e.id}')">Delete</button>
-      </div>`;
-    list.appendChild(li);
+      <div class="kid-info">📅 ${fmtDate(c.birth_date)}</div>
+      <div class="kid-info">📞 ${c.phone||'—'}</div>
+      <div class="kid-actions">
+        <button class="attend-btn attend-mark" onclick="markAttendance('${c.id}')">✓ Attend</button>
+        <button class="icon-btn green" title="+1 point" onclick="changePoints('${c.id}',1)">＋</button>
+        <button class="icon-btn red" title="-1 point" onclick="changePoints('${c.id}',-1)">－</button>
+        <button class="icon-btn blue" title="Edit" onclick="editChild('${c.id}')">✎</button>
+        <button class="icon-btn red" title="Delete" onclick="deleteChild('${c.id}','${c.name.replace(/'/g,"\\'")}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function changePoints(id, delta){
+  const c = CACHE.children.find(x=>x.id===id); if(!c) return;
+  const newP = Math.max(0,(c.points||0)+delta);
+  const { error } = await client.from('children').update({ points:newP }).eq('id',id);
+  if(error){ toast(error.message,true); return; }
+  c.points = newP;
+  renderChildren(); renderDashboard();
+  toast(delta>0?'+1 ⭐':'-1 ⭐');
+}
+
+async function markAttendance(id){
+  const today = new Date().toISOString().slice(0,10);
+  const { error } = await client.from('attendance').insert({ child_id:id, attended_at:today, recorded_by:currentProfile.id });
+  if(error){ toast(error.message,true); return; }
+  toast('Attendance recorded ✓');
+  const at = await client.from('attendance').select('*').order('attended_at',{ascending:false}).limit(20);
+  CACHE.attendance = at.data || [];
+  renderDashboard();
+}
+
+function editChild(id){
+  const c = CACHE.children.find(x=>x.id===id); if(!c) return;
+  const opts = CACHE.classes.map(cl=>`<option value="${cl.id}" ${cl.id===c.class_id?'selected':''}>${cl.name}</option>`).join('');
+  openModal('Edit Child', `
+    <div class="field"><label>Name</label><input id="eName" value="${c.name}"/></div>
+    <div class="field"><label>Birth date</label><input id="eBirth" type="date" value="${c.birth_date||''}"/></div>
+    <div class="field"><label>Phone</label><input id="ePhone" value="${c.phone||''}"/></div>
+    <div class="field"><label>Class</label><select id="eClass"><option value="">— None —</option>${opts}</select></div>
+    <div class="field"><label>Points</label><input id="ePoints" type="number" min="0" value="${c.points||0}"/></div>
+  `, async ()=>{
+    const upd = {
+      name:$('eName').value.trim(),
+      birth_date:$('eBirth').value||null,
+      phone:$('ePhone').value.trim(),
+      class_id:$('eClass').value||null,
+      points:parseInt($('ePoints').value)||0
+    };
+    if(!upd.name){ toast('Name required',true); return; }
+    const { error } = await client.from('children').update(upd).eq('id',id);
+    if(error){ toast(error.message,true); return; }
+    closeModal(); toast('Child updated ✨'); await reloadAll();
   });
 }
 
-async function saveEmployee() {
-  const username  = $("empUser").value.trim();
-  const password  = $("empPass").value;
-  const full_name = $("empName").value.trim();
-  const role      = $("empRole").value;
-
-  if (!username) return alert("Username is required.");
-  if (!editingEmpId && !password) return alert("Password is required for new employees.");
-
-  try {
-    if (editingEmpId) {
-      const patch = { username, full_name, role };
-      if (password) patch.password = await sha256(password);
-      const { error } = await client.from("employees").update(patch).eq("id", editingEmpId);
-      if (error) throw error;
-      toast("Employee updated");
-      cancelEmpEdit();
-    } else {
-      const hash = await sha256(password);
-      const { error } = await client.from("employees")
-        .insert([{ username, password: hash, full_name, role }]);
-      if (error) throw error;
-      toast("Employee added");
-      clearEmpForm();
-    }
-    loadEmployees();
-  } catch (err) {
-    console.log(err);
-    alert("Save failed: " + (err.message || "see console"));
-  }
+async function deleteChild(id,name){
+  if(!confirm(`Delete "${name}"? This also removes their attendance records.`)) return;
+  await client.from('attendance').delete().eq('child_id',id);
+  const { error } = await client.from('children').delete().eq('id',id);
+  if(error){ toast(error.message,true); return; }
+  toast('Child removed');
+  await reloadAll();
 }
 
-async function editEmployee(id) {
-  const { data, error } = await client.from("employees").select("*").eq("id", id).single();
-  if (error || !data) return alert("Could not load employee.");
-  editingEmpId = id;
-  $("empUser").value = data.username;
-  $("empPass").value = "";
-  $("empPass").placeholder = "New password (leave blank to keep)";
-  $("empName").value = data.full_name || "";
-  $("empRole").value = data.role;
-  $("empBtn").textContent = "Update";
-  $("empBtn").classList.remove("btn-add");
-  $("empBtn").style.background = "#ff9800";
-  $("empCancelWrap").classList.remove("hidden");
-  $("empUser").focus();
+/* ============ Classes ============ */
+async function addClass(){
+  if(currentProfile.role!=='manager'){ toast('Only managers can add classes',true); return; }
+  const name = $('className').value.trim();
+  const description = $('classDesc').value.trim();
+  if(!name){ toast('Class name required',true); return; }
+  const { error } = await client.from('classes').insert({ name, description });
+  if(error){ toast(error.message,true); return; }
+  $('className').value=''; $('classDesc').value='';
+  toast('Class created ⛪'); await reloadAll();
 }
 
-function cancelEmpEdit() {
-  editingEmpId = null;
-  $("empBtn").textContent = "Add";
-  $("empBtn").classList.add("btn-add");
-  $("empBtn").style.background = "";
-  $("empCancelWrap").classList.add("hidden");
-  $("empPass").placeholder = "Password";
-  clearEmpForm();
+function renderClasses(){
+  const grid = $('classesGrid');
+  const isManager = currentProfile.role==='manager';
+  if(!CACHE.classes.length){ grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><span class="em">⛪</span>No classes yet</div>`; return; }
+  grid.innerHTML = CACHE.classes.map(cl=>{
+    const count = CACHE.children.filter(c=>c.class_id===cl.id).length;
+    return `<div class="card">
+      <div class="ribbon"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,${avatarColor(cl.name)},#a78bfa);display:flex;align-items:center;justify-content:center;font-size:22px">⛪</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:18px">${cl.name}</div>
+          <div style="font-size:12px;color:var(--muted)">${count} children</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);min-height:36px">${cl.description||'No description'}</div>
+      ${isManager?`<div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn small secondary" onclick="renameClass('${cl.id}')">Rename</button>
+        <button class="btn small danger" onclick="deleteClass('${cl.id}','${cl.name.replace(/'/g,"\\'")}')">Delete</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
 }
-
-function clearEmpForm() {
-  $("empUser").value = ""; $("empPass").value = "";
-  $("empName").value = ""; $("empRole").value = "employee";
-}
-
-async function deleteEmployee(id) {
-  if (!confirm("Delete this employee? Their attendance history will also be removed.")) return;
-  const { error } = await client.from("employees").delete().eq("id", id);
-  if (error) { console.log(error); return alert("Delete failed."); }
-  if (editingEmpId === id) cancelEmpEdit();
-  loadEmployees();
-}
-
-/* ========== Dynamic QR Codes (two of them) ========== */
-const QR_TTL_SEC = 15;
-let qrInTimer = null, qrOutTimer = null;
-let qrInCountdown = 0, qrOutCountdown = 0;
-let qrInInstance = null, qrOutInstance = null;
-
-async function startQrLoops() {
-  await rotateQr("check_in");
-  await rotateQr("check_out");
-
-  if (qrInTimer)  clearInterval(qrInTimer);
-  if (qrOutTimer) clearInterval(qrOutTimer);
-
-  qrInTimer = setInterval(() => {
-    qrInCountdown--;
-    $("qrInCount").textContent = qrInCountdown;
-    if (qrInCountdown <= 0) rotateQr("check_in");
-  }, 1000);
-
-  qrOutTimer = setInterval(() => {
-    qrOutCountdown--;
-    $("qrOutCount").textContent = qrOutCountdown;
-    if (qrOutCountdown <= 0) rotateQr("check_out");
-  }, 1000);
-}
-
-function stopQrLoops() {
-  if (qrInTimer)  { clearInterval(qrInTimer);  qrInTimer = null; }
-  if (qrOutTimer) { clearInterval(qrOutTimer); qrOutTimer = null; }
-}
-
-async function rotateQr(action) {
-  const token   = crypto.randomUUID();
-  const expires = new Date(Date.now() + QR_TTL_SEC * 1000).toISOString();
-
-  const { error } = await client.from("qr_tokens")
-    .insert([{ token, action, expires_at: expires }]);
-  if (error) { console.log(error); return; }
-
-  if (action === "check_in") {
-    const box = $("qrInBox"); box.innerHTML = "";
-    qrInInstance = new QRCode(box, {
-      text: token, width: 200, height: 200,
-      colorDark: "#2e7d32", colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.M
-    });
-    $("qrInText").textContent = token.slice(0, 8) + "…";
-    qrInCountdown = QR_TTL_SEC;
-    $("qrInCount").textContent = qrInCountdown;
-  } else {
-    const box = $("qrOutBox"); box.innerHTML = "";
-    qrOutInstance = new QRCode(box, {
-      text: token, width: 200, height: 200,
-      colorDark: "#e65100", colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.M
-    });
-    $("qrOutText").textContent = token.slice(0, 8) + "…";
-    qrOutCountdown = QR_TTL_SEC;
-    $("qrOutCount").textContent = qrOutCountdown;
-  }
-}
-
-/* ========== Attendance feed (manager) ========== */
-async function loadAttendance() {
-  const { data, error } = await client
-    .from("attendance")
-    .select("id, action, created_at, employee:employees(username, full_name)")
-    .order("created_at", { ascending: false })
-    .limit(20);
-  if (error) { console.log(error); $("attStatus").textContent = "❌ Failed."; return; }
-
-  $("attStatus").textContent = `Last ${data.length} events`;
-  const list = $("attList"); list.innerHTML = "";
-  data.forEach(a => {
-    const who = a.employee?.full_name || a.employee?.username || "Unknown";
-    const li = document.createElement("li");
-    li.className = "record-item";
-    const badge = a.action === "check_in"
-      ? '<span class="badge b-in">Check-in</span>'
-      : '<span class="badge b-out">Check-out</span>';
-    li.innerHTML = `
-      <div class="record-info">
-        <strong>${escapeHtml(who)}</strong> ${badge}
-        <small>${new Date(a.created_at).toLocaleString()}</small>
-      </div>`;
-    list.appendChild(li);
+function renameClass(id){
+  const cl = CACHE.classes.find(x=>x.id===id); if(!cl) return;
+  openModal('Edit Class',`
+    <div class="field"><label>Name</label><input id="rcName" value="${cl.name}"/></div>
+    <div class="field"><label>Description</label><input id="rcDesc" value="${cl.description||''}"/></div>
+  `, async ()=>{
+    const { error } = await client.from('classes').update({ name:$('rcName').value.trim(), description:$('rcDesc').value.trim() }).eq('id',id);
+    if(error){ toast(error.message,true); return; }
+    closeModal(); toast('Updated'); await reloadAll();
   });
 }
-
-/* =====================================================
-   EMPLOYEE LOGIC
-   ===================================================== */
-let scanner = null;
-let scanning = false;
-let lastScanToken = null;
-
-async function initEmployee() {
-  loadMyAttendance();
-  if (window._myAttTimer) clearInterval(window._myAttTimer);
-  window._myAttTimer = setInterval(loadMyAttendance, 5000);
+async function deleteClass(id,name){
+  if(!confirm(`Delete class "${name}"? Children in it will become unassigned.`)) return;
+  await client.from('children').update({ class_id:null }).eq('class_id',id);
+  const { error } = await client.from('classes').delete().eq('id',id);
+  if(error){ toast(error.message,true); return; }
+  toast('Class removed'); await reloadAll();
 }
 
-async function loadMyAttendance() {
-  const u = getSession(); if (!u) return;
-  const { data, error } = await client
-    .from("attendance").select("*")
-    .eq("employee_id", u.id)
-    .order("created_at", { ascending: false })
-    .limit(10);
-  if (error) { console.log(error); return; }
-  const list = $("myAttList"); list.innerHTML = "";
-  data.forEach(a => {
-    const li = document.createElement("li");
-    li.className = "record-item";
-    const badge = a.action === "check_in"
-      ? '<span class="badge b-in">Check-in</span>'
-      : '<span class="badge b-out">Check-out</span>';
-    li.innerHTML = `<div class="record-info">${badge}
-      <small>${new Date(a.created_at).toLocaleString()}</small></div>`;
-    list.appendChild(li);
-  });
+/* ============ Servants ============ */
+async function addServant(){
+  if(currentProfile.role!=='manager'){ toast('Only managers can add servants',true); return; }
+  const name = $('sName').value.trim();
+  const email = $('sEmail').value.trim();
+  const phone = $('sPhone').value.trim();
+  const pass = $('sPass').value;
+  if(!name||!email||!pass||pass.length<6){ toast('Fill all fields, password ≥ 6 chars',true); return; }
+
+  // Create auth user via signUp (uses anon key — captcha must be disabled in Supabase Auth settings)
+  const { data, error } = await client.auth.signUp({ email, password: pass });
+  if(error){ toast('Auth error: '+error.message,true); return; }
+
+  // Insert profile row (RLS must permit this — see SQL)
+  const userId = data.user?.id;
+  const ins = await client.from('servants').insert({ user_id:userId, name, email, phone, role:'servant' });
+  if(ins.error){ toast('Profile error: '+ins.error.message,true); return; }
+
+  $('sName').value=''; $('sEmail').value=''; $('sPhone').value=''; $('sPass').value='';
+  toast('Servant added 🙋'); await reloadAll();
+
+  // signUp logs in the new user — re-login as manager
+  alert('Servant created! Note: Supabase may have signed you in as the new servant. Please log out and log back in as manager if needed.');
 }
 
-function toggleScanner() { scanning ? stopScanner() : startScanner(); }
-
-async function startScanner() {
-  if (scanning) return;
-  scanner = new Html5Qrcode("scanner");
-  try {
-    await scanner.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 240, height: 240 } },
-      onQrScanned,
-      () => {}
-    );
-    scanning = true;
-    $("scanBtn").textContent = "Stop Scanner";
-    $("scanStatus").textContent = "Point camera at the green or orange QR code...";
-  } catch (e) {
-    console.log(e);
-    alert("Could not start camera: " + e);
-  }
+function renderServants(){
+  const tbody = $('servantsTable');
+  if(!CACHE.servants.length){ tbody.innerHTML = `<tr><td colspan="5" class="empty"><span class="em">🙋</span>No servants yet</td></tr>`; return; }
+  tbody.innerHTML = CACHE.servants.map(s=>`
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,${avatarColor(s.name)},#a78bfa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0820">${initials(s.name)}</div>
+        <b>${s.name}</b></div></td>
+      <td>${s.email||'—'}</td>
+      <td>${s.phone||'—'}</td>
+      <td><span class="role-badge ${s.role==='manager'?'manager':'servant'}">${s.role.toUpperCase()}</span></td>
+      <td>
+        ${currentProfile.role==='manager' && s.id!==currentProfile.id ? `
+          <button class="btn small secondary" onclick="toggleRole('${s.id}','${s.role}')">${s.role==='manager'?'Demote':'Promote'}</button>
+          <button class="btn small danger" onclick="deleteServant('${s.id}','${s.name.replace(/'/g,"\\'")}')">Remove</button>
+        ` : '—'}
+      </td>
+    </tr>
+  `).join('');
+}
+async function toggleRole(id,curr){
+  const next = curr==='manager'?'servant':'manager';
+  const { error } = await client.from('servants').update({ role:next }).eq('id',id);
+  if(error){ toast(error.message,true); return; }
+  toast('Role updated'); await reloadAll();
+}
+async function deleteServant(id,name){
+  if(!confirm(`Remove servant "${name}"? Their auth account remains; only the profile is deleted.`)) return;
+  const { error } = await client.from('servants').delete().eq('id',id);
+  if(error){ toast(error.message,true); return; }
+  toast('Servant removed'); await reloadAll();
 }
 
-async function stopScanner() {
-  if (!scanning || !scanner) return;
-  try { await scanner.stop(); await scanner.clear(); } catch(e) {}
-  scanning = false;
-  $("scanBtn").textContent = "Start Scanner";
+/* ============ Modal ============ */
+function openModal(title, body, onOk){
+  $('modalTitle').textContent = title;
+  $('modalBody').innerHTML = body;
+  $('modalOk').onclick = onOk;
+  $('modal').classList.add('show');
 }
+function closeModal(){ $('modal').classList.remove('show'); }
 
-async function onQrScanned(decoded) {
-  if (!decoded || decoded === lastScanToken) return;
-  lastScanToken = decoded;
-
-  // 1) Validate token + read its action
-  const { data: tok, error } = await client
-    .from("qr_tokens").select("*")
-    .eq("token", decoded).maybeSingle();
-
-  if (error)  { console.log(error); $("scanStatus").textContent = "❌ Lookup error."; return; }
-  if (!tok)   { $("scanStatus").textContent = "❌ Invalid QR code."; return; }
-  if (new Date(tok.expires_at) < new Date()) {
-    $("scanStatus").textContent = "❌ QR expired — ask the manager for a fresh one.";
-    return;
-  }
-
-  const u = getSession();
-  const action = tok.action; // 'check_in' or 'check_out'
-
-  // 2) Enforce alternation: must be opposite of last action
-  const { data: last } = await client.from("attendance")
-    .select("action").eq("employee_id", u.id)
-    .order("created_at", { ascending: false }).limit(1);
-
-  const lastAction = last && last[0] ? last[0].action : null;
-
-  if (action === "check_in" && lastAction === "check_in") {
-    $("scanStatus").textContent = "⚠️ You're already checked in. Scan the orange Check-out code.";
-    return;
-  }
-  if (action === "check_out" && lastAction !== "check_in") {
-    $("scanStatus").textContent = "⚠️ You must check in first before checking out.";
-    return;
-  }
-
-  // 3) Insert attendance
-  const { error: insErr } = await client.from("attendance").insert([{
-    employee_id: u.id, action, token: decoded
-  }]);
-  if (insErr) { console.log(insErr); $("scanStatus").textContent = "❌ Save failed."; return; }
-
-  const pretty = action === "check_in" ? "CHECK-IN" : "CHECK-OUT";
-  $("scanStatus").textContent = `✅ ${pretty} recorded at ${new Date().toLocaleTimeString()}`;
-  toast(action === "check_in" ? "Checked in!" : "Checked out!");
-  loadMyAttendance();
-  stopScanner();
-
-  // allow same token to be scanned again later (until it expires)
-  setTimeout(() => { lastScanToken = null; }, 3000);
-}
-
-/* ========== Boot ========== */
-boot();
+/* ============ Boot ============ */
+(async ()=>{
+  const { data:{ session } } = await client.auth.getSession();
+  if(session?.user) await loadProfileAndStart(session.user);
+})();
 </script>
 </body>
 </html>
