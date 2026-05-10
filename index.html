@@ -1,204 +1,342 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Simple CRUD App</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>People CRUD App</title>
 
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial;
-      background: #f4f4f4;
-      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      padding: 30px 15px;
+      color: #333;
     }
-
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
     h1 {
       text-align: center;
+      margin-bottom: 25px;
+      color: #4a4a4a;
     }
-
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: auto;
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-
     input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 16px;
-      box-sizing: border-box;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
     }
-
+    input:focus { border-color: #667eea; }
     button {
-      padding: 10px 15px;
-      margin-top: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
+      font-weight: 600;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    button:hover { opacity: 0.9; }
+    button:active { transform: scale(0.97); }
+    .btn-add    { background: #4CAF50; color: white; }
+    .btn-edit   { background: #2196F3; color: white; margin-right: 5px; }
+    .btn-delete { background: #f44336; color: white; }
+    .btn-cancel { background: #9e9e9e; color: white; margin-left: 8px; }
+
+    .status {
+      text-align: center;
+      margin: 15px 0;
+      font-style: italic;
+      color: #666;
     }
 
-    .item {
-      background: #eee;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 10px;
+    .record-list { list-style: none; margin-top: 20px; }
+    .record-item {
+      background: #f9f9f9;
+      border-left: 4px solid #667eea;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .record-info { flex: 1; min-width: 200px; }
+    .record-info strong { color: #333; }
+    .record-info small { color: #888; display: block; margin-top: 4px; }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
+  <div class="container">
+    <h1>📋 People CRUD App</h1>
 
-<div class="box">
+    <!-- Input form -->
+    <div class="form-row">
+      <input type="text"   id="nameInput"  placeholder="Name" />
+      <input type="number" id="ageInput"   placeholder="Age" />
+      <input type="text"   id="phoneInput" placeholder="Phone" />
+      <button id="actionBtn" class="btn-add" onclick="handleAction()">Add</button>
+    </div>
+    <div id="cancelWrapper" style="display:none; text-align:center; margin-bottom:10px;">
+      <button class="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
+    </div>
 
-<h1>CRUD App</h1>
+    <div class="status" id="status">Loading records...</div>
 
-<input id="name" placeholder="Name">
-<input id="age" placeholder="Age">
-<input id="phone" placeholder="Phone">
+    <ul class="record-list" id="recordList"></ul>
+  </div>
 
-<button onclick="addData()">Add</button>
+  <!-- Supabase JS v2 from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<div id="list"></div>
+  <script>
+    /* ===========================================
+       🔑 STEP 1: Replace these with your values
+       =========================================== */
+    const SUPABASE_URL = "https://cjxlwfrqfqwjhugpjdxz.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ";
 
-</div>
+    /* ===========================================
+       🔌 Initialize Supabase Client
+       =========================================== */
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-<script>
+    // Track edit mode
+    let editingId = null;
 
-const supabaseUrl = "https://fjmmecgkrvqzrtjnbqqx.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqbW1lY2drcnZxenJ0am5icXF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MzE3NzEsImV4cCI6MjA5NDAwNzc3MX0.7hKv7xOasyeEXDfwA5UNfP1eFm0HebTMbfHty5m6i7Q"; // ⚠️ put your real anon key here
+    // DOM references
+    const nameInput  = document.getElementById("nameInput");
+    const ageInput   = document.getElementById("ageInput");
+    const phoneInput = document.getElementById("phoneInput");
+    const actionBtn  = document.getElementById("actionBtn");
+    const recordList = document.getElementById("recordList");
+    const statusEl   = document.getElementById("status");
+    const cancelWrapper = document.getElementById("cancelWrapper");
 
-const client = supabase.createClient(supabaseUrl, supabaseKey);
+    /* ===========================================
+       📥 READ: Fetch all records (newest first)
+       =========================================== */
+    async function fetchRecords() {
+      statusEl.textContent = "Loading records...";
+      try {
+        const { data, error } = await client
+          .from("people")
+          .select("*")
+          .order("created_at", { ascending: false });
 
+        if (error) {
+          console.log("Fetch error:", error);
+          statusEl.textContent = "❌ Error loading records. Check console.";
+          return;
+        }
 
+        renderRecords(data || []);
+      } catch (err) {
+        console.log("Unexpected fetch error:", err);
+        statusEl.textContent = "❌ Unexpected error. Check console.";
+      }
+    }
 
-// LOAD DATA
-async function loadData() {
+    /* ===========================================
+       🖼️ Render records to the DOM
+       =========================================== */
+    function renderRecords(records) {
+      recordList.innerHTML = "";
 
-  let { data, error } = await client
-    .from('people')
-    .select('*')
-    .order('created_at', { ascending: false });
+      if (!records || records.length === 0) {
+        statusEl.textContent = "No records yet. Add your first person above!";
+        return;
+      }
 
-  if (error) {
-    console.log(error);
-    return;
-  }
+      statusEl.textContent = `Total records: ${records.length}`;
 
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+      records.forEach((p) => {
+        const li = document.createElement("li");
+        li.className = "record-item";
 
-  if (!data || data.length === 0) {
-    list.innerHTML = "<p>No data found</p>";
-    return;
-  }
+        // Safely handle nulls
+        const safeName  = p.name  ?? "(no name)";
+        const safeAge   = p.age   ?? "—";
+        const safePhone = p.phone ?? "—";
+        const safeDate  = p.created_at
+          ? new Date(p.created_at).toLocaleString()
+          : "";
 
-  data.forEach(item => {
+        li.innerHTML = `
+          <div class="record-info">
+            <strong>${escapeHtml(safeName)}</strong>
+            — Age: ${escapeHtml(String(safeAge))}
+            — 📞 ${escapeHtml(String(safePhone))}
+            <small>Added: ${escapeHtml(safeDate)}</small>
+          </div>
+          <div>
+            <button class="btn-edit"   onclick="startEdit('${p.id}')">Edit</button>
+            <button class="btn-delete" onclick="deleteRecord('${p.id}')">Delete</button>
+          </div>
+        `;
+        recordList.appendChild(li);
+      });
+    }
 
-    list.innerHTML += `
-      <div class="item">
-        <b>Name:</b> ${item.name}<br>
-        <b>Age:</b> ${item.age}<br>
-        <b>Phone:</b> ${item.phone}<br><br>
+    // Tiny helper to avoid HTML injection from DB values
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-        <button onclick="deleteData('${item.id}')">Delete</button>
-        <button onclick="editData('${item.id}','${item.name}','${item.age}','${item.phone}')">Edit</button>
-      </div>
-    `;
-  });
-}
+    /* ===========================================
+       ➕ CREATE / ✏️ UPDATE (handled by one button)
+       =========================================== */
+    async function handleAction() {
+      const name  = nameInput.value.trim();
+      const ageV  = ageInput.value.trim();
+      const phone = phoneInput.value.trim();
 
+      if (!name) {
+        alert("Name is required.");
+        return;
+      }
 
+      const age = ageV === "" ? null : parseInt(ageV, 10);
+      if (ageV !== "" && Number.isNaN(age)) {
+        alert("Age must be a number.");
+        return;
+      }
 
-// ADD DATA
-async function addData() {
+      try {
+        if (editingId) {
+          // UPDATE existing record
+          const { error } = await client
+            .from("people")
+            .update({ name, age, phone })
+            .eq("id", editingId);
 
-  const name = document.getElementById("name").value;
-  const age = document.getElementById("age").value;
-  const phone = document.getElementById("phone").value;
+          if (error) {
+            console.log("Update error:", error);
+            alert("Update failed. Check console.");
+            return;
+          }
+          cancelEdit();
+        } else {
+          // CREATE new record
+          const { error } = await client
+            .from("people")
+            .insert([{ name, age, phone }]);
 
-  if (!name || !age || !phone) {
-    alert("Please fill all fields");
-    return;
-  }
+          if (error) {
+            console.log("Insert error:", error);
+            alert("Insert failed. Check console.");
+            return;
+          }
+        }
 
-  let { error } = await client
-    .from('people')
-    .insert([{ name, age, phone }]);
+        clearForm();
+        fetchRecords();
+      } catch (err) {
+        console.log("Unexpected action error:", err);
+      }
+    }
 
-  if (error) {
-    console.log(error);
-    return;
-  }
+    /* ===========================================
+       ✏️ Begin editing a record
+       =========================================== */
+    async function startEdit(id) {
+      try {
+        const { data, error } = await client
+          .from("people")
+          .select("*")
+          .eq("id", id)
+          .single();
 
-  clearInputs();
-  loadData();
-}
+        if (error || !data) {
+          console.log("Load-for-edit error:", error);
+          alert("Could not load record for editing.");
+          return;
+        }
 
+        editingId = id;
+        nameInput.value  = data.name  ?? "";
+        ageInput.value   = data.age   ?? "";
+        phoneInput.value = data.phone ?? "";
 
+        actionBtn.textContent = "Update";
+        actionBtn.classList.remove("btn-add");
+        actionBtn.style.background = "#ff9800";
+        cancelWrapper.style.display = "block";
 
-// DELETE DATA
-async function deleteData(id) {
+        nameInput.focus();
+      } catch (err) {
+        console.log("Unexpected edit error:", err);
+      }
+    }
 
-  let { error } = await client
-    .from('people')
-    .delete()
-    .eq('id', id);
+    function cancelEdit() {
+      editingId = null;
+      actionBtn.textContent = "Add";
+      actionBtn.classList.add("btn-add");
+      actionBtn.style.background = "";
+      cancelWrapper.style.display = "none";
+      clearForm();
+    }
 
-  if (error) {
-    console.log(error);
-    return;
-  }
+    /* ===========================================
+       🗑️ DELETE record
+       =========================================== */
+    async function deleteRecord(id) {
+      if (!confirm("Delete this record?")) return;
 
-  loadData();
-}
+      try {
+        const { error } = await client.from("people").delete().eq("id", id);
+        if (error) {
+          console.log("Delete error:", error);
+          alert("Delete failed. Check console.");
+          return;
+        }
 
+        // If deleting the record currently being edited, cancel edit mode
+        if (editingId === id) cancelEdit();
 
+        fetchRecords();
+      } catch (err) {
+        console.log("Unexpected delete error:", err);
+      }
+    }
 
-// EDIT DATA
-async function editData(id, name, age, phone) {
+    /* ===========================================
+       🧹 Helpers
+       =========================================== */
+    function clearForm() {
+      nameInput.value  = "";
+      ageInput.value   = "";
+      phoneInput.value = "";
+    }
 
-  const newName = prompt("Name", name);
-  const newAge = prompt("Age", age);
-  const newPhone = prompt("Phone", phone);
-
-  if (!newName || !newAge || !newPhone) return;
-
-  let { error } = await client
-    .from('people')
-    .update({
-      name: newName,
-      age: newAge,
-      phone: newPhone
-    })
-    .eq('id', id);
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  loadData();
-}
-
-
-
-// CLEAR INPUTS
-function clearInputs() {
-  document.getElementById("name").value = "";
-  document.getElementById("age").value = "";
-  document.getElementById("phone").value = "";
-}
-
-
-
-// START
-loadData();
-
-</script>
-
+    // Initial load
+    fetchRecords();
+  </script>
 </body>
 </html>
