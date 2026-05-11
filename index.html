@@ -673,8 +673,8 @@ a{color:inherit;text-decoration:none;}
 // ============== CONFIGURATION ==============
 const SUPABASE_URL = 'https://cjxlwfrqfqwjhugpjdxz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ';
-let supabase = null;
-try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn('Supabase not configured, using local mode'); }
+let supabasedb = null;
+try { supabasedb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn('Supabase not configured, using local mode'); }
 
 // ============== STATE ==============
 const state = {
