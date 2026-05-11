@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#a8c5ff">
 <title>خدمة مدارس الأحد</title>
-<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogItiu2K/ZhdipINmF2K/Yp9ix2LMg2KfZhNij2K3ZhyIsCiAgInNob3J0X25hbWUiOiAi2K3YttmI2LEiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsCiAgInRoZW1lX2NvbG9yIjogIiNhOGM1ZmYiCn0=">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -30,7 +29,7 @@
 [data-theme="dark"]{--bg:#1a1d29;--card:#252836;--text:#e8ecf3;--text-light:#a0a8b8;--border:#353948;--shadow:0 4px 20px rgba(0,0,0,0.3);}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{font-family:'Cairo','Tajawal',sans-serif;background:var(--bg);color:var(--text);direction:rtl;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
-body{min-height:100vh;padding-bottom:80px;}
+body{min-height:100vh;padding-bottom:90px;}
 button{font-family:inherit;cursor:pointer;border:none;outline:none;}
 input,select,textarea{font-family:inherit;outline:none;}
 a{color:inherit;text-decoration:none;}
@@ -44,10 +43,11 @@ a{color:inherit;text-decoration:none;}
 @keyframes float{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,-20px) scale(1.05);}}
 .login-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-radius:30px;padding:40px 30px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.15);position:relative;z-index:1;animation:slideUp 0.6s ease;}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
-.login-logo{width:90px;height:90px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;color:#fff;box-shadow:0 10px 30px rgba(168,197,255,0.5);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+.login-logo{width:90px;height:90px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;color:#fff;box-shadow:0 10px 30px rgba(168,197,255,0.5);overflow:hidden;}
+.login-logo img{width:100%;height:100%;object-fit:cover;}
 .login-title{text-align:center;font-size:24px;font-weight:800;color:var(--text);margin-bottom:8px;}
 .login-subtitle{text-align:center;color:var(--text-light);font-size:14px;margin-bottom:30px;}
+
 .form-group{margin-bottom:18px;}
 .form-label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--text);}
 .form-input{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:15px;font-size:15px;background:var(--card);color:var(--text);transition:all 0.3s;}
@@ -55,6 +55,7 @@ a{color:inherit;text-decoration:none;}
 .input-icon{position:relative;}
 .input-icon i{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--text-light);}
 .input-icon input{padding-right:46px;}
+
 .btn{padding:14px 24px;border-radius:15px;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all 0.3s;cursor:pointer;border:none;}
 .btn-primary{background:var(--gradient);color:#fff;box-shadow:0 6px 20px rgba(168,197,255,0.4);}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(168,197,255,0.5);}
@@ -75,7 +76,8 @@ a{color:inherit;text-decoration:none;}
 .app.active{display:block;}
 .header{position:sticky;top:0;background:var(--card);box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;z-index:50;backdrop-filter:blur(10px);}
 .header-brand{display:flex;align-items:center;gap:10px;}
-.header-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;}
+.header-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;overflow:hidden;}
+.header-logo img{width:100%;height:100%;object-fit:cover;}
 .header-title{font-weight:800;font-size:16px;}
 .header-actions{display:flex;align-items:center;gap:8px;}
 .icon-btn{width:42px;height:42px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--text);position:relative;transition:all 0.3s;}
@@ -88,10 +90,6 @@ a{color:inherit;text-decoration:none;}
 .live-indicator.offline .live-dot{background:#f44336;animation:none;}
 @keyframes pulseLive{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(76,175,80,0.6);}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(76,175,80,0);}}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-40px);}}
-.flash-update{animation:flashHL 1s ease;}
-@keyframes flashHL{0%{background:rgba(168,197,255,0.6);}100%{background:transparent;}}
-.online-users{display:flex;gap:-8px;margin-right:8px;}
-.online-user-dot{width:24px;height:24px;border-radius:50%;background:var(--gradient);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--card);margin-right:-8px;}
 
 .side-menu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:var(--card);box-shadow:-10px 0 30px rgba(0,0,0,0.1);z-index:200;transition:right 0.3s;overflow-y:auto;}
 .side-menu.open{right:0;}
@@ -107,20 +105,41 @@ a{color:inherit;text-decoration:none;}
 .side-item i{width:24px;color:var(--primary);}
 .side-item.danger i,.side-item.danger{color:#ff6b6b;}
 
-.main{padding:16px;max-width:900px;margin:0 auto;}
+.main{padding:16px;max-width:980px;margin:0 auto;}
 .page{display:none;animation:fadeIn 0.4s;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-.bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--card);border-radius:25px;padding:8px;display:flex;gap:4px;box-shadow:var(--shadow-lg);z-index:90;width:calc(100% - 24px);max-width:480px;justify-content:space-around;}
+.bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--card);border-radius:25px;padding:8px;display:flex;gap:4px;box-shadow:var(--shadow-lg);z-index:90;width:calc(100% - 24px);max-width:520px;justify-content:space-around;}
 .nav-item{flex:1;padding:10px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-light);transition:all 0.3s;cursor:pointer;font-size:11px;font-weight:600;background:transparent;}
 .nav-item.active{background:var(--gradient);color:#fff;box-shadow:0 6px 18px rgba(168,197,255,0.5);transform:translateY(-4px);}
 .nav-item i{font-size:18px;}
 
 .welcome-card{background:var(--gradient);color:#fff;padding:24px;border-radius:var(--radius);margin-bottom:20px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
 .welcome-card::before{content:'';position:absolute;top:-50px;left:-50px;width:200px;height:200px;background:rgba(255,255,255,0.15);border-radius:50%;}
-.welcome-card h2{font-size:22px;font-weight:800;margin-bottom:6px;position:relative;}
-.welcome-card p{opacity:0.95;position:relative;}
+.welcome-card::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:rgba(255,255,255,0.1);border-radius:50%;}
+.welcome-card h2{font-size:24px;font-weight:800;margin-bottom:6px;position:relative;}
+.welcome-card p{opacity:0.95;position:relative;font-size:14px;}
+
+.date-selector{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:20px;position:relative;overflow:hidden;}
+.date-selector::before{content:'';position:absolute;top:0;right:0;width:100%;height:4px;background:var(--gradient);}
+.date-selector-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.date-selector-title{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--text);}
+.date-selector-title i{color:var(--primary);font-size:18px;}
+.date-nav-btns{display:flex;gap:6px;}
+.date-nav-btn{width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--text);transition:all 0.3s;cursor:pointer;}
+.date-nav-btn:hover{background:var(--gradient);color:#fff;}
+.date-display{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;background:linear-gradient(135deg,rgba(168,197,255,0.1),rgba(197,179,255,0.1));border-radius:15px;}
+.date-day-circle{width:60px;height:60px;background:var(--gradient);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px rgba(168,197,255,0.4);}
+.date-day-num{font-size:22px;font-weight:800;line-height:1;}
+.date-day-month{font-size:10px;opacity:0.95;margin-top:2px;}
+.date-info{flex:1;}
+.date-day-name{font-size:18px;font-weight:700;color:var(--text);}
+.date-full{font-size:12px;color:var(--text-light);margin-top:2px;}
+.date-input-wrap{position:relative;}
+.date-input-wrap input{padding:10px 12px;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-size:13px;width:140px;cursor:pointer;}
+.date-input-wrap input:focus{border-color:var(--primary);}
+.today-btn{background:var(--gradient-success);color:#1d6b3a;padding:8px 14px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;}
 
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
 .stat-card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);text-align:center;transition:all 0.3s;cursor:pointer;}
@@ -153,6 +172,7 @@ a{color:inherit;text-decoration:none;}
 .child-info{flex:1;min-width:0;}
 .child-name{font-weight:700;font-size:15px;margin-bottom:4px;}
 .child-class{font-size:12px;color:var(--text-light);}
+.child-id-badge{font-size:10px;color:var(--text-light);background:var(--bg);padding:2px 6px;border-radius:6px;display:inline-block;margin-top:3px;font-family:monospace;}
 .child-stats{display:flex;justify-content:space-around;padding:10px 0;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);margin-bottom:12px;}
 .child-stat{text-align:center;}
 .child-stat-val{font-weight:800;font-size:16px;color:var(--primary-dark);}
@@ -162,13 +182,25 @@ a{color:inherit;text-decoration:none;}
 
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
 .modal.open{display:flex;animation:fadeIn 0.3s;}
-.modal-content{background:var(--card);border-radius:25px 25px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:slideUpModal 0.3s;}
+.modal-content{background:var(--card);border-radius:25px 25px 0 0;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;animation:slideUpModal 0.3s;}
 @keyframes slideUpModal{from{transform:translateY(100%);}to{transform:translateY(0);}}
 @media(min-width:600px){.modal{align-items:center;}.modal-content{border-radius:25px;}}
 .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1;border-radius:25px 25px 0 0;}
 .modal-title{font-weight:800;font-size:18px;}
 .modal-close{width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
 .modal-body{padding:20px;}
+
+.logo-uploader{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px;background:var(--bg);border-radius:15px;margin-bottom:14px;}
+.logo-preview{width:100px;height:100px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;overflow:hidden;border:4px solid var(--card);box-shadow:var(--shadow);}
+.logo-preview img{width:100%;height:100%;object-fit:cover;}
+
+.bulk-area{background:var(--bg);border-radius:15px;padding:14px;margin-bottom:14px;}
+.bulk-textarea{width:100%;min-height:180px;padding:12px;border:2px dashed var(--border);border-radius:12px;background:var(--card);color:var(--text);font-family:monospace;font-size:13px;resize:vertical;}
+.bulk-table{width:100%;border-collapse:collapse;font-size:12px;}
+.bulk-table th{background:var(--gradient);color:#fff;padding:8px 6px;font-weight:700;}
+.bulk-table td{padding:6px;border-bottom:1px solid var(--border);}
+.bulk-table tr.invalid td{background:rgba(255,179,179,0.15);}
+.bulk-table tr.valid td{background:rgba(179,229,199,0.1);}
 
 .scanner-container{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;}
 #qr-reader{width:100%;}
@@ -190,9 +222,6 @@ a{color:inherit;text-decoration:none;}
 .empty-state{text-align:center;padding:60px 20px;color:var(--text-light);}
 .empty-state i{font-size:60px;margin-bottom:16px;opacity:0.4;}
 .empty-state p{font-size:15px;}
-
-.fab{position:fixed;bottom:90px;left:20px;width:56px;height:56px;border-radius:50%;background:var(--gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:var(--shadow-lg);z-index:80;cursor:pointer;transition:all 0.3s;}
-.fab:hover{transform:scale(1.1) rotate(90deg);}
 
 .chart-container{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:16px;}
 .chart-container canvas{max-height:300px;}
@@ -222,10 +251,19 @@ a{color:inherit;text-decoration:none;}
 .connection-status.online{color:#4caf50;}
 .connection-status.offline{color:#f44336;}
 
+.quick-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.quick-action-btn{background:var(--bg);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:all 0.3s;border:2px solid transparent;}
+.quick-action-btn:hover{border-color:var(--primary);transform:translateY(-3px);}
+.quick-action-btn i{font-size:24px;color:var(--primary);margin-bottom:8px;display:block;}
+.quick-action-btn span{font-size:12px;font-weight:600;}
+
 @media(max-width:480px){
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .children-grid{grid-template-columns:1fr;}
   .header-title{font-size:14px;}
+  .date-display{grid-template-columns:auto 1fr;}
+  .date-input-wrap{grid-column:1/-1;margin-top:8px;}
+  .date-input-wrap input{width:100%;}
 }
 </style>
 </head>
@@ -234,36 +272,22 @@ a{color:inherit;text-decoration:none;}
 <!-- LOGIN PAGE -->
 <div class="login-page" id="loginPage">
   <div class="login-card">
-    <div class="login-logo"><i class="fas fa-church"></i></div>
-    <h1 class="login-title">خدمة مدارس الأحد</h1>
+    <div class="login-logo" id="loginLogo"><i class="fas fa-church"></i></div>
+    <h1 class="login-title" id="loginTitle">خدمة مدارس الأحد</h1>
     <p class="login-subtitle">نظام إدارة الخدمة الكنسية - متزامن لحظياً</p>
     <form id="loginForm">
       <div class="form-group">
         <label class="form-label">اسم المستخدم</label>
-        <div class="input-icon">
-          <i class="fas fa-user"></i>
-          <input type="text" class="form-input" id="loginUser" required value="admin">
-        </div>
+        <div class="input-icon"><i class="fas fa-user"></i><input type="text" class="form-input" id="loginUser" required value="admin"></div>
       </div>
       <div class="form-group">
         <label class="form-label">كلمة المرور</label>
-        <div class="input-icon">
-          <i class="fas fa-lock"></i>
-          <input type="password" class="form-input" id="loginPass" required value="admin123">
-        </div>
+        <div class="input-icon"><i class="fas fa-lock"></i><input type="password" class="form-input" id="loginPass" required value="admin123"></div>
       </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="rememberMe" checked>
-        <label for="rememberMe">تذكرني</label>
-      </div>
-      <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
-        <i class="fas fa-sign-in-alt"></i>
-        <span>دخول</span>
-      </button>
+      <div class="checkbox-row"><input type="checkbox" id="rememberMe" checked><label for="rememberMe">تذكرني</label></div>
+      <button type="submit" class="btn btn-primary btn-block" id="loginBtn"><i class="fas fa-sign-in-alt"></i><span>دخول</span></button>
     </form>
-    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--text-light);">
-      <i class="fas fa-info-circle"></i> الحساب الافتراضي: admin / admin123
-    </p>
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--text-light);"><i class="fas fa-info-circle"></i> admin / admin123</p>
   </div>
 </div>
 
@@ -271,7 +295,7 @@ a{color:inherit;text-decoration:none;}
 <div class="app" id="app">
   <header class="header">
     <div class="header-brand">
-      <div class="header-logo"><i class="fas fa-church"></i></div>
+      <div class="header-logo" id="headerLogo"><i class="fas fa-church"></i></div>
       <div>
         <div class="header-title" id="appName">خدمة مدارس الأحد</div>
         <div class="live-indicator" id="liveIndicator">
@@ -281,14 +305,8 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
     <div class="header-actions">
-      <div class="online-users" id="onlineUsers"></div>
-      <button class="icon-btn" onclick="openNotifications()">
-        <i class="fas fa-bell"></i>
-        <span class="notif-badge" id="notifBadge" style="display:none;"></span>
-      </button>
-      <button class="icon-btn" onclick="toggleSideMenu()">
-        <i class="fas fa-bars"></i>
-      </button>
+      <button class="icon-btn" onclick="openNotifications()"><i class="fas fa-bell"></i><span class="notif-badge" id="notifBadge" style="display:none;"></span></button>
+      <button class="icon-btn" onclick="toggleSideMenu()"><i class="fas fa-bars"></i></button>
     </div>
   </header>
 
@@ -304,6 +322,8 @@ a{color:inherit;text-decoration:none;}
       <div class="side-item" onclick="showPage('children');toggleSideMenu()"><i class="fas fa-child"></i> الأطفال</div>
       <div class="side-item" onclick="showPage('scanner');toggleSideMenu()"><i class="fas fa-qrcode"></i> الماسح</div>
       <div class="side-item" onclick="showPage('statistics');toggleSideMenu()"><i class="fas fa-chart-pie"></i> الإحصائيات</div>
+      <div class="side-item" onclick="showPage('events');toggleSideMenu()"><i class="fas fa-calendar-alt"></i> الفعاليات</div>
+      <div class="side-item" onclick="openBulkAddModal();toggleSideMenu()"><i class="fas fa-paste"></i> إضافة جماعية</div>
       <div class="side-item" onclick="showPage('settings');toggleSideMenu()"><i class="fas fa-cog"></i> الإعدادات</div>
       <div class="side-item" onclick="toggleTheme()"><i class="fas fa-moon"></i> تبديل المظهر</div>
       <div class="side-item" onclick="backupData()"><i class="fas fa-cloud-download-alt"></i> نسخة احتياطية</div>
@@ -315,10 +335,35 @@ a{color:inherit;text-decoration:none;}
 
   <main class="main">
 
+    <!-- HOME -->
     <div class="page active" id="page-home">
       <div class="welcome-card">
-        <h2 id="welcomeText">أهلاً بك 👋</h2>
-        <p id="currentDate">نسأل الله أن يبارك خدمتك اليوم</p>
+        <h2>أهلاً وسهلاً 👋</h2>
+        <p id="currentBlessing">نسأل الله أن يبارك خدمتك اليوم</p>
+      </div>
+
+      <div class="date-selector">
+        <div class="date-selector-header">
+          <div class="date-selector-title"><i class="fas fa-calendar-day"></i><span>تاريخ العمليات</span></div>
+          <div class="date-nav-btns">
+            <button class="date-nav-btn" onclick="shiftDate(-1)" title="اليوم السابق"><i class="fas fa-chevron-right"></i></button>
+            <button class="date-nav-btn" onclick="shiftDate(1)" title="اليوم التالي"><i class="fas fa-chevron-left"></i></button>
+          </div>
+        </div>
+        <div class="date-display">
+          <div class="date-day-circle">
+            <div class="date-day-num" id="dateDayNum">--</div>
+            <div class="date-day-month" id="dateDayMonth">---</div>
+          </div>
+          <div class="date-info">
+            <div class="date-day-name" id="dateDayName">---</div>
+            <div class="date-full" id="dateFull">---</div>
+          </div>
+          <div class="date-input-wrap">
+            <input type="date" id="operationDate" onchange="onDateChange()">
+            <button class="today-btn" onclick="setToday()" style="margin-top:6px;width:100%;"><i class="fas fa-undo"></i> اليوم</button>
+          </div>
+        </div>
       </div>
 
       <div class="search-bar">
@@ -335,27 +380,31 @@ a{color:inherit;text-decoration:none;}
         <div class="stat-card" onclick="showPage('statistics')">
           <div class="stat-icon" style="background:var(--gradient-success)"><i class="fas fa-check-circle"></i></div>
           <div class="stat-value" id="todayAttendance">0</div>
-          <div class="stat-label">حضور اليوم</div>
+          <div class="stat-label">حضور التاريخ المحدد</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--gradient-warning)"><i class="fas fa-star"></i></div>
           <div class="stat-value" id="totalPoints">0</div>
-          <div class="stat-label">إجمالي النقاط</div>
+          <div class="stat-label">إجمالي الرصيد</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon" style="background:var(--gradient-info)"><i class="fas fa-users"></i></div>
-          <div class="stat-value" id="totalServants">0</div>
-          <div class="stat-label">المتصلون</div>
+          <div class="stat-icon" style="background:var(--gradient-info)"><i class="fas fa-percent"></i></div>
+          <div class="stat-value" id="attendanceRate">0%</div>
+          <div class="stat-label">معدل الحضور</div>
         </div>
       </div>
 
       <div class="section">
         <div class="section-title"><span><i class="fas fa-bolt"></i> إجراءات سريعة</span></div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-          <button class="btn btn-primary" onclick="openAddChildModal()"><i class="fas fa-plus"></i> إضافة طفل</button>
-          <button class="btn btn-success" onclick="showPage('scanner')"><i class="fas fa-qrcode"></i> مسح QR</button>
-          <button class="btn btn-info" onclick="showPage('statistics')"><i class="fas fa-chart-bar"></i> التقارير</button>
-          <button class="btn btn-warning" onclick="exportData()"><i class="fas fa-file-export"></i> تصدير</button>
+        <div class="quick-actions-grid">
+          <div class="quick-action-btn" onclick="openAddChildModal()"><i class="fas fa-user-plus"></i><span>إضافة طفل</span></div>
+          <div class="quick-action-btn" onclick="openBulkAddModal()"><i class="fas fa-paste"></i><span>إضافة جماعية</span></div>
+          <div class="quick-action-btn" onclick="showPage('scanner')"><i class="fas fa-qrcode"></i><span>مسح QR</span></div>
+          <div class="quick-action-btn" onclick="showPage('statistics')"><i class="fas fa-chart-bar"></i><span>التقارير</span></div>
+          <div class="quick-action-btn" onclick="exportData()"><i class="fas fa-file-export"></i><span>تصدير</span></div>
+          <div class="quick-action-btn" onclick="markAllPresent()"><i class="fas fa-check-double"></i><span>حضور جماعي</span></div>
+          <div class="quick-action-btn" onclick="sendBulkMessage()"><i class="fas fa-paper-plane"></i><span>رسالة جماعية</span></div>
+          <div class="quick-action-btn" onclick="openBirthdays()"><i class="fas fa-birthday-cake"></i><span>أعياد الميلاد</span></div>
         </div>
       </div>
 
@@ -365,7 +414,7 @@ a{color:inherit;text-decoration:none;}
       </div>
 
       <div class="section">
-        <div class="section-title"><span><i class="fas fa-trophy"></i> الأطفال الأعلى نقاطاً</span></div>
+        <div class="section-title"><span><i class="fas fa-trophy"></i> الأطفال الأعلى رصيداً</span></div>
         <div id="topChildren"></div>
       </div>
 
@@ -375,16 +424,17 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
+    <!-- CHILDREN -->
     <div class="page" id="page-children">
       <div class="search-bar">
         <i class="fas fa-search"></i>
-        <input type="text" id="childrenSearch" placeholder="بحث عن طفل بالاسم أو الفصل..." oninput="renderChildren()">
+        <input type="text" id="childrenSearch" placeholder="بحث بالاسم، الفصل، أو ID..." oninput="renderChildren()">
       </div>
       <div class="controls">
         <select id="filterClass" onchange="renderChildren()"><option value="">كل الفصول</option></select>
         <select id="sortBy" onchange="renderChildren()">
           <option value="name">ترتيب: الاسم</option>
-          <option value="points">ترتيب: النقاط</option>
+          <option value="balance">ترتيب: الرصيد</option>
           <option value="attendance">ترتيب: الحضور</option>
           <option value="date">ترتيب: الأحدث</option>
         </select>
@@ -393,30 +443,30 @@ a{color:inherit;text-decoration:none;}
           <option value="contact">اتصال</option>
           <option value="whatsapp">واتساب</option>
           <option value="sms">رسالة SMS</option>
-          <option value="addPoints">إضافة نقاط</option>
-          <option value="deductPoints">خصم نقاط</option>
+          <option value="addPoints">إضافة رصيد</option>
+          <option value="deductPoints">خصم رصيد</option>
           <option value="edit">تعديل البيانات</option>
           <option value="delete">حذف</option>
           <option value="qr">عرض QR</option>
           <option value="transfer">نقل لفصل آخر</option>
           <option value="absent">تسجيل غياب</option>
           <option value="note">إضافة ملاحظة</option>
-          <option value="behavior">تقرير سلوك</option>
         </select>
         <input type="number" id="pointsValue" value="1" min="1" style="max-width:100px;">
       </div>
       <div class="children-grid" id="childrenGrid"></div>
     </div>
 
+    <!-- SCANNER -->
     <div class="page" id="page-scanner">
       <div class="section">
         <div class="section-title"><span><i class="fas fa-qrcode"></i> ماسح QR</span></div>
         <div class="controls">
           <select id="scannerFunction">
             <option value="attendance">تسجيل حضور</option>
-            <option value="addPoints">إضافة نقاط</option>
-            <option value="deductPoints">خصم نقاط</option>
-            <option value="quickActions">إجراءات سريعة</option>
+            <option value="addPoints">إضافة رصيد</option>
+            <option value="deductPoints">خصم رصيد</option>
+            <option value="quickActions">عرض الملف الشخصي</option>
           </select>
           <input type="number" id="scannerPoints" value="1" min="1" style="max-width:100px;">
         </div>
@@ -429,15 +479,16 @@ a{color:inherit;text-decoration:none;}
         </div>
       </div>
       <div class="section">
-        <div class="section-title"><span><i class="fas fa-list"></i> آخر العمليات (مباشر)</span></div>
+        <div class="section-title"><span><i class="fas fa-list"></i> آخر العمليات</span></div>
         <div id="scanHistory"></div>
       </div>
     </div>
 
+    <!-- STATISTICS -->
     <div class="page" id="page-statistics">
       <div class="tabs">
         <div class="tab active" onclick="switchStatsTab('attendance',event)">الحضور</div>
-        <div class="tab" onclick="switchStatsTab('points',event)">النقاط</div>
+        <div class="tab" onclick="switchStatsTab('balance',event)">الرصيد</div>
         <div class="tab" onclick="switchStatsTab('growth',event)">النمو</div>
         <div class="tab" onclick="switchStatsTab('contacts',event)">التواصل</div>
       </div>
@@ -459,13 +510,27 @@ a{color:inherit;text-decoration:none;}
       <div class="chart-container"><div class="section-title"><span><i class="fas fa-chart-line"></i> نمو الخدمة</span></div><canvas id="growthChart"></canvas></div>
     </div>
 
+    <!-- EVENTS -->
+    <div class="page" id="page-events">
+      <div class="section">
+        <div class="section-title">
+          <span><i class="fas fa-calendar-alt"></i> الفعاليات والأنشطة</span>
+          <button class="btn btn-primary btn-sm" onclick="openAddEventModal()"><i class="fas fa-plus"></i> فعالية</button>
+        </div>
+        <div id="eventsList"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
     <div class="page" id="page-settings">
       <div class="section">
-        <div class="section-title"><span><i class="fas fa-cog"></i> إعدادات عامة</span></div>
+        <div class="section-title"><span><i class="fas fa-cog"></i> إعدادات الخدمة</span></div>
         <div class="settings-list">
+          <div class="settings-item" onclick="openServiceConfigModal()"><i class="fas fa-church"></i><div class="settings-item-text"><div class="settings-item-title">اسم الخدمة والشعار</div><div class="settings-item-desc">تعديل الاسم، الاختصار، رفع الشعار</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
           <div class="settings-item" onclick="openServantsModal()"><i class="fas fa-users"></i><div class="settings-item-text"><div class="settings-item-title">إدارة الخدام</div><div class="settings-item-desc">إضافة وصلاحيات</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
           <div class="settings-item" onclick="openClassesModal()"><i class="fas fa-layer-group"></i><div class="settings-item-text"><div class="settings-item-title">الفصول والمراحل</div><div class="settings-item-desc">إدارة فصول الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
           <div class="settings-item" onclick="openAddChildModal()"><i class="fas fa-user-plus"></i><div class="settings-item-text"><div class="settings-item-title">إضافة طفل جديد</div><div class="settings-item-desc">تسجيل طفل في الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="openBulkAddModal()"><i class="fas fa-paste"></i><div class="settings-item-text"><div class="settings-item-title">إضافة جماعية (Bulk)</div><div class="settings-item-desc">لصق بيانات لمعاينة وإضافة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
           <div class="settings-item" onclick="openServiceDaysModal()"><i class="fas fa-calendar"></i><div class="settings-item-text"><div class="settings-item-title">أيام الخدمة</div><div class="settings-item-desc">تحديد أيام الاجتماع</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
           <div class="settings-item" onclick="openTemplatesModal()"><i class="fas fa-comment-dots"></i><div class="settings-item-text"><div class="settings-item-title">قوالب الرسائل</div><div class="settings-item-desc">واتساب و SMS</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
           <div class="settings-item" onclick="backupData()"><i class="fas fa-cloud"></i><div class="settings-item-text"><div class="settings-item-title">النسخ الاحتياطي</div><div class="settings-item-desc">حفظ واستعادة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
@@ -477,8 +542,6 @@ a{color:inherit;text-decoration:none;}
 
   </main>
 
-  <button class="fab" onclick="openAddChildModal()" title="إضافة طفل"><i class="fas fa-plus"></i></button>
-
   <nav class="bottom-nav">
     <div class="nav-item active" data-page="home" onclick="showPage('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
     <div class="nav-item" data-page="children" onclick="showPage('children')"><i class="fas fa-child"></i><span>الأطفال</span></div>
@@ -488,41 +551,68 @@ a{color:inherit;text-decoration:none;}
   </nav>
 </div>
 
+<!-- CHILD MODAL -->
 <div class="modal" id="childModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title" id="childModalTitle">إضافة طفل</div><div class="modal-close" onclick="closeModal('childModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
       <form id="childForm">
         <input type="hidden" id="childId">
+        <div class="form-group" id="childIdDisplay" style="display:none;"><label class="form-label">المعرف (ID)</label><input type="text" class="form-input" id="cIdView" readonly style="font-family:monospace;background:var(--bg);"></div>
         <div class="form-group"><label class="form-label">الاسم الكامل *</label><input type="text" class="form-input" id="cName" required></div>
-        <div class="form-group"><label class="form-label">الاسم المستعار</label><input type="text" class="form-input" id="cNick"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div class="form-group"><label class="form-label">النوع</label><select class="form-input" id="cGender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
-          <div class="form-group"><label class="form-label">تاريخ الميلاد</label><input type="date" class="form-input" id="cBirth"></div>
-        </div>
-        <div class="form-group"><label class="form-label">الفصل</label><select class="form-input" id="cClass"></select></div>
-        <div class="form-group"><label class="form-label">المدرسة</label><input type="text" class="form-input" id="cSchool"></div>
-        <div class="form-group"><label class="form-label">اسم ولي الأمر</label><input type="text" class="form-input" id="cParent"></div>
         <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-input" id="cPhone"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="form-group"><label class="form-label">تاريخ الميلاد</label><input type="date" class="form-input" id="cBirth"></div>
+          <div class="form-group"><label class="form-label">النوع</label><select class="form-input" id="cGender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
+        </div>
         <div class="form-group"><label class="form-label">العنوان</label><input type="text" class="form-input" id="cAddress"></div>
+        <div class="form-group"><label class="form-label">الفصل</label><select class="form-input" id="cClass"></select></div>
+        <div class="form-group"><label class="form-label">الصورة (Base64 أو URL)</label>
+          <input type="file" accept="image/*" id="cPhotoFile" onchange="handlePhotoUpload(event)" class="form-input">
+          <input type="hidden" id="cPhoto">
+          <div id="photoPreview" style="margin-top:10px;text-align:center;"></div>
+        </div>
         <div class="form-group"><label class="form-label">ملاحظات</label><textarea class="form-input" id="cNotes" rows="3"></textarea></div>
-        <div class="form-group"><label class="form-label">ملاحظات طبية</label><textarea class="form-input" id="cMedical" rows="2"></textarea></div>
+        <div class="form-group"><label class="form-label">الرصيد الأولي (نقاط)</label><input type="number" class="form-input" id="cBalance" value="0" min="0" step="1"></div>
         <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> حفظ ومزامنة</button>
       </form>
     </div>
   </div>
 </div>
 
+<!-- BULK ADD MODAL -->
+<div class="modal" id="bulkModal">
+  <div class="modal-content" style="max-width:900px;">
+    <div class="modal-header"><div class="modal-title"><i class="fas fa-paste"></i> إضافة جماعية للأطفال</div><div class="modal-close" onclick="closeModal('bulkModal')"><i class="fas fa-times"></i></div></div>
+    <div class="modal-body">
+      <div class="bulk-area">
+        <p style="margin-bottom:10px;font-size:13px;"><i class="fas fa-info-circle" style="color:var(--primary)"></i> الصق البيانات من Excel (كل سطر = طفل). الأعمدة بالترتيب:</p>
+        <p style="margin-bottom:10px;font-size:12px;font-family:monospace;background:var(--card);padding:8px;border-radius:8px;direction:ltr;text-align:left;">الكود | الاسم رباعي | رقم التليفون | تاريخ الميلاد | العنوان | ملاحظات | صورة | الرصيد</p>
+        <p style="margin-bottom:10px;font-size:12px;color:var(--text-light);">يمكن استخدام Tab (نسخ مباشر من Excel) أو , أو | كفاصل. تاريخ الميلاد يقبل M/D/YYYY أو YYYY-MM-DD. اترك الكود فارغاً ليُولَّد تلقائياً.</p>
+        <textarea class="bulk-textarea" id="bulkInput" placeholder="StMary1708701492802	ابرام بيتر وجيه	01282062301	5/28/2019	المنشاه العماري			70&#10;StMary1715354731376	ارميا كيرلس روماني	01206153761	10/15/2021				55"></textarea>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+          <div class="form-group"><label class="form-label">الفصل الافتراضي</label><select class="form-input" id="bulkDefaultClass"></select></div>
+          <div class="form-group"><label class="form-label">السطر الأول</label><select class="form-input" id="bulkHasHeader"><option value="0">بيانات</option><option value="1">عناوين (تجاهل)</option></select></div>
+        </div>
+        <button class="btn btn-info btn-block" onclick="parseBulkData()" style="margin-top:10px;"><i class="fas fa-search"></i> معاينة البيانات</button>
+      </div>
+      <div id="bulkPreview"></div>
+    </div>
+  </div>
+</div>
+
+<!-- QR MODAL -->
 <div class="modal" id="qrModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title">رمز QR</div><div class="modal-close" onclick="closeModal('qrModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
-      <div class="qr-display"><div id="qrcode"></div><h3 id="qrChildName" style="margin-top:16px;"></h3><p id="qrChildClass" style="color:var(--text-light);"></p></div>
+      <div class="qr-display"><div id="qrcode"></div><h3 id="qrChildName" style="margin-top:16px;"></h3><p id="qrChildClass" style="color:var(--text-light);"></p><p id="qrChildId" style="font-family:monospace;font-size:11px;color:var(--text-light);margin-top:4px;"></p></div>
       <button class="btn btn-primary btn-block" onclick="printQR()"><i class="fas fa-print"></i> طباعة</button>
     </div>
   </div>
 </div>
 
+<!-- PROFILE MODAL -->
 <div class="modal" id="profileModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title">ملف الطفل</div><div class="modal-close" onclick="closeModal('profileModal')"><i class="fas fa-times"></i></div></div>
@@ -530,6 +620,7 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
+<!-- GENERIC MODAL -->
 <div class="modal" id="genericModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title" id="genericTitle"></div><div class="modal-close" onclick="closeModal('genericModal')"><i class="fas fa-times"></i></div></div>
@@ -543,62 +634,61 @@ a{color:inherit;text-decoration:none;}
 
 <script>
 /* ============================================================
-   ⚡ REAL-TIME SUNDAY SCHOOL APP
-   كل العمليات تتزامن لحظياً بين جميع المستخدمين عبر Supabase
+   ⚡ SUNDAY SCHOOL APP v3.1 - FIXED EDITION
+   ============================================================
+   التعديلات الرئيسية:
+   1. توحيد النقاط والرصيد في حقل واحد: balance
+   2. حساب balance/attendance_count ديناميكياً من السجلات (single source of truth)
+   3. منع تكرار ID
+   4. إصلاح أيقونة واتساب
+   5. إصلاح regex في openBirthdays
+   6. تنظيم استدعاءات state.user.id
+   7. إصلاح child_notes/notifications/events realtime
+   8. منع رسم الشارتس على canvas غير ظاهر
    ============================================================ */
 
-// ============== SUPABASE CONFIGURATION ==============
 const SUPABASE_URL = 'https://cjxlwfrqfqwjhugpjdxz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ';
 
 let sb = null;
-try {
-  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    realtime: { params: { eventsPerSecond: 20 } }
-  });
-  console.log('✅ Supabase Realtime client ready');
-} catch(e) {
-  console.error('❌ Supabase init failed:', e);
-}
+try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { realtime: { params: { eventsPerSecond: 20 } } }); }
+catch(e) { console.error('Supabase init failed:', e); }
 
-// ============== STATE ==============
 const state = {
-  user: null,
-  children: [],
-  classes: [],
-  attendance: [],
-  pointsHistory: [],
-  callHistory: [],
-  servants: [],
-  notifications: [],
-  onlineUsers: [],
-  settings: { serviceName: 'خدمة مدارس الأحد', pointsDefault: 1 },
-  charts: {},
-  rtChannels: [],
-  presenceChannel: null,
-  isOnline: navigator.onLine,
-  lastSync: null
+  user: null, children: [], classes: [], attendance: [], pointsHistory: [],
+  callHistory: [], servants: [], notifications: [], events: [], childNotes: [],
+  settings: { service_name:'خدمة مدارس الأحد', service_abbreviation:'StMary', service_logo:null, points_default:1 },
+  charts: {}, rtChannels: [], isOnline: navigator.onLine,
+  selectedDate: new Date().toISOString().split('T')[0],
+  bulkParsed: []
 };
 
-// ============== UTILITIES ==============
 const $ = id => document.getElementById(id);
 const today = () => new Date().toISOString().split('T')[0];
-const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const getOpDate = () => state.selectedDate;
 
-function showLoader(show=true){ $('loaderOverlay').classList.toggle('show', show); }
+// helper: returns a valid UUID for user FK columns, or null otherwise.
+// All FK *_by columns are UUID — so we must reject any non-UUID id
+// (like 'admin-local', 'admin-001', or any custom text id).
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const currentUserId = () => {
+  const id = state.user && state.user.id;
+  return (id && UUID_RE.test(id)) ? id : null;
+};
+
+function showLoader(s=true){ $('loaderOverlay').classList.toggle('show', s); }
 
 function toast(msg, type='success'){
   const t = document.createElement('div');
   t.className = 'toast ' + type;
   const icons = {success:'check-circle',error:'times-circle',warning:'exclamation-circle',info:'info-circle',live:'broadcast-tower'};
   const colors = {success:'#4caf50',error:'#f44336',warning:'#ff9800',info:'#2196f3',live:'#9c27b0'};
-  t.innerHTML = `<i class="fas fa-${icons[type]}" style="color:${colors[type]}"></i><span>${msg}</span>`;
+  t.innerHTML = `<i class="fas fa-${icons[type]||'info-circle'}" style="color:${colors[type]||'#2196f3'}"></i><span>${msg}</span>`;
   $('toastContainer').appendChild(t);
   setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>t.remove(),300);}, 3000);
 }
 
 function vibrate(ms=100){ if(navigator.vibrate) navigator.vibrate(ms); }
-
 function playBeep(freq=800){
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
@@ -631,7 +721,67 @@ function bumpStat(id){
   el.classList.add('bump');
 }
 
-// ============== 🔌 SUPABASE DATA LAYER (Real-Time CRUD) ==============
+// ========= 💰 UNIFIED BALANCE (single source of truth) =========
+// balance = sum of all points_history.points for this child
+function getBalance(childId){
+  return state.pointsHistory
+    .filter(p => p.child_id === childId)
+    .reduce((s,p) => s + (Number(p.points)||0), 0);
+}
+
+// attendance_count = number of present-status attendance rows
+function getAttendanceCount(childId){
+  return state.attendance
+    .filter(a => a.child_id === childId && a.status === 'present')
+    .length;
+}
+
+function getLastAttendance(childId){
+  const rows = state.attendance
+    .filter(a => a.child_id === childId && a.status === 'present')
+    .map(a => a.date)
+    .sort();
+  return rows.length ? rows[rows.length-1] : null;
+}
+
+// ========= 🆔 ID GENERATOR =========
+let _lastIdCounter = 0;
+function generateChildId(){
+  const abbr = state.settings.service_abbreviation || 'StMary';
+  _lastIdCounter = (_lastIdCounter + 1) % 1000;
+  return abbr + Date.now() + String(_lastIdCounter).padStart(3,'0');
+}
+
+// ========= 📅 DATE SELECTOR =========
+function renderDateSelector(){
+  const d = new Date(state.selectedDate + 'T00:00:00');
+  const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  $('dateDayNum').textContent = d.getDate();
+  $('dateDayMonth').textContent = arMonths[d.getMonth()];
+  $('dateDayName').textContent = arDays[d.getDay()];
+  $('dateFull').textContent = d.toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+  $('operationDate').value = state.selectedDate;
+}
+function onDateChange(){
+  state.selectedDate = $('operationDate').value;
+  renderDateSelector();
+  renderHome();
+  toast('تم تحديث تاريخ العمليات','info');
+}
+function shiftDate(days){
+  const d = new Date(state.selectedDate + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  state.selectedDate = d.toISOString().split('T')[0];
+  renderDateSelector(); renderHome();
+}
+function setToday(){
+  state.selectedDate = today();
+  renderDateSelector(); renderHome();
+  toast('عاد للتاريخ الحالي','success');
+}
+
+// ========= DATABASE LAYER =========
 const DB = {
   async insert(table, data){
     if(!sb) throw new Error('Supabase غير متصل');
@@ -650,288 +800,96 @@ const DB = {
     const { error } = await sb.from(table).delete().eq('id', id);
     if(error) throw error;
   },
-async fetchAll(table, orderBy){
+  async fetchAll(table, orderBy){
     if(!sb) return [];
-    // ترتيب افتراضي حسب اسم الجدول
-    const defaultOrder = {
-      settings: 'updated_at',
-      classes: 'order_index',
-      attendance: 'date',
-      permissions: 'role'
-    };
-    const orderCol = orderBy || defaultOrder[table] || 'created_at';
+    const defaults = { settings:'updated_at', classes:'order_index', attendance:'date' };
+    const orderCol = orderBy || defaults[table] || 'created_at';
     const { data, error } = await sb.from(table).select('*').order(orderCol, {ascending:false});
-    if(error){ 
-      console.error(`Fetch ${table}:`, error.message); 
-      // محاولة بدون ORDER BY إذا فشل
+    if(error){
       const { data:d2 } = await sb.from(table).select('*');
       return d2 || [];
     }
     return data || [];
-}
-};
-
-// ============== 📡 REALTIME SUBSCRIPTIONS MANAGER ==============
-const RT = {
-  // إنشاء قناة لكل جدول وربطها بالـ handler
-  start(){
-    if(!sb){ console.warn('No Supabase'); return; }
-    this.stop();
-    
-    this.subscribe('children', this.onChildren);
-    this.subscribe('attendance', this.onAttendance);
-    this.subscribe('points_history', this.onPoints);
-    this.subscribe('call_history', this.onCalls);
-    this.subscribe('classes', this.onClasses);
-    this.subscribe('users', this.onUsers);
-    this.subscribe('notifications', this.onNotifications);
-    this.subscribe('settings', this.onSettings);
-    this.subscribe('child_notes', this.onChildNotes);
-    
-    this.startPresence();
-    
-    setLive(true);
-    console.log(`📡 ${state.rtChannels.length} realtime channels started`);
   },
-
-  // الاشتراك في تغيرات جدول معين (INSERT/UPDATE/DELETE)
-  subscribe(table, handler){
-    const ch = sb.channel(`rt-${table}-${Date.now()}`)
-      .on('postgres_changes',
-        { event:'*', schema:'public', table },
-        payload => {
-          console.log(`[RT:${table}]`, payload.eventType);
-          handler.call(this, payload);
-          flashLiveIndicator();
-        })
-      .subscribe(status => {
-        if(status==='SUBSCRIBED') console.log(`✅ ${table} live`);
-        if(status==='CHANNEL_ERROR') console.error(`❌ ${table} error`);
-      });
-    state.rtChannels.push(ch);
-  },
-
-  // قناة Presence لمعرفة المستخدمين المتصلين الآن
-  startPresence(){
-    if(!state.user) return;
-    state.presenceChannel = sb.channel('online-users', {
-      config: { presence: { key: state.user.username } }
-    });
-    state.presenceChannel
-      .on('presence', { event: 'sync' }, () => {
-        const presenceState = state.presenceChannel.presenceState();
-        state.onlineUsers = Object.values(presenceState).flat();
-        renderOnlineUsers();
-      })
-      .on('presence', { event: 'join' }, ({ newPresences }) => {
-        newPresences.forEach(p=>{
-          if(p.username !== state.user.username)
-            toast(`🟢 ${p.name} دخل الآن`, 'live');
-        });
-      })
-      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
-        leftPresences.forEach(p=>{
-          if(p.username !== state.user.username)
-            toast(`⚪ ${p.name} خرج`, 'info');
-        });
-      })
-      .subscribe(async status => {
-        if(status === 'SUBSCRIBED'){
-          await state.presenceChannel.track({
-            username: state.user.username,
-            name: state.user.name,
-            role: state.user.role,
-            online_at: new Date().toISOString()
-          });
-        }
-      });
-  },
-
-  // إيقاف كل القنوات (عند Logout)
-  stop(){
-    state.rtChannels.forEach(ch => { try{ sb.removeChannel(ch); }catch(e){} });
-    state.rtChannels = [];
-    if(state.presenceChannel){ try{ sb.removeChannel(state.presenceChannel); }catch(e){} state.presenceChannel=null; }
-  },
-
-  // =============== HANDLERS ===============
-  
-  // معالج تغيرات الأطفال
-  onChildren(payload){
-    const { eventType, new:N, old:O } = payload;
-    if(eventType==='INSERT'){
-      if(!state.children.find(c=>c.id===N.id)){
-        state.children.unshift(N);
-        if(N.created_by !== state.user.id)
-          toast(`👶 طفل جديد: ${N.name}`,'live');
-      }
-    } else if(eventType==='UPDATE'){
-      const i = state.children.findIndex(c=>c.id===N.id);
-      if(i>-1){
-        const oldPts = state.children[i].points||0;
-        state.children[i] = N;
-        if((N.points||0) > oldPts) flashChildCard(N.id, `+${(N.points||0)-oldPts} ⭐`);
-      } else { state.children.push(N); }
-    } else if(eventType==='DELETE'){
-      state.children = state.children.filter(c=>c.id!==O.id);
-      toast(`🗑️ تم حذف طفل من قِبل خادم آخر`,'warning');
-    }
-    refreshUI(['home','children']);
-  },
-
-  // معالج تغيرات الحضور
-  onAttendance(payload){
-    const { eventType, new:N } = payload;
-    if(eventType==='INSERT'){
-      if(!state.attendance.find(a=>a.id===N.id)){
-        state.attendance.push(N);
-        const ch = state.children.find(c=>c.id===N.child_id);
-        if(ch){
-          if(N.recorded_by !== state.user.id){
-            toast(`✓ حضور لحظي: ${ch.name}`,'live');
-            playBeep(900); vibrate(60);
-          }
-          flashChildCard(ch.id, '✓ حضور');
-        }
-        bumpStat('todayAttendance');
-        addScanHistoryItem(ch, 'حضور');
-      }
-    } else if(eventType==='DELETE'){
-      state.attendance = state.attendance.filter(a=>a.id!==payload.old.id);
-    }
-    refreshUI(['home','statistics','scanner']);
-  },
-
-  // معالج تغيرات النقاط
-  onPoints(payload){
-    if(payload.eventType==='INSERT'){
-      if(!state.pointsHistory.find(p=>p.id===payload.new.id)){
-        state.pointsHistory.push(payload.new);
-        const ch = state.children.find(c=>c.id===payload.new.child_id);
-        if(ch && payload.new.awarded_by !== state.user.id){
-          const p = payload.new.points;
-          toast(`${p>0?'+':''}${p} نقطة لـ ${ch.name}`, 'live');
-        }
-        bumpStat('totalPoints');
-      }
-    }
-    refreshUI(['home','statistics']);
-  },
-
-  // معالج تغيرات المكالمات
-  onCalls(payload){
-    if(payload.eventType==='INSERT'){
-      if(!state.callHistory.find(c=>c.id===payload.new.id)){
-        state.callHistory.push(payload.new);
-      }
-    }
-    refreshUI(['statistics']);
-  },
-
-  // معالج تغيرات الفصول
-  onClasses(payload){
-    const { eventType, new:N, old:O } = payload;
-    if(eventType==='INSERT' && !state.classes.find(c=>c.id===N.id)) state.classes.push(N);
-    else if(eventType==='UPDATE'){
-      const i = state.classes.findIndex(c=>c.id===N.id);
-      if(i>-1) state.classes[i] = N;
-    } else if(eventType==='DELETE'){
-      state.classes = state.classes.filter(c=>c.id!==O.id);
-    }
-    populateClassSelects();
-    refreshUI(['children','statistics']);
-  },
-
-  // معالج تغيرات المستخدمين/الخدام
-  onUsers(payload){
-    const { eventType, new:N, old:O } = payload;
-    if(eventType==='INSERT' && !state.servants.find(s=>s.id===N.id)) state.servants.push(N);
-    else if(eventType==='UPDATE'){
-      const i = state.servants.findIndex(s=>s.id===N.id);
-      if(i>-1) state.servants[i] = N;
-    } else if(eventType==='DELETE'){
-      state.servants = state.servants.filter(s=>s.id!==O.id);
-    }
-  },
-
-  // معالج الإشعارات
-  onNotifications(payload){
-    if(payload.eventType==='INSERT'){
-      state.notifications.unshift(payload.new);
-      $('notifBadge').style.display='block';
-      toast(`🔔 ${payload.new.title}`, 'live');
-    }
-  },
-
-  // معالج الإعدادات
-  onSettings(payload){
-    if(payload.new){
-      Object.assign(state.settings, payload.new);
-      $('appName').textContent = payload.new.service_name || 'خدمة مدارس الأحد';
-      toast('⚙️ تم تحديث الإعدادات','live');
-    }
-  },
-
-  // معالج ملاحظات الأطفال
-  onChildNotes(payload){
-    if(payload.eventType==='INSERT'){
-      const ch = state.children.find(c=>c.id===payload.new.child_id);
-      if(ch && payload.new.created_by !== state.user.id)
-        toast(`📝 ملاحظة جديدة على ${ch.name}`, 'live');
-    }
+  async exists(table, id){
+    if(!sb) return false;
+    const { data } = await sb.from(table).select('id').eq('id', id).maybeSingle();
+    return !!data;
   }
 };
 
-// ============== UI HELPERS ==============
+// ========= REALTIME =========
+const RT = {
+  start(){
+    if(!sb) return;
+    this.stop();
+    ['children','attendance','points_history','call_history','classes','users','notifications','settings','child_notes','events'].forEach(t=>{
+      this.subscribe(t);
+    });
+    setLive(true);
+  },
+  subscribe(table){
+    const ch = sb.channel(`rt-${table}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`)
+      .on('postgres_changes',{event:'*',schema:'public',table}, p => {
+        this.handle(table, p);
+        flashLiveIndicator();
+      })
+      .subscribe();
+    state.rtChannels.push(ch);
+  },
+  handle(table, p){
+    const { eventType, new:N, old:O } = p;
+    const stateKey = {
+      children:'children', attendance:'attendance', points_history:'pointsHistory',
+      call_history:'callHistory', classes:'classes', users:'servants',
+      notifications:'notifications', events:'events', child_notes:'childNotes'
+    }[table];
+
+    if(table==='settings'){
+      if(N){ Object.assign(state.settings, N); applySettings(); }
+      return;
+    }
+
+    if(!stateKey) return;
+
+    if(eventType==='INSERT'){
+      if(!state[stateKey].find(x=>x.id===N.id)){
+        state[stateKey].unshift(N);
+        if(table==='children' && state.user && N.created_by !== state.user.id) toast(`👶 طفل جديد: ${N.name}`,'live');
+        if(table==='attendance' && state.user && N.recorded_by !== state.user.id){
+          const ch = state.children.find(c=>c.id===N.child_id);
+          if(ch){ toast(`✓ حضور: ${ch.name}`,'live'); playBeep(900); }
+        }
+      }
+    } else if(eventType==='UPDATE'){
+      const i = state[stateKey].findIndex(x=>x.id===N.id);
+      if(i>-1) state[stateKey][i] = N; else state[stateKey].unshift(N);
+    } else if(eventType==='DELETE'){
+      state[stateKey] = state[stateKey].filter(x=>x.id!==O.id);
+    }
+
+    refreshUI(['home','children','statistics','events']);
+    if(table==='classes') populateClassSelects();
+  },
+  stop(){
+    state.rtChannels.forEach(ch => { try{ sb.removeChannel(ch); }catch(e){} });
+    state.rtChannels = [];
+  }
+};
+
 function setLive(on){
   const el = $('liveIndicator');
+  if(!el) return;
   if(on){ el.classList.remove('offline'); $('liveText').textContent='مباشر'; }
   else { el.classList.add('offline'); $('liveText').textContent='غير متصل'; }
 }
-
 function flashLiveIndicator(){
   const dot = $('liveDot');
   if(!dot) return;
-  dot.style.transform='scale(1.8)';
-  dot.style.background='#9c27b0';
+  dot.style.transform='scale(1.8)'; dot.style.background='#9c27b0';
   setTimeout(()=>{ dot.style.transform=''; dot.style.background='#4caf50'; },500);
 }
 
-function flashChildCard(childId, label){
-  setTimeout(()=>{
-    document.querySelectorAll('.child-card').forEach(card=>{
-      if(card.dataset.id===childId){
-        card.classList.add('live-update');
-        const float = document.createElement('div');
-        float.textContent = label;
-        float.style.cssText = 'position:absolute;top:10px;left:10px;color:#4caf50;font-weight:800;font-size:16px;animation:floatUp 1.5s ease-out forwards;pointer-events:none;z-index:10;background:rgba(255,255,255,0.95);padding:4px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(76,175,80,0.4);';
-        card.appendChild(float);
-        setTimeout(()=>{ card.classList.remove('live-update'); float.remove(); }, 1500);
-      }
-    });
-  }, 50);
-}
-
-function renderOnlineUsers(){
-  const el = $('onlineUsers');
-  if(!el) return;
-  const users = state.onlineUsers.slice(0,3);
-  el.innerHTML = users.map(u=>`<div class="online-user-dot" title="${u.name||u.username}" style="background:${avatarColor(u.name||u.username)}">${initials(u.name||u.username)}</div>`).join('');
-  $('totalServants').textContent = state.onlineUsers.length;
-}
-
-function addScanHistoryItem(child, action){
-  if(!child) return;
-  const h = $('scanHistory');
-  if(!h) return;
-  const item = document.createElement('div');
-  item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;animation:fadeIn 0.4s';
-  item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> ${child.name} - ${action} - ${new Date().toLocaleTimeString('ar-EG')}`;
-  h.prepend(item);
-  if(h.children.length>10) h.lastChild.remove();
-}
-
-// تحديث ذكي للواجهة - فقط الصفحات النشطة
 function refreshUI(pages){
   pages.forEach(p=>{
     const pg = $('page-'+p);
@@ -939,17 +897,24 @@ function refreshUI(pages){
       if(p==='home') renderHome();
       if(p==='children') renderChildren();
       if(p==='statistics') renderStats();
+      if(p==='events') renderEvents();
     }
   });
-  // التحديث الدائم للهيدر
-  if($('page-home')){
-    $('totalChildren').textContent = state.children.length;
-    $('todayAttendance').textContent = state.attendance.filter(a=>a.date===today()).length;
-    $('totalPoints').textContent = state.children.reduce((s,c)=>s+(c.points||0),0);
+}
+
+function applySettings(){
+  $('appName').textContent = state.settings.service_name || 'خدمة مدارس الأحد';
+  $('loginTitle').textContent = state.settings.service_name || 'خدمة مدارس الأحد';
+  if(state.settings.service_logo){
+    $('headerLogo').innerHTML = `<img src="${state.settings.service_logo}">`;
+    $('loginLogo').innerHTML = `<img src="${state.settings.service_logo}">`;
+  } else {
+    $('headerLogo').innerHTML = `<i class="fas fa-church"></i>`;
+    $('loginLogo').innerHTML = `<i class="fas fa-church"></i>`;
   }
 }
 
-// ============== AUTH ==============
+// ========= AUTH =========
 $('loginForm').addEventListener('submit', async e=>{
   e.preventDefault();
   const u = $('loginUser').value.trim();
@@ -957,21 +922,17 @@ $('loginForm').addEventListener('submit', async e=>{
   const btn = $('loginBtn');
   btn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
   btn.disabled = true;
-  
   try{
-    // محاولة جلب المستخدم من Supabase
     let userObj = null;
     if(sb){
-      const { data } = await sb.from('users').select('*').eq('username',u).single();
-      if(data && (data.password_hash===p || (u==='admin' && p==='admin123'))){
+      const { data } = await sb.from('users').select('*').eq('username',u).maybeSingle();
+      if(data && data.active !== false && (data.password_hash===p)){
         userObj = { id:data.id, name:data.full_name, role:data.role, username:data.username };
       }
     }
-    // Fallback افتراضي
     if(!userObj && u==='admin' && p==='admin123'){
       userObj = { id:'admin-local', name:'المدير العام', role:'admin', username:'admin' };
     }
-    
     if(userObj){
       state.user = userObj;
       sessionStorage.setItem('user', JSON.stringify(userObj));
@@ -991,37 +952,34 @@ $('loginForm').addEventListener('submit', async e=>{
 
 function logout(){
   if(!confirm('تأكيد تسجيل الخروج؟')) return;
-  RT.stop(); // إيقاف كل قنوات الـ realtime
+  RT.stop();
   state.user = null;
-  sessionStorage.removeItem('user');
-  localStorage.removeItem('user');
+  sessionStorage.removeItem('user'); localStorage.removeItem('user');
   $('app').classList.remove('active');
   $('loginPage').style.display = 'flex';
-  toggleSideMenu();
+  if($('sideMenu').classList.contains('open')) toggleSideMenu();
+  // reset login button
+  const btn = $('loginBtn');
+  btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>دخول</span>';
+  btn.disabled = false;
 }
 
-// ============== APP INIT ==============
+// ========= APP INIT =========
 async function initApp(){
   $('loginPage').style.display = 'none';
   $('app').classList.add('active');
   $('userName').textContent = state.user.name || 'مستخدم';
   $('userRole').textContent = state.user.role==='admin'?'مسؤول':state.user.role==='supervisor'?'مشرف':'خادم';
-  $('welcomeText').textContent = `أهلاً ${state.user.name} 👋`;
-  $('currentDate').textContent = new Date().toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
-  
+  state.selectedDate = today();
+  renderDateSelector();
   showLoader(true);
   try{
-    // 1️⃣ تحميل البيانات الأولية من Supabase
-    if(sb){
-      await loadAllData();
-    }
-    // 2️⃣ تشغيل جميع قنوات Realtime
+    if(sb) await loadAllData();
+    applySettings();
     RT.start();
-    // 3️⃣ رسم الواجهة
     populateClassSelects();
     renderHome();
     renderChildren();
-    state.lastSync = Date.now();
     toast('⚡ التطبيق متزامن لحظياً','live');
   }catch(e){
     console.error(e);
@@ -1030,56 +988,57 @@ async function initApp(){
   }finally{ showLoader(false); }
 }
 
-// جلب كل البيانات من السيرفر
 async function loadAllData(){
-  const [children, classes, attendance, points, calls, servants, settings] = await Promise.all([
-    DB.fetchAll('children'),
-    DB.fetchAll('classes', 'order_index'),
-    DB.fetchAll('attendance', 'date'),
-    DB.fetchAll('points_history'),
-    DB.fetchAll('call_history'),
-    DB.fetchAll('users'),
-    DB.fetchAll('settings', 'updated_at')   // ← التعديل هنا
+  const [children, classes, attendance, points, calls, servants, settings, events, notes] = await Promise.all([
+    DB.fetchAll('children'), DB.fetchAll('classes','order_index'),
+    DB.fetchAll('attendance','date'), DB.fetchAll('points_history'),
+    DB.fetchAll('call_history'), DB.fetchAll('users'),
+    DB.fetchAll('settings','updated_at'), DB.fetchAll('events','event_date'),
+    DB.fetchAll('child_notes')
   ]);
-  state.children = children;
-  state.classes = classes.length ? classes : [];
-  state.attendance = attendance;
-  state.pointsHistory = points;
-  state.callHistory = calls;
-  state.servants = servants;
+  state.children = children; state.classes = classes;
+  state.attendance = attendance; state.pointsHistory = points;
+  state.callHistory = calls; state.servants = servants;
+  state.events = events; state.childNotes = notes;
   if(settings[0]) Object.assign(state.settings, settings[0]);
-  $('appName').textContent = state.settings.service_name || 'خدمة مدارس الأحد';
 }
 
-// مزامنة يدوية
 async function forceSync(){
   showLoader(true);
   try{
     await loadAllData();
-    refreshUI(['home','children','statistics']);
-    state.lastSync = Date.now();
+    applySettings();
+    refreshUI(['home','children','statistics','events']);
     toast('✓ تمت المزامنة','success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
-  finally{ showLoader(false); toggleSideMenu(); }
+  finally{ showLoader(false); if($('sideMenu').classList.contains('open')) toggleSideMenu(); }
 }
 
 function populateClassSelects(){
   const opts = state.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  const fc = $('filterClass'); if(fc) fc.innerHTML = '<option value="">كل الفصول</option>' + opts;
-  const cc = $('cClass'); if(cc) cc.innerHTML = opts;
+  ['filterClass','cClass','bulkDefaultClass'].forEach(id=>{
+    const el = $(id);
+    if(el){
+      const isFilter = id==='filterClass';
+      const cur = el.value;
+      el.innerHTML = (isFilter?'<option value="">كل الفصول</option>':'<option value="">— اختر —</option>') + opts;
+      if(cur) el.value = cur;
+    }
+  });
 }
 
-// ============== NAVIGATION ==============
+// ========= NAVIGATION =========
 function showPage(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  $('page-'+page).classList.add('active');
+  const target = $('page-'+page);
+  if(target) target.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page===page));
   if(page==='home') renderHome();
   if(page==='children') renderChildren();
   if(page==='statistics') renderStats();
+  if(page==='events') renderEvents();
   window.scrollTo(0,0);
 }
-
 function toggleSideMenu(){
   $('sideMenu').classList.toggle('open');
   $('sideOverlay').classList.toggle('open');
@@ -1087,30 +1046,39 @@ function toggleSideMenu(){
 function openModal(id){ $(id).classList.add('open'); }
 function closeModal(id){ $(id).classList.remove('open'); }
 
-// ============== HOME ==============
+// ========= HOME =========
 function renderHome(){
+  const d = getOpDate();
   $('totalChildren').textContent = state.children.length;
-  const t = today();
-  $('todayAttendance').textContent = state.attendance.filter(a=>a.date===t).length;
-  $('totalPoints').textContent = state.children.reduce((s,c)=>s+(c.points||0),0);
-  $('totalServants').textContent = state.onlineUsers.length || 1;
+  $('todayAttendance').textContent = state.attendance.filter(a=>a.date===d && a.status==='present').length;
+  // total balance (across all children) – derived from points_history
+  const totalBalance = state.children.reduce((s,c)=>s + getBalance(c.id), 0);
+  $('totalPoints').textContent = totalBalance;
+  const rate = state.children.length ? Math.round((state.attendance.filter(a=>a.date===d && a.status==='present').length/state.children.length)*100) : 0;
+  $('attendanceRate').textContent = rate+'%';
 
-  const top = [...state.children].sort((a,b)=>(b.points||0)-(a.points||0)).slice(0,5);
+  // top children by balance
+  const top = [...state.children]
+    .map(c=>({...c, _balance: getBalance(c.id)}))
+    .sort((a,b)=> b._balance - a._balance)
+    .slice(0,5);
   $('topChildren').innerHTML = top.length ? top.map((c,i)=>`
     <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;">
       <div style="width:32px;height:32px;border-radius:50%;background:${i<3?'var(--gradient)':'var(--border)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">${i+1}</div>
       <div style="flex:1;"><strong>${c.name}</strong><br><small style="color:var(--text-light)">${getClassName(c.class_id)}</small></div>
-      <span class="badge badge-warning"><i class="fas fa-star"></i> ${c.points||0}</span>
-    </div>
-  `).join('') : '<div class="empty-state"><i class="fas fa-trophy"></i><p>لا توجد بيانات</p></div>';
+      <span class="badge badge-warning"><i class="fas fa-star"></i> ${c._balance}</span>
+    </div>`).join('') : '<div class="empty-state"><i class="fas fa-trophy"></i><p>لا توجد بيانات</p></div>';
 
-  const acts = [...state.attendance.map(a=>({...a,_t:'att'})), ...state.pointsHistory.map(p=>({...p,_t:'pts'}))]
-    .sort((a,b)=>new Date(b.created_at||b.date) - new Date(a.created_at||a.date)).slice(0,8);
+  const acts = [
+    ...state.attendance.map(a=>({...a,_t:'att'})),
+    ...state.pointsHistory.map(p=>({...p,_t:'pts'}))
+  ].sort((a,b)=>new Date(b.created_at||b.date) - new Date(a.created_at||a.date)).slice(0,8);
+
   $('recentActivities').innerHTML = acts.length ? acts.map(a=>{
     const c = state.children.find(ch=>ch.id===a.child_id);
     return `<div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;">
       <i class="fas fa-${a._t==='pts'?'star':'check'}" style="color:var(--primary);"></i>
-      <div style="flex:1;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a._t==='pts'?(a.points>0?'+':'')+a.points+' نقطة':'تسجيل حضور'}</small></div>
+      <div style="flex:1;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a._t==='pts'?(a.points>0?'+':'')+a.points+' رصيد':(a.status==='absent'?'تسجيل غياب':'تسجيل حضور')}</small></div>
       <small>${(a.date||'').slice(5)}</small>
     </div>`;
   }).join('') : '<div class="empty-state"><i class="fas fa-history"></i><p>لا توجد أنشطة بعد</p></div>';
@@ -1119,14 +1087,17 @@ function renderHome(){
 }
 
 function drawHomeChart(){
-  const ctx = $('homeChart').getContext('2d');
+  const canvas = $('homeChart');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
   if(state.charts.home) state.charts.home.destroy();
   const labels=[], data=[];
+  const base = new Date(state.selectedDate + 'T00:00:00');
   for(let i=6;i>=0;i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
+    const d=new Date(base); d.setDate(d.getDate()-i);
     const ds=d.toISOString().split('T')[0];
     labels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
-    data.push(state.attendance.filter(a=>a.date===ds).length);
+    data.push(state.attendance.filter(a=>a.date===ds && a.status==='present').length);
   }
   state.charts.home = new Chart(ctx,{
     type:'line',
@@ -1135,18 +1106,19 @@ function drawHomeChart(){
   });
 }
 
-// ============== CHILDREN ==============
+// ========= CHILDREN =========
 function renderChildren(){
   const q = ($('childrenSearch').value||'').toLowerCase();
   const cls = $('filterClass').value;
   const sortBy = $('sortBy').value;
   let list = state.children.filter(c =>
-    (!q || c.name.toLowerCase().includes(q) || getClassName(c.class_id).toLowerCase().includes(q)) &&
+    (!q || (c.name||'').toLowerCase().includes(q) || (c.id||'').toLowerCase().includes(q) || getClassName(c.class_id).toLowerCase().includes(q)) &&
     (!cls || c.class_id===cls)
-  );
+  ).map(c => ({...c, _balance: getBalance(c.id), _attCount: getAttendanceCount(c.id), _lastAtt: getLastAttendance(c.id)}));
+
   list.sort((a,b)=>{
-    if(sortBy==='points') return (b.points||0)-(a.points||0);
-    if(sortBy==='attendance') return (b.attendance_count||0)-(a.attendance_count||0);
+    if(sortBy==='balance') return b._balance - a._balance;
+    if(sortBy==='attendance') return b._attCount - a._attCount;
     if(sortBy==='date') return new Date(b.created_at)-new Date(a.created_at);
     return (a.name||'').localeCompare(b.name||'','ar');
   });
@@ -1156,7 +1128,6 @@ function renderChildren(){
     return;
   }
   grid.innerHTML = list.map(renderChildCard).join('');
-  // ⚡ بعد أي إعادة رسم، نحدّث labels لتعكس اختيار المستخدم الحالي
   updateActionLabels();
 }
 
@@ -1171,13 +1142,14 @@ function renderChildCard(c){
           <div class="child-name">${c.name}</div>
           <div class="child-class"><i class="fas fa-layer-group"></i> ${getClassName(c.class_id)}</div>
           ${c.phone?`<div class="child-class"><i class="fas fa-phone"></i> ${c.phone}</div>`:''}
+          <div class="child-id-badge">${c.id}</div>
         </div>
-        <span class="badge badge-${c.status==='active'?'success':'danger'}">${c.status==='active'?'نشط':'موقوف'}</span>
+        <span class="badge badge-${(c.status||'active')==='active'?'success':'danger'}">${(c.status||'active')==='active'?'نشط':'موقوف'}</span>
       </div>
       <div class="child-stats">
-        <div class="child-stat"><div class="child-stat-val">${c.points||0}</div><div class="child-stat-lbl">نقاط</div></div>
-        <div class="child-stat"><div class="child-stat-val">${c.attendance_count||0}</div><div class="child-stat-lbl">حضور</div></div>
-        <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c.last_attendance||'-').toString().slice(5)}</div><div class="child-stat-lbl">آخر حضور</div></div>
+        <div class="child-stat"><div class="child-stat-val">${c._balance}</div><div class="child-stat-lbl">الرصيد</div></div>
+        <div class="child-stat"><div class="child-stat-val">${c._attCount}</div><div class="child-stat-lbl">حضور</div></div>
+        <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c._lastAtt||'-').toString().slice(5)}</div><div class="child-stat-lbl">آخر حضور</div></div>
       </div>
       <div class="child-actions">
         <button class="btn btn-primary btn-sm" onclick="execAction('${c.id}')"><i class="fas fa-bolt"></i> <span class="action-label">تسجيل حضور</span></button>
@@ -1187,26 +1159,11 @@ function renderChildCard(c){
 }
 
 function updateActionLabels(){
-  const sel = $('actionFunction');
-  if(!sel) return;
-  const f = sel.value;
-  const labels = {
-    attendance:'تسجيل حضور', contact:'اتصال', whatsapp:'واتساب', sms:'SMS',
-    addPoints:'+ نقاط', deductPoints:'- نقاط', edit:'تعديل', delete:'حذف',
-    qr:'QR', transfer:'نقل', absent:'غياب', note:'ملاحظة', behavior:'سلوك'
-  };
-  // أيقونات مناسبة لكل عملية
-  const icons = {
-    attendance:'fa-bolt', contact:'fa-phone', whatsapp:'fa-whatsapp', sms:'fa-sms',
-    addPoints:'fa-plus-circle', deductPoints:'fa-minus-circle', edit:'fa-edit', 
-    delete:'fa-trash', qr:'fa-qrcode', transfer:'fa-exchange-alt', 
-    absent:'fa-times', note:'fa-sticky-note', behavior:'fa-comment'
-  };
+  const f = $('actionFunction').value;
+  const labels = {attendance:'تسجيل حضور',contact:'اتصال',whatsapp:'واتساب',sms:'SMS',addPoints:'+ رصيد',deductPoints:'- رصيد',edit:'تعديل',delete:'حذف',qr:'QR',transfer:'نقل',absent:'غياب',note:'ملاحظة'};
+  const icons = {attendance:'fas fa-bolt',contact:'fas fa-phone',whatsapp:'fab fa-whatsapp',sms:'fas fa-sms',addPoints:'fas fa-plus-circle',deductPoints:'fas fa-minus-circle',edit:'fas fa-edit',delete:'fas fa-trash',qr:'fas fa-qrcode',transfer:'fas fa-exchange-alt',absent:'fas fa-times',note:'fas fa-sticky-note'};
   document.querySelectorAll('.action-label').forEach(el=>el.textContent = labels[f]||'تنفيذ');
-  // تحديث الأيقونات أيضاً
-  document.querySelectorAll('.child-actions .btn-primary i').forEach(i=>{
-    i.className = 'fas '+(icons[f]||'fa-bolt');
-  });
+  document.querySelectorAll('.child-actions .btn-primary i').forEach(i=>{ i.className = icons[f]||'fas fa-bolt'; });
 }
 
 async function execAction(id){
@@ -1216,9 +1173,17 @@ async function execAction(id){
   const pts = parseInt($('pointsValue').value)||1;
   switch(f){
     case 'attendance': await registerAttendance(c); break;
-    case 'contact': window.open('tel:'+c.phone); await logCall(c.id,'phone'); break;
-    case 'whatsapp': window.open(`https://wa.me/${(c.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent('سلام المسيح يا '+c.name)}`); await logCall(c.id,'whatsapp'); break;
-    case 'sms': window.open(`sms:${c.phone}?body=${encodeURIComponent('سلام المسيح يا '+c.name)}`); await logCall(c.id,'sms'); break;
+    case 'contact':
+      if(!c.phone){ toast('لا يوجد رقم هاتف','warning'); return; }
+      window.open('tel:'+c.phone); await logCall(c.id,'phone'); break;
+    case 'whatsapp':
+      if(!c.phone){ toast('لا يوجد رقم هاتف','warning'); return; }
+      window.open(`https://wa.me/${(c.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent((state.settings.whatsapp_template||'سلام المسيح يا {name}').replace('{name}',c.name))}`);
+      await logCall(c.id,'whatsapp'); break;
+    case 'sms':
+      if(!c.phone){ toast('لا يوجد رقم هاتف','warning'); return; }
+      window.open(`sms:${c.phone}?body=${encodeURIComponent((state.settings.sms_template||'سلام المسيح يا {name}').replace('{name}',c.name))}`);
+      await logCall(c.id,'sms'); break;
     case 'addPoints': await addPoints(c, pts); break;
     case 'deductPoints': await addPoints(c, -pts); break;
     case 'edit': openEditChild(c); break;
@@ -1227,74 +1192,86 @@ async function execAction(id){
     case 'transfer': transferChild(c); break;
     case 'absent': await registerAttendance(c,'absent'); break;
     case 'note': addNote(c); break;
-    case 'behavior': addNote(c, true); break;
   }
 }
 
-// ============== ⚡ REAL-TIME OPERATIONS ==============
-
-// تسجيل حضور (يتزامن لحظياً)
+// ========= OPERATIONS (use selectedDate) =========
 async function registerAttendance(c, status='present'){
-  const t = today();
-  if(state.attendance.find(a=>a.child_id===c.id && a.date===t)){
-    toast('تم تسجيل الحضور مسبقاً','warning'); return;
+  const d = getOpDate();
+  const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
+  if(existing){
+    if(existing.status === status){
+      toast(`تم تسجيل ${status==='present'?'الحضور':'الغياب'} مسبقاً لـ ${c.name} في ${d}`,'warning');
+      return;
+    }
+    // Status changed (e.g., absent → present): update existing row + adjust points
+    try{
+      showLoader(true);
+      await DB.update('attendance', existing.id, { status, method: 'manual' });
+      if(status==='present'){
+        // give points for attendance
+        await DB.insert('points_history', {
+          child_id: c.id, points: state.settings.points_default || 1,
+          reason: 'حضور '+d, type: 'attendance', date: d,
+          awarded_by: currentUserId()
+        });
+      } else {
+        // status changed back to absent → revert points awarded for this date
+        const toRevert = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
+        for(const pr of toRevert){ try{ await DB.remove('points_history', pr.id); }catch(e){} }
+      }
+      toast(`تم تحديث الحالة إلى ${status==='present'?'حاضر':'غائب'} لـ ${c.name}`,'success');
+    }catch(e){ toast('فشل: '+e.message,'error'); }
+    finally{ showLoader(false); }
+    return;
   }
   try{
     showLoader(true);
-    // 1) إدراج في جدول الحضور (سينعكس عبر RT لكل الأجهزة)
     await DB.insert('attendance', {
-      child_id: c.id, date: t, status,
-      method: 'manual',
-      recorded_by: state.user.id === 'admin-local' ? null : state.user.id
+      child_id: c.id, date: d, status, method: 'manual',
+      recorded_by: currentUserId()
     });
-    // 2) إضافة نقاط الحضور (سينعكس عبر RT)
     if(status==='present'){
       await DB.insert('points_history', {
-        child_id: c.id,
-        points: state.settings.points_default || 1,
-        reason: 'حضور', type: 'attendance',
-        awarded_by: state.user.id === 'admin-local' ? null : state.user.id
+        child_id: c.id, points: state.settings.points_default || 1,
+        reason: 'حضور '+d, type: 'attendance', date: d,
+        awarded_by: currentUserId()
       });
     }
     vibrate(100); playBeep();
-    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name}`,'success');
+    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name} - ${d}`,'success');
+    bumpStat('todayAttendance');
   }catch(e){ toast('فشل: '+e.message,'error'); }
   finally{ showLoader(false); }
 }
 
-// إضافة/خصم نقاط (يتزامن لحظياً)
 async function addPoints(c, amount){
   try{
     await DB.insert('points_history', {
-      child_id: c.id, points: amount,
-      reason: amount>0?'إضافة يدوية':'خصم يدوي',
-      type: 'manual',
-      awarded_by: state.user.id === 'admin-local' ? null : state.user.id
+      child_id: c.id, points: amount, date: getOpDate(),
+      reason: amount>0?'إضافة يدوية':'خصم يدوي', type: 'manual',
+      awarded_by: currentUserId()
     });
-    toast(`${amount>0?'+':''}${amount} نقطة لـ ${c.name}`, amount>0?'success':'warning');
+    toast(`${amount>0?'+':''}${amount} رصيد لـ ${c.name}`, amount>0?'success':'warning');
+    bumpStat('totalPoints');
   }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
-// تسجيل مكالمة (يتزامن)
 async function logCall(childId, type){
   try{
     await DB.insert('call_history', {
       child_id: childId, type,
-      called_by: state.user.id === 'admin-local' ? null : state.user.id
+      called_by: currentUserId()
     });
   }catch(e){ console.error(e); }
 }
 
-// حذف طفل (يتزامن)
 async function deleteChild(c){
-  if(!confirm(`حذف الطفل ${c.name}؟`)) return;
-  try{
-    await DB.remove('children', c.id);
-    toast('تم الحذف','success');
-  }catch(e){ toast('فشل: '+e.message,'error'); }
+  if(!confirm(`حذف الطفل ${c.name}؟ سيتم حذف كل سجلاته (حضور، رصيد، إلخ).`)) return;
+  try{ await DB.remove('children', c.id); toast('تم الحذف','success'); }
+  catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
-// نقل طفل لفصل آخر (يتزامن)
 function transferChild(c){
   const opts = state.classes.map(cl=>`<option value="${cl.id}" ${cl.id===c.class_id?'selected':''}>${cl.name}</option>`).join('');
   $('genericTitle').textContent = 'نقل '+c.name;
@@ -1304,146 +1281,337 @@ function transferChild(c){
   openModal('genericModal');
 }
 async function doTransfer(id){
-  try{
-    await DB.update('children', id, { class_id: $('transferClass').value });
-    closeModal('genericModal');
-    toast('تم النقل','success');
-  }catch(e){ toast('فشل: '+e.message,'error'); }
+  try{ await DB.update('children', id, { class_id: $('transferClass').value }); closeModal('genericModal'); toast('تم النقل','success'); }
+  catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
-// إضافة ملاحظة (يتزامن)
-function addNote(c, behavior=false){
-  $('genericTitle').textContent = behavior?'تقرير سلوك':'إضافة ملاحظة';
+function addNote(c){
+  $('genericTitle').textContent = 'إضافة ملاحظة على '+c.name;
   $('genericBody').innerHTML = `
-    <div class="form-group"><label class="form-label">${behavior?'تقرير السلوك':'الملاحظة'}</label>
-    <textarea class="form-input" id="noteText" rows="4"></textarea></div>
-    <button class="btn btn-primary btn-block" onclick="saveNote('${c.id}',${behavior})"><i class="fas fa-save"></i> حفظ ومزامنة</button>`;
+    <div class="form-group"><label class="form-label">الملاحظة</label><textarea class="form-input" id="noteText" rows="4"></textarea></div>
+    <button class="btn btn-primary btn-block" onclick="saveNote('${c.id}')"><i class="fas fa-save"></i> حفظ</button>`;
   openModal('genericModal');
 }
-async function saveNote(id, behavior){
+async function saveNote(id){
   const txt = $('noteText').value.trim();
-  if(!txt) return;
+  if(!txt){ toast('اكتب الملاحظة','warning'); return; }
   try{
-    await DB.insert('child_notes', {
-      child_id: id, note: txt,
-      type: behavior?'behavior':'general',
-      created_by: state.user.id === 'admin-local' ? null : state.user.id
-    });
-    closeModal('genericModal');
-    toast('تم الحفظ','success');
+    await DB.insert('child_notes', { child_id: id, note: txt, type: 'general',
+      created_by: currentUserId() });
+    closeModal('genericModal'); toast('تم الحفظ','success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
+// ========= CHILD CRUD =========
 function openAddChildModal(){
   $('childModalTitle').textContent = 'إضافة طفل جديد';
   $('childId').value = '';
   $('childForm').reset();
+  $('photoPreview').innerHTML = '';
+  $('childIdDisplay').style.display = 'none';
   openModal('childModal');
 }
 
 function openEditChild(c){
   $('childModalTitle').textContent = 'تعديل '+c.name;
   $('childId').value = c.id;
+  $('cIdView').value = c.id;
+  $('childIdDisplay').style.display = 'block';
   $('cName').value = c.name||'';
-  $('cNick').value = c.nickname||'';
   $('cGender').value = c.gender||'male';
   $('cBirth').value = c.birth_date||'';
   $('cClass').value = c.class_id||'';
-  $('cSchool').value = c.school||'';
-  $('cParent').value = c.parent_name||'';
   $('cPhone').value = c.phone||'';
   $('cAddress').value = c.address||'';
   $('cNotes').value = c.notes||'';
-  $('cMedical').value = c.medical_notes||'';
+  // Show CURRENT balance (computed from history). When user changes it,
+  // we'll create an adjustment record on save.
+  $('cBalance').value = getBalance(c.id);
+  $('cPhoto').value = c.photo_url||'';
+  $('photoPreview').innerHTML = c.photo_url ? `<img src="${c.photo_url}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : '';
   openModal('childModal');
 }
 
-// إضافة/تعديل طفل (يتزامن لحظياً)
+function handlePhotoUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){ toast('الصورة كبيرة جداً (الحد 2MB)','error'); e.target.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    $('cPhoto').value = ev.target.result;
+    $('photoPreview').innerHTML = `<img src="${ev.target.result}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
 $('childForm').addEventListener('submit', async e=>{
   e.preventDefault();
   const id = $('childId').value;
+  const newBalance = parseInt($('cBalance').value)||0;
   const data = {
     name: $('cName').value.trim(),
-    nickname: $('cNick').value.trim(),
     gender: $('cGender').value,
     birth_date: $('cBirth').value||null,
     class_id: $('cClass').value||null,
-    school: $('cSchool').value,
-    parent_name: $('cParent').value,
-    phone: $('cPhone').value,
-    address: $('cAddress').value,
-    notes: $('cNotes').value,
-    medical_notes: $('cMedical').value
+    phone: $('cPhone').value||null,
+    address: $('cAddress').value||null,
+    notes: $('cNotes').value||null,
+    photo_url: $('cPhoto').value||null
   };
+  if(!data.name || data.name.length<2){ toast('الاسم مطلوب','error'); return; }
   try{
     showLoader(true);
     if(id){
+      // Update child info
       await DB.update('children', id, data);
+      // If balance changed, create an adjustment record
+      const curBalance = getBalance(id);
+      const diff = newBalance - curBalance;
+      if(diff !== 0){
+        await DB.insert('points_history', {
+          child_id: id, points: diff, date: getOpDate(),
+          reason: 'تعديل الرصيد يدوياً', type: 'adjustment',
+          awarded_by: currentUserId()
+        });
+      }
       toast('تم التحديث','success');
     } else {
-      data.qr_id = 'CH-'+Date.now()+'-'+Math.floor(Math.random()*999);
-      data.points = 0; data.attendance_count = 0; data.status='active';
-      if(state.user.id !== 'admin-local') data.created_by = state.user.id;
+      // Generate unique ID (retry if collision)
+      let newId, attempts = 0;
+      do {
+        newId = generateChildId();
+        attempts++;
+        if(attempts>5) break;
+      } while(await DB.exists('children', newId));
+      data.id = newId;
+      data.qr_id = newId;
+      data.status = 'active';
+      if(currentUserId()) data.created_by = currentUserId();
       await DB.insert('children', data);
-      toast('تم الإضافة','success');
+      // Initial balance via points_history
+      if(newBalance > 0){
+        await DB.insert('points_history', {
+          child_id: newId, points: newBalance, date: getOpDate(),
+          reason: 'رصيد افتتاحي', type: 'initial',
+          awarded_by: currentUserId()
+        });
+      }
+      toast('تم إضافة الطفل: '+data.id,'success');
     }
     closeModal('childModal');
   }catch(err){ toast('خطأ: '+err.message,'error'); }
   finally{ showLoader(false); }
 });
 
+// ========= QR =========
 function showQR(id){
   const c = state.children.find(x=>x.id===id);
+  if(!c) return;
   $('qrChildName').textContent = c.name;
   $('qrChildClass').textContent = getClassName(c.class_id);
+  $('qrChildId').textContent = c.id;
   $('qrcode').innerHTML = '';
-  new QRCode($('qrcode'),{text: c.qr_id, width:220, height:220});
+  new QRCode($('qrcode'),{text: c.qr_id||c.id, width:220, height:220});
   openModal('qrModal');
 }
 
 function printQR(){
   const w = window.open('','_blank');
-  w.document.write('<html dir="rtl"><head><title>طباعة QR</title></head><body style="text-align:center;font-family:Arial">'+$('qrcode').innerHTML+'<h2>'+$('qrChildName').textContent+'</h2><p>'+$('qrChildClass').textContent+'</p></body></html>');
+  w.document.write('<html dir="rtl"><head><title>طباعة QR</title></head><body style="text-align:center;font-family:Arial">'+$('qrcode').innerHTML+'<h2>'+$('qrChildName').textContent+'</h2><p>'+$('qrChildClass').textContent+'</p><p style="font-family:monospace;font-size:11px">'+$('qrChildId').textContent+'</p></body></html>');
   w.document.close(); w.print();
 }
 
 function openProfile(id){
   const c = state.children.find(x=>x.id===id);
   if(!c) return;
-  const atts = state.attendance.filter(a=>a.child_id===id);
-  const points = state.pointsHistory.filter(p=>p.child_id===id);
+  const atts = state.attendance.filter(a=>a.child_id===id).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const points = state.pointsHistory.filter(p=>p.child_id===id).sort((a,b)=>new Date(b.created_at||b.date)-new Date(a.created_at||a.date));
+  const notes = state.childNotes.filter(n=>n.child_id===id);
+  const balance = getBalance(id);
+  const presentCount = atts.filter(a=>a.status==='present').length;
   $('profileBody').innerHTML = `
     <div style="text-align:center;margin-bottom:20px;">
-      <div class="child-avatar" style="width:80px;height:80px;font-size:28px;margin:0 auto 12px;background:${avatarColor(c.name)}">${initials(c.name)}</div>
+      <div class="child-avatar" style="width:90px;height:90px;font-size:32px;margin:0 auto 12px;${c.photo_url?'':`background:${avatarColor(c.name)}`}">${c.photo_url?`<img src="${c.photo_url}">`:initials(c.name)}</div>
       <h2>${c.name}</h2>
       <p style="color:var(--text-light)">${getClassName(c.class_id)}</p>
-      <div class="live-indicator" style="margin-top:8px;"><span class="live-dot"></span><span>تحديث مباشر</span></div>
+      <div class="child-id-badge" style="margin-top:6px;">${c.id}</div>
     </div>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-value">${c.points||0}</div><div class="stat-label">النقاط</div></div>
-      <div class="stat-card"><div class="stat-value">${c.attendance_count||0}</div><div class="stat-label">الحضور</div></div>
+      <div class="stat-card"><div class="stat-value">${balance}</div><div class="stat-label">الرصيد</div></div>
+      <div class="stat-card"><div class="stat-value">${presentCount}</div><div class="stat-label">الحضور</div></div>
+      <div class="stat-card"><div class="stat-value">${notes.length}</div><div class="stat-label">الملاحظات</div></div>
     </div>
     <div class="section">
       <h4><i class="fas fa-user"></i> البيانات</h4>
       <p>تاريخ الميلاد: ${c.birth_date||'-'}</p>
-      <p>المدرسة: ${c.school||'-'}</p>
-      <p>ولي الأمر: ${c.parent_name||'-'}</p>
       <p>الهاتف: ${c.phone||'-'}</p>
       <p>العنوان: ${c.address||'-'}</p>
+      <p>ملاحظات: ${c.notes||'-'}</p>
     </div>
     <div class="section">
       <h4><i class="fas fa-calendar"></i> سجل الحضور (${atts.length})</h4>
-      ${atts.slice(-10).reverse().map(a=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${a.date}</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
+      ${atts.slice(0,10).map(a=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${a.date} - ${a.status==='present'?'✓ حاضر':'✗ غائب'}</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
     </div>
     <div class="section">
-      <h4><i class="fas fa-star"></i> سجل النقاط</h4>
-      ${points.slice(-10).reverse().map(p=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${p.date||p.created_at?.slice(0,10)}: ${p.points>0?'+':''}${p.points} (${p.reason||''})</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
+      <h4><i class="fas fa-star"></i> سجل الرصيد (${points.length})</h4>
+      ${points.slice(0,10).map(p=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${p.date||(p.created_at||'').slice(0,10)}: ${p.points>0?'+':''}${p.points} (${p.reason||''})</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
     </div>
+    ${notes.length?`<div class="section"><h4><i class="fas fa-sticky-note"></i> الملاحظات</h4>${notes.map(n=>`<div style="padding:8px;background:var(--bg);border-radius:8px;margin-bottom:6px;"><div>${n.note}</div><small style="color:var(--text-light)">${(n.created_at||'').slice(0,10)}</small></div>`).join('')}</div>`:''}
     <button class="btn btn-primary btn-block" onclick="closeModal('profileModal');openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>`;
   openModal('profileModal');
 }
 
-// ============== SCANNER ==============
+// ========= 📋 BULK ADD =========
+function openBulkAddModal(){
+  $('bulkInput').value = '';
+  $('bulkPreview').innerHTML = '';
+  state.bulkParsed = [];
+  openModal('bulkModal');
+}
+
+function normalizeDate(s){
+  if(!s) return null;
+  s = String(s).trim();
+  if(!s) return null;
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if(m){
+    let mo = parseInt(m[1]), dd = parseInt(m[2]), yy = parseInt(m[3]);
+    if(yy < 100) yy += 2000;
+    if(mo>12 && dd<=12){ const t=mo; mo=dd; dd=t; }
+    return `${yy}-${String(mo).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+  }
+  if(/^\d+(\.\d+)?$/.test(s) && parseFloat(s) > 1000){
+    const d = new Date(Math.round((parseFloat(s) - 25569) * 86400 * 1000));
+    if(!isNaN(d)) return d.toISOString().slice(0,10);
+  }
+  return null;
+}
+
+function parseBulkData(){
+  const text = $('bulkInput').value.trim();
+  if(!text){ toast('الصق البيانات أولاً','warning'); return; }
+  let lines = text.split(/\r?\n/).filter(l=>l.trim());
+  if($('bulkHasHeader').value === '1') lines = lines.slice(1);
+  const defaultClass = $('bulkDefaultClass').value;
+  const detectSep = line => {
+    if(line.includes('\t')) return '\t';
+    if(line.includes('|'))  return '|';
+    return ',';
+  };
+  const seen = new Set();
+  state.bulkParsed = lines.map((line, idx)=>{
+    const sep = detectSep(line);
+    const parts = line.split(sep).map(p=>p.trim());
+    const code    = parts[0]||'';
+    const name    = parts[1]||'';
+    const phone   = parts[2]||'';
+    const birth   = normalizeDate(parts[3]||'');
+    const address = parts[4]||'';
+    const notes   = parts[5]||'';
+    const photo   = parts[6]||'';
+    const balance = parseInt((parts[7]||'0').replace(/[^\d\-]/g,''))||0;
+    let valid     = name.length >= 2;
+    let reason    = '';
+    if(!valid) reason = 'اسم غير صالح';
+    // duplicate code check
+    if(valid && code){
+      if(seen.has(code)){ valid=false; reason='كود مكرر في القائمة'; }
+      else if(state.children.find(c=>c.id===code)){ valid=false; reason='كود موجود مسبقاً'; }
+      else seen.add(code);
+    }
+    return { idx:idx+1, code, name, phone, birth, address, notes, photo, balance, valid, reason, class_id: defaultClass };
+  });
+  renderBulkPreview();
+}
+
+function renderBulkPreview(){
+  const validCount = state.bulkParsed.filter(r=>r.valid).length;
+  const invalidCount = state.bulkParsed.length - validCount;
+  $('bulkPreview').innerHTML = `
+    <div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <span class="badge badge-success">${validCount} صحيحة</span>
+      ${invalidCount?`<span class="badge badge-danger">${invalidCount} غير صحيحة</span>`:''}
+      <span style="color:var(--text-light);font-size:12px;">الإجمالي: ${state.bulkParsed.length}</span>
+    </div>
+    <div style="overflow-x:auto;margin-top:10px;">
+      <table class="bulk-table">
+        <thead><tr><th>#</th><th>الكود</th><th>الاسم</th><th>الهاتف</th><th>الميلاد</th><th>العنوان</th><th>ملاحظات</th><th>الرصيد</th><th>الحالة</th></tr></thead>
+        <tbody>
+          ${state.bulkParsed.map(r=>`
+            <tr class="${r.valid?'valid':'invalid'}">
+              <td>${r.idx}</td>
+              <td style="font-family:monospace;font-size:10px;">${r.code||'<span style="color:#999">سيُولَّد</span>'}</td>
+              <td>${r.name||'<span style="color:#f44336">فارغ</span>'}</td>
+              <td>${r.phone||'-'}</td>
+              <td>${r.birth||'-'}</td>
+              <td>${r.address||'-'}</td>
+              <td>${r.notes||'-'}</td>
+              <td>${r.balance}</td>
+              <td>${r.valid?'<i class="fas fa-check" style="color:#4caf50"></i>':`<span style="color:#f44336;font-size:10px">${r.reason||'خطأ'}</span>`}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    ${validCount>0?`<button class="btn btn-success btn-block" onclick="commitBulkAdd()" style="margin-top:14px;"><i class="fas fa-save"></i> إضافة ${validCount} طفل</button>`:''}
+  `;
+}
+
+async function commitBulkAdd(){
+  const valid = state.bulkParsed.filter(r=>r.valid);
+  if(!valid.length) return;
+  if(!confirm(`سيتم إضافة ${valid.length} طفل. هل أنت متأكد؟`)) return;
+  showLoader(true);
+  let ok=0, fail=0;
+  const errors = [];
+  for(let i=0;i<valid.length;i++){
+    const r = valid[i];
+    try{
+      await new Promise(res=>setTimeout(res,5));
+      let childId = r.code && r.code.trim() ? r.code.trim() : null;
+      if(!childId){
+        let attempts=0;
+        do { childId = generateChildId(); attempts++; if(attempts>5) break; }
+        while(await DB.exists('children', childId));
+      }
+      await DB.insert('children',{
+        id: childId, qr_id: childId,
+        name: r.name,
+        phone: r.phone || null,
+        birth_date: r.birth || null,
+        address: r.address || null,
+        notes: r.notes || null,
+        photo_url: r.photo || null,
+        class_id: r.class_id || null,
+        status:'active',
+        created_by: currentUserId()
+      });
+      // Initial balance via points_history (single source of truth)
+      if(r.balance && r.balance !== 0){
+        await DB.insert('points_history', {
+          child_id: childId, points: r.balance, date: getOpDate(),
+          reason: 'رصيد افتتاحي (إضافة جماعية)', type: 'initial',
+          awarded_by: currentUserId()
+        });
+      }
+      ok++;
+    }catch(e){
+      console.error('Row '+r.idx+':', e);
+      errors.push(`صف ${r.idx} (${r.name}): ${e.message}`);
+      fail++;
+    }
+  }
+  showLoader(false);
+  closeModal('bulkModal');
+  toast(`✓ تم إضافة ${ok} طفل${fail?` (فشل ${fail})`:''}`, ok?'success':'error');
+  if(errors.length){
+    $('genericTitle').textContent = `أخطاء الإضافة (${errors.length})`;
+    $('genericBody').innerHTML = '<div style="max-height:400px;overflow-y:auto;font-size:12px;">'+errors.map(e=>`<div style="padding:6px;border-bottom:1px solid var(--border);">${e}</div>`).join('')+'</div>';
+    openModal('genericModal');
+  }
+}
+
+// ========= SCANNER =========
 let scannerInstance = null;
 async function startScanner(){
   $('startScanBtn').style.display='none';
@@ -1469,54 +1637,75 @@ let lastScan = {};
 async function onScanSuccess(text){
   if(lastScan[text] && Date.now()-lastScan[text]<2500) return;
   lastScan[text] = Date.now();
-  const c = state.children.find(x=>x.qr_id===text);
-  if(!c){ toast('QR غير معروف','error'); return; }
+  const c = state.children.find(x=>x.qr_id===text || x.id===text);
+  if(!c){ toast('QR غير معروف','error'); playBeep(300); return; }
   const f = $('scannerFunction').value;
   const pts = parseInt($('scannerPoints').value)||1;
   if(f==='attendance') await registerAttendance(c);
   else if(f==='addPoints') await addPoints(c,pts);
   else if(f==='deductPoints') await addPoints(c,-pts);
   else if(f==='quickActions'){ await stopScanner(); openProfile(c.id); }
-  addScanHistoryItem(c, f==='attendance'?'حضور':f==='addPoints'?'+'+pts:f==='deductPoints'?'-'+pts:'سريع');
+  const h = $('scanHistory');
+  const item = document.createElement('div');
+  item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;';
+  item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> ${c.name} - ${new Date().toLocaleTimeString('ar-EG')}`;
+  h.prepend(item);
+  while(h.children.length>10) h.lastChild.remove();
 }
 
-// ============== STATISTICS ==============
+// ========= STATISTICS =========
+let _currentStatsTab = 'attendance';
 function renderStats(){
-  $('statTotalAttendance').textContent = state.attendance.length;
-  const rate = state.children.length? Math.round(state.attendance.length/(state.children.length*7)*100):0;
+  const presentRows = state.attendance.filter(a=>a.status==='present');
+  $('statTotalAttendance').textContent = presentRows.length;
+  const rate = state.children.length? Math.round(presentRows.length/(state.children.length*7)*100):0;
   $('statAvgRate').textContent = Math.min(rate,100)+'%';
-  const top = [...state.children].sort((a,b)=>(b.attendance_count||0)-(a.attendance_count||0))[0];
-  $('statTopChild').textContent = top? top.name.split(' ')[0]:'-';
+  const counts = state.children.map(c=>({c, n:getAttendanceCount(c.id)})).sort((a,b)=>b.n-a.n);
+  $('statTopChild').textContent = counts[0] && counts[0].n>0 ? counts[0].c.name.split(' ')[0] : '-';
   $('statTotalCalls').textContent = state.callHistory.length;
   drawStatsCharts();
 }
 
 function drawStatsCharts(){
-  const labels=[], data=[];
-  for(let i=6;i>=0;i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const ds=d.toISOString().split('T')[0];
-    labels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
-    data.push(state.attendance.filter(a=>a.date===ds).length);
+  // Only draw if statistics page is currently visible
+  const pg = $('page-statistics');
+  if(!pg || !pg.classList.contains('active')) return;
+
+  const wkCanvas = $('weeklyChart');
+  if(wkCanvas){
+    const labels=[], data=[];
+    for(let i=6;i>=0;i--){
+      const d=new Date(); d.setDate(d.getDate()-i);
+      const ds=d.toISOString().split('T')[0];
+      labels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
+      data.push(state.attendance.filter(a=>a.date===ds && a.status==='present').length);
+    }
+    if(state.charts.weekly) state.charts.weekly.destroy();
+    state.charts.weekly = new Chart(wkCanvas,{type:'bar',data:{labels,datasets:[{label:'حضور',data,backgroundColor:'#a8c5ff',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
   }
-  if(state.charts.weekly) state.charts.weekly.destroy();
-  state.charts.weekly = new Chart($('weeklyChart'),{type:'bar',data:{labels,datasets:[{label:'حضور',data,backgroundColor:'#a8c5ff',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
-  
-  const clsData = state.classes.map(cl=>state.children.filter(c=>c.class_id===cl.id).length);
-  if(state.charts.cls) state.charts.cls.destroy();
-  state.charts.cls = new Chart($('classChart'),{type:'doughnut',data:{labels:state.classes.map(c=>c.name),datasets:[{data:clsData,backgroundColor:['#a8c5ff','#c5b3ff','#b3e5c7','#ffd3a5','#ffb3b3','#b3e0ff','#ffb3d9']}]},options:{responsive:true,maintainAspectRatio:false}});
-  
-  if(state.charts.growth) state.charts.growth.destroy();
-  const g_labels=[], g_data=[];
-  for(let i=11;i>=0;i--){
-    const d=new Date(); d.setMonth(d.getMonth()-i);
-    g_labels.push(d.toLocaleDateString('ar-EG',{month:'short'}));
-    g_data.push(state.children.filter(c=>new Date(c.created_at)<=d).length);
+
+  const clsCanvas = $('classChart');
+  if(clsCanvas){
+    const clsData = state.classes.map(cl=>state.children.filter(c=>c.class_id===cl.id).length);
+    if(state.charts.cls) state.charts.cls.destroy();
+    state.charts.cls = new Chart(clsCanvas,{type:'doughnut',data:{labels:state.classes.map(c=>c.name),datasets:[{data:clsData,backgroundColor:['#a8c5ff','#c5b3ff','#b3e5c7','#ffd3a5','#ffb3b3','#b3e0ff','#ffb3d9']}]},options:{responsive:true,maintainAspectRatio:false}});
   }
-  state.charts.growth = new Chart($('growthChart'),{type:'line',data:{labels:g_labels,datasets:[{label:'الأطفال',data:g_data,borderColor:'#c5b3ff',backgroundColor:'rgba(197,179,255,0.2)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}});
+
+  const grCanvas = $('growthChart');
+  if(grCanvas){
+    if(state.charts.growth) state.charts.growth.destroy();
+    const g_labels=[], g_data=[];
+    for(let i=11;i>=0;i--){
+      const d=new Date(); d.setMonth(d.getMonth()-i);
+      g_labels.push(d.toLocaleDateString('ar-EG',{month:'short'}));
+      g_data.push(state.children.filter(c=>new Date(c.created_at)<=d).length);
+    }
+    state.charts.growth = new Chart(grCanvas,{type:'line',data:{labels:g_labels,datasets:[{label:'الأطفال',data:g_data,borderColor:'#c5b3ff',backgroundColor:'rgba(197,179,255,0.2)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}});
+  }
 }
 
 function switchStatsTab(tab,e){
+  _currentStatsTab = tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   e.target.classList.add('active');
   renderStats();
@@ -1525,8 +1714,18 @@ function refreshStats(){ renderStats(); toast('تم التحديث','success'); 
 
 function exportStatsExcel(){
   const wb = XLSX.utils.book_new();
-  const ws1 = XLSX.utils.json_to_sheet(state.children.map(c=>({الاسم:c.name,الفصل:getClassName(c.class_id),الهاتف:c.phone,النقاط:c.points,الحضور:c.attendance_count})));
+  const ws1 = XLSX.utils.json_to_sheet(state.children.map(c=>({
+    ID:c.id, الاسم:c.name, الفصل:getClassName(c.class_id),
+    الهاتف:c.phone, العنوان:c.address, الميلاد:c.birth_date,
+    الرصيد:getBalance(c.id), الحضور:getAttendanceCount(c.id)
+  })));
   XLSX.utils.book_append_sheet(wb,ws1,'الأطفال');
+  // Attendance sheet
+  const ws2 = XLSX.utils.json_to_sheet(state.attendance.map(a=>{
+    const c = state.children.find(x=>x.id===a.child_id);
+    return { التاريخ:a.date, الاسم:c?c.name:a.child_id, الحالة:a.status==='present'?'حاضر':'غائب' };
+  }));
+  XLSX.utils.book_append_sheet(wb,ws2,'الحضور');
   XLSX.writeFile(wb,'تقرير_'+today()+'.xlsx');
   toast('تم تصدير Excel','success');
 }
@@ -1535,12 +1734,109 @@ function exportStatsPDF(){
   const doc = new jsPDF();
   doc.text('Sunday School Report',10,10);
   doc.text('Total children: '+state.children.length,10,20);
-  doc.text('Total attendance: '+state.attendance.length,10,30);
+  doc.text('Total attendance: '+state.attendance.filter(a=>a.status==='present').length,10,30);
+  doc.text('Total balance: '+state.children.reduce((s,c)=>s+getBalance(c.id),0),10,40);
   doc.save('report_'+today()+'.pdf');
   toast('تم تصدير PDF','success');
 }
 
-// ============== SETTINGS MODALS (Real-time) ==============
+// ========= EVENTS =========
+function renderEvents(){
+  const list = [...state.events].sort((a,b)=>new Date(b.event_date)-new Date(a.event_date));
+  $('eventsList').innerHTML = list.length ? list.map(e=>`
+    <div style="padding:14px;background:var(--bg);border-radius:14px;margin-bottom:10px;border-right:4px solid var(--primary);">
+      <h4>${e.title}</h4>
+      <p style="color:var(--text-light);font-size:13px;margin-top:4px;"><i class="fas fa-calendar"></i> ${e.event_date} ${e.event_time||''}</p>
+      ${e.location?`<p style="color:var(--text-light);font-size:13px;"><i class="fas fa-map-marker-alt"></i> ${e.location}</p>`:''}
+      ${e.description?`<p style="margin-top:6px;font-size:13px;">${e.description}</p>`:''}
+      <button class="btn btn-danger btn-sm" onclick="delEvent('${e.id}')" style="margin-top:8px;"><i class="fas fa-trash"></i> حذف</button>
+    </div>`).join('') : '<div class="empty-state"><i class="fas fa-calendar-alt"></i><p>لا توجد فعاليات</p></div>';
+}
+function openAddEventModal(){
+  $('genericTitle').textContent = 'إضافة فعالية';
+  $('genericBody').innerHTML = `
+    <div class="form-group"><label class="form-label">العنوان *</label><input class="form-input" id="evTitle"></div>
+    <div class="form-group"><label class="form-label">التاريخ *</label><input type="date" class="form-input" id="evDate" value="${today()}"></div>
+    <div class="form-group"><label class="form-label">الوقت</label><input type="time" class="form-input" id="evTime"></div>
+    <div class="form-group"><label class="form-label">المكان</label><input class="form-input" id="evLocation"></div>
+    <div class="form-group"><label class="form-label">الوصف</label><textarea class="form-input" id="evDesc" rows="3"></textarea></div>
+    <button class="btn btn-primary btn-block" onclick="saveEvent()"><i class="fas fa-save"></i> حفظ</button>`;
+  openModal('genericModal');
+}
+async function saveEvent(){
+  const t = $('evTitle').value.trim();
+  if(!t){ toast('أدخل العنوان','error'); return; }
+  try{
+    await DB.insert('events',{
+      title:t, event_date:$('evDate').value, event_time:$('evTime').value||null,
+      location:$('evLocation').value||null, description:$('evDesc').value||null,
+      created_by: currentUserId()
+    });
+    closeModal('genericModal'); toast('تم الحفظ','success');
+  }catch(e){ toast(e.message,'error'); }
+}
+async function delEvent(id){
+  if(!confirm('حذف الفعالية؟')) return;
+  try{ await DB.remove('events',id); }catch(e){ toast(e.message,'error'); }
+}
+
+// ========= SETTINGS MODALS =========
+function openServiceConfigModal(){
+  $('genericTitle').textContent = 'إعدادات الخدمة';
+  $('genericBody').innerHTML = `
+    <div class="logo-uploader">
+      <div class="logo-preview" id="settingLogoPreview">${state.settings.service_logo?`<img src="${state.settings.service_logo}">`:'<i class="fas fa-church"></i>'}</div>
+      <input type="file" accept="image/*" id="logoFile" onchange="handleLogoUpload(event)" style="display:none;">
+      <button class="btn btn-primary" onclick="document.getElementById('logoFile').click()"><i class="fas fa-upload"></i> رفع شعار</button>
+      ${state.settings.service_logo?'<button class="btn btn-danger btn-sm" onclick="removeLogo()"><i class="fas fa-trash"></i> إزالة الشعار</button>':''}
+    </div>
+    <div class="form-group"><label class="form-label">اسم الخدمة</label><input class="form-input" id="svcName" value="${state.settings.service_name||''}"></div>
+    <div class="form-group"><label class="form-label">اختصار الخدمة (للـ ID)</label>
+      <input class="form-input" id="svcAbbr" value="${state.settings.service_abbreviation||'StMary'}" placeholder="StMary, StGeorge, etc">
+      <small style="color:var(--text-light);font-size:11px;">سيتم استخدامه في ID الأطفال (مثال: StMary1708701492802)</small>
+    </div>
+    <div class="form-group"><label class="form-label">نقاط الحضور الافتراضية</label><input type="number" class="form-input" id="svcPts" value="${state.settings.points_default||1}" min="1"></div>
+    <button class="btn btn-primary btn-block" onclick="saveServiceConfig()"><i class="fas fa-save"></i> حفظ ومزامنة</button>`;
+  openModal('genericModal');
+}
+
+let _pendingLogo = null;
+function handleLogoUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 1*1024*1024){ toast('الشعار كبير (الحد 1MB)','error'); return; }
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    _pendingLogo = ev.target.result;
+    $('settingLogoPreview').innerHTML = `<img src="${ev.target.result}">`;
+  };
+  reader.readAsDataURL(file);
+}
+function removeLogo(){
+  _pendingLogo = 'REMOVE';
+  $('settingLogoPreview').innerHTML = '<i class="fas fa-church"></i>';
+}
+async function saveServiceConfig(){
+  const payload = {
+    service_name: $('svcName').value.trim() || 'خدمة مدارس الأحد',
+    service_abbreviation: $('svcAbbr').value.trim().replace(/\s/g,'') || 'StMary',
+    points_default: parseInt($('svcPts').value)||1,
+    updated_at: new Date().toISOString()
+  };
+  if(_pendingLogo === 'REMOVE') payload.service_logo = null;
+  else if(_pendingLogo) payload.service_logo = _pendingLogo;
+  try{
+    const settings = await DB.fetchAll('settings','updated_at');
+    if(settings[0]) await DB.update('settings', settings[0].id, payload);
+    else await DB.insert('settings', payload);
+    Object.assign(state.settings, payload);
+    applySettings();
+    _pendingLogo = null;
+    closeModal('genericModal');
+    toast('✓ تم الحفظ ومزامنته لكل الأجهزة','success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+}
+
 function openServantsModal(){
   $('genericTitle').textContent='إدارة الخدام';
   const list = state.servants.map(s=>`
@@ -1565,14 +1861,11 @@ function openServantsModal(){
 async function addServant(){
   const n=$('sName').value.trim(), u=$('sUser').value.trim(), p=$('sPass').value.trim();
   if(!n||!u||!p){ toast('املأ الحقول','error'); return; }
-  try{
-    await DB.insert('users',{username:u,password_hash:p,full_name:n,role:$('sRole').value,active:true});
-    toast('تم الإضافة','success');
-    openServantsModal();
-  }catch(e){ toast('فشل: '+e.message,'error'); }
+  try{ await DB.insert('users',{username:u,password_hash:p,full_name:n,role:$('sRole').value,active:true}); toast('تم الإضافة','success'); openServantsModal(); }
+  catch(e){ toast('فشل: '+e.message,'error'); }
 }
 async function delServant(id){
-  if(!confirm('حذف؟')) return;
+  if(!confirm('حذف الخادم؟')) return;
   try{ await DB.remove('users',id); openServantsModal(); }catch(e){ toast(e.message,'error'); }
 }
 
@@ -1583,7 +1876,7 @@ function openClassesModal(){
       <i class="fas fa-layer-group" style="color:var(--primary)"></i>
       <span style="flex:1;">${c.name}</span>
       <button class="btn btn-danger btn-sm" onclick="delClass('${c.id}')"><i class="fas fa-trash"></i></button>
-    </div>`).join('');
+    </div>`).join('') || '<p style="color:var(--text-light);text-align:center;">لا توجد فصول</p>';
   $('genericBody').innerHTML = list + `
     <div class="form-group" style="margin-top:15px;"><input class="form-input" id="newClassName" placeholder="اسم الفصل"></div>
     <button class="btn btn-primary btn-block" onclick="addClass()"><i class="fas fa-plus"></i> إضافة</button>`;
@@ -1591,109 +1884,230 @@ function openClassesModal(){
 }
 async function addClass(){
   const n=$('newClassName').value.trim();
-  if(!n) return;
-  try{ await DB.insert('classes',{name:n}); openClassesModal(); }catch(e){ toast(e.message,'error'); }
+  if(!n){ toast('اكتب اسم الفصل','warning'); return; }
+  try{
+    const orderIdx = (state.classes.length || 0) + 1;
+    await DB.insert('classes',{name:n, order_index: orderIdx});
+    openClassesModal();
+  }catch(e){ toast(e.message,'error'); }
 }
 async function delClass(id){
-  if(!confirm('حذف؟')) return;
+  if(!confirm('حذف الفصل؟')) return;
   try{ await DB.remove('classes',id); openClassesModal(); }catch(e){ toast(e.message,'error'); }
 }
 
 function openServiceDaysModal(){
   $('genericTitle').textContent='أيام الخدمة';
-  $('genericBody').innerHTML = `<p>اختر الأيام:</p>${['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].map((d,i)=>`<label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:6px;"><input type="checkbox" ${(state.settings.service_days||[0,5]).includes(i)?'checked':''} data-day="${i}">${d}</label>`).join('')}<button class="btn btn-primary btn-block" onclick="saveServiceDays()"><i class="fas fa-save"></i> حفظ</button>`;
+  const sd = state.settings.service_days || [0,5];
+  $('genericBody').innerHTML = `<p>اختر الأيام:</p>${['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].map((d,i)=>`<label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:6px;"><input type="checkbox" ${sd.includes(i)?'checked':''} data-day="${i}">${d}</label>`).join('')}<button class="btn btn-primary btn-block" onclick="saveServiceDays()" style="margin-top:10px;"><i class="fas fa-save"></i> حفظ</button>`;
   openModal('genericModal');
 }
 async function saveServiceDays(){
   const days = [...document.querySelectorAll('#genericBody input[data-day]:checked')].map(i=>parseInt(i.dataset.day));
   try{
-    const settings = await DB.fetchAll('settings', 'updated_at');
-    if(settings[0]) await DB.update('settings', settings[0].id, {service_days: days});
-    else await DB.insert('settings', {service_days: days});
-    closeModal('genericModal'); 
-    toast('تم الحفظ ومزامنته','success');
+    const settings = await DB.fetchAll('settings','updated_at');
+    const payload = {service_days: days, updated_at: new Date().toISOString()};
+    if(settings[0]) await DB.update('settings', settings[0].id, payload);
+    else await DB.insert('settings', payload);
+    state.settings.service_days = days;
+    closeModal('genericModal'); toast('تم الحفظ','success');
   }catch(e){ toast(e.message,'error'); }
 }
 
 function openTemplatesModal(){
   $('genericTitle').textContent='قوالب الرسائل';
   $('genericBody').innerHTML = `
-    <div class="form-group"><label class="form-label">قالب واتساب</label><textarea class="form-input" id="waTpl" rows="3">${state.settings.whatsapp_template||''}</textarea></div>
-    <div class="form-group"><label class="form-label">قالب SMS</label><textarea class="form-input" id="smsTpl" rows="3">${state.settings.sms_template||''}</textarea></div>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">استخدم {name} لإدراج اسم الطفل</p>
+    <div class="form-group"><label class="form-label">قالب واتساب</label><textarea class="form-input" id="waTpl" rows="3">${state.settings.whatsapp_template||'سلام المسيح يا {name}'}</textarea></div>
+    <div class="form-group"><label class="form-label">قالب SMS</label><textarea class="form-input" id="smsTpl" rows="3">${state.settings.sms_template||'سلام المسيح يا {name}'}</textarea></div>
     <button class="btn btn-primary btn-block" onclick="saveTpl()"><i class="fas fa-save"></i> حفظ</button>`;
   openModal('genericModal');
 }
 async function saveTpl(){
   try{
-    const settings = await DB.fetchAll('settings', 'updated_at');
-    const payload = {whatsapp_template: $('waTpl').value, sms_template: $('smsTpl').value};
+    const settings = await DB.fetchAll('settings','updated_at');
+    const payload = {whatsapp_template: $('waTpl').value, sms_template: $('smsTpl').value, updated_at: new Date().toISOString()};
     if(settings[0]) await DB.update('settings', settings[0].id, payload);
     else await DB.insert('settings', payload);
-    closeModal('genericModal'); 
-    toast('تم الحفظ ومزامنته','success');
+    Object.assign(state.settings, payload);
+    closeModal('genericModal'); toast('تم الحفظ','success');
   }catch(e){ toast(e.message,'error'); }
 }
 
+// ========= QUICK ACTIONS =========
+async function markAllPresent(){
+  if(!confirm(`تسجيل حضور جماعي لجميع الأطفال في ${state.selectedDate}؟`)) return;
+  showLoader(true);
+  let ok=0;
+  for(const c of state.children){
+    if(!state.attendance.find(a=>a.child_id===c.id && a.date===state.selectedDate)){
+      try{
+        await DB.insert('attendance',{
+          child_id:c.id, date:state.selectedDate, status:'present', method:'bulk',
+          recorded_by: currentUserId()
+        });
+        await DB.insert('points_history', {
+          child_id: c.id, points: state.settings.points_default || 1,
+          reason: 'حضور '+state.selectedDate, type: 'attendance', date: state.selectedDate,
+          awarded_by: currentUserId()
+        });
+        ok++;
+      }catch(e){ console.error(e); }
+    }
+  }
+  showLoader(false);
+  toast(`✓ تم تسجيل حضور ${ok} طفل`,'success');
+}
+
+function sendBulkMessage(){
+  $('genericTitle').textContent = 'رسالة جماعية';
+  $('genericBody').innerHTML = `
+    <div class="form-group"><label class="form-label">القناة</label>
+      <select class="form-input" id="bulkChannel"><option value="whatsapp">واتساب</option><option value="sms">SMS</option></select></div>
+    <div class="form-group"><label class="form-label">الرسالة (استخدم {name})</label><textarea class="form-input" id="bulkMsg" rows="4">سلام ونعمة يا {name}، نراك في الكنيسة الأحد القادم 🙏</textarea></div>
+    <div class="form-group"><label class="form-label">الفصل (اختياري)</label><select class="form-input" id="bulkCls"><option value="">الجميع</option>${state.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+    <button class="btn btn-primary btn-block" onclick="execBulkMessage()"><i class="fas fa-paper-plane"></i> بدء الإرسال</button>`;
+  openModal('genericModal');
+}
+function execBulkMessage(){
+  const ch = $('bulkChannel').value;
+  const msg = $('bulkMsg').value;
+  const cls = $('bulkCls').value;
+  const list = state.children.filter(c=>c.phone && (!cls||c.class_id===cls));
+  if(!list.length){ toast('لا يوجد أطفال بأرقام','warning'); return; }
+  closeModal('genericModal');
+  toast(`فتح ${list.length} رسالة...`,'info');
+  list.forEach((c,i)=>setTimeout(()=>{
+    const txt = msg.replace('{name}',c.name);
+    if(ch==='whatsapp') window.open(`https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank');
+    else window.open(`sms:${c.phone}?body=${encodeURIComponent(txt)}`,'_blank');
+  }, i*500));
+}
+
+function openBirthdays(){
+  const m = new Date().getMonth();
+  const list = state.children.filter(c=>c.birth_date && new Date(c.birth_date).getMonth()===m)
+    .sort((a,b)=>new Date(a.birth_date).getDate() - new Date(b.birth_date).getDate());
+  $('genericTitle').textContent = 'أعياد الميلاد - هذا الشهر';
+  $('genericBody').innerHTML = list.length ? list.map(c=>{
+    const d = new Date(c.birth_date);
+    const phoneClean = (c.phone||'').replace(/\D/g,'');
+    return `<div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+      <i class="fas fa-birthday-cake" style="color:#ff9800;font-size:20px;"></i>
+      <div style="flex:1;"><strong>${c.name}</strong><br><small>${d.getDate()}/${d.getMonth()+1}</small></div>
+      ${c.phone?`<button class="btn btn-success btn-sm" onclick="window.open('https://wa.me/${phoneClean}?text=${encodeURIComponent('كل سنة وأنت طيب يا '+c.name+' 🎂')}')"><i class="fab fa-whatsapp"></i></button>`:''}
+    </div>`;
+  }).join('') : '<div class="empty-state"><i class="fas fa-birthday-cake"></i><p>لا توجد أعياد ميلاد هذا الشهر</p></div>';
+  openModal('genericModal');
+}
+
+// ========= BACKUP / IMPORT =========
 function backupData(){
-  // نستخرج البيانات الصافية فقط بدون objects الـ Chart.js والقنوات والـ user
   const cleanData = {
-    version: '2.0',
-    exported_at: new Date().toISOString(),
-    exported_by: state.user?.name || 'Unknown',
-    children: state.children,
-    classes: state.classes,
-    attendance: state.attendance,
-    pointsHistory: state.pointsHistory,
-    callHistory: state.callHistory,
-    servants: state.servants,
-    notifications: state.notifications,
-    settings: {
-      service_name: state.settings.service_name,
-      primary_color: state.settings.primary_color,
-      secondary_color: state.settings.secondary_color,
-      service_days: state.settings.service_days,
-      points_default: state.settings.points_default,
-      whatsapp_template: state.settings.whatsapp_template,
-      sms_template: state.settings.sms_template
+    version:'3.1', exported_at:new Date().toISOString(),
+    exported_by:state.user?.name||'Unknown',
+    children:state.children.map(c=>({...c, _balance:getBalance(c.id), _attendance_count:getAttendanceCount(c.id)})),
+    classes:state.classes,
+    attendance:state.attendance, pointsHistory:state.pointsHistory,
+    callHistory:state.callHistory, servants:state.servants,
+    events:state.events, childNotes:state.childNotes,
+    settings:{
+      service_name:state.settings.service_name, service_abbreviation:state.settings.service_abbreviation,
+      service_logo:state.settings.service_logo, service_days:state.settings.service_days,
+      points_default:state.settings.points_default, whatsapp_template:state.settings.whatsapp_template,
+      sms_template:state.settings.sms_template
     }
   };
   try{
-    const blob = new Blob([JSON.stringify(cleanData, null, 2)], {type:'application/json'});
+    const blob = new Blob([JSON.stringify(cleanData,null,2)],{type:'application/json'});
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); 
-    a.download = 'backup_'+today()+'.json'; 
-    a.click();
+    a.href = URL.createObjectURL(blob); a.download = 'backup_'+today()+'.json'; a.click();
     URL.revokeObjectURL(a.href);
-    toast(`✓ تم حفظ ${cleanData.children.length} طفل و ${cleanData.attendance.length} حضور`,'success');
-  }catch(e){
-    toast('فشل النسخ: '+e.message,'error');
-    console.error(e);
-  }
+    toast(`✓ نسخة احتياطية (${cleanData.children.length} طفل)`,'success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 function exportData(){ backupData(); }
 
 function importData(){
   const inp = document.createElement('input');
-  inp.type='file'; inp.accept='.xlsx,.json';
+  inp.type='file'; inp.accept='.xlsx,.xls,.csv,.json';
   inp.onchange = async e=>{
-    const f = e.target.files[0]; const r = new FileReader();
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
     r.onload = async ev=>{
       try{
-        if(f.name.endsWith('.xlsx')){
-          const wb = XLSX.read(ev.target.result,{type:'array'});
-          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-          for(const row of rows){
-            await DB.insert('children',{
-              name: row.الاسم||row.name||'بدون اسم',
-              phone: row.الهاتف||row.phone||'',
-              qr_id: 'CH-'+Date.now()+Math.random(),
-              points:0, attendance_count:0, status:'active',
-              class_id: state.classes[0]?.id || null
-            });
-          }
-          toast('تم استيراد '+rows.length+' طفل','success');
+        showLoader(true);
+        let rows = [];
+        if(f.name.endsWith('.json')){
+          const obj = JSON.parse(new TextDecoder().decode(ev.target.result));
+          rows = obj.children || obj.data || obj;
+        } else {
+          const wb = XLSX.read(ev.target.result,{type:'array',cellDates:true});
+          rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{raw:false,defval:''});
         }
-      }catch(err){ toast('خطأ: '+err.message,'error'); }
+        const pick = (row, ...keys)=>{
+          for(const k of keys){
+            for(const rk of Object.keys(row)){
+              if(rk.trim() === k) return row[rk];
+            }
+          }
+          return '';
+        };
+        let ok=0, fail=0;
+        const errors = [];
+        const defaultClass = state.classes[0]?.id || null;
+        for(let i=0;i<rows.length;i++){
+          const row = rows[i];
+          try{
+            const codeRaw = pick(row,'الكود','code','ID','id','Code');
+            const name    = (pick(row,'الاسم رباعي','الاسم','name','Name')||'').toString().trim();
+            if(!name || name.length<2){ fail++; errors.push(`صف ${i+1}: اسم غير صالح`); continue; }
+            const phone   = (pick(row,'رقم التليفون','الهاتف','phone','Phone','الموبايل')||'').toString().trim();
+            const birthR  = pick(row,'تاريخ الميلاد','birth_date','Birth','الميلاد');
+            const birth   = normalizeDate(birthR instanceof Date ? birthR.toISOString().slice(0,10) : birthR);
+            const address = (pick(row,'العنوان','address','Address')||'').toString().trim();
+            const notes   = (pick(row,'ملاحظات','notes','Notes')||'').toString().trim();
+            const photo   = (pick(row,'صورة','photo','photo_url','Photo')||'').toString().trim();
+            const balRaw  = pick(row,'الرصيد','balance','Balance','النقاط','points');
+            const balance = parseInt(String(balRaw).replace(/[^\d\-]/g,''))||0;
+            await new Promise(res=>setTimeout(res,5));
+            let id = codeRaw && String(codeRaw).trim() ? String(codeRaw).trim() : null;
+            if(!id){
+              let attempts=0;
+              do { id = generateChildId(); attempts++; if(attempts>5) break; }
+              while(await DB.exists('children', id));
+            } else {
+              if(await DB.exists('children', id)){
+                errors.push(`صف ${i+1}: الكود ${id} موجود مسبقاً`); fail++; continue;
+              }
+            }
+            await DB.insert('children',{
+              id, qr_id:id,
+              name, phone: phone||null, birth_date: birth||null,
+              address: address||null, notes: notes||null,
+              photo_url: photo||null,
+              status:'active',
+              class_id: defaultClass,
+              created_by: currentUserId()
+            });
+            if(balance !== 0){
+              await DB.insert('points_history', {
+                child_id: id, points: balance, date: getOpDate(),
+                reason: 'رصيد افتتاحي (استيراد)', type: 'initial',
+                awarded_by: currentUserId()
+              });
+            }
+            ok++;
+          }catch(err){ fail++; errors.push(`صف ${i+1}: ${err.message}`); console.error(err); }
+        }
+        showLoader(false);
+        toast(`✓ تم استيراد ${ok} طفل${fail?` (فشل ${fail})`:''}`, ok?'success':'error');
+        if(errors.length){
+          $('genericTitle').textContent = `تقرير الاستيراد`;
+          $('genericBody').innerHTML = '<div style="max-height:400px;overflow-y:auto;font-size:12px;">'+errors.slice(0,50).map(e=>`<div style="padding:6px;border-bottom:1px solid var(--border);">${e}</div>`).join('')+'</div>';
+          openModal('genericModal');
+        }
+      }catch(err){ showLoader(false); toast('خطأ: '+err.message,'error'); }
     };
     r.readAsArrayBuffer(f);
   };
@@ -1711,10 +2125,10 @@ function toggleTheme(){
 function showAbout(){
   $('genericTitle').textContent='عن التطبيق';
   $('genericBody').innerHTML = `<div style="text-align:center;padding:20px;">
-    <div class="login-logo"><i class="fas fa-church"></i></div>
-    <h2 style="margin-top:15px;">خدمة مدارس الأحد</h2>
+    <div class="login-logo">${state.settings.service_logo?`<img src="${state.settings.service_logo}">`:'<i class="fas fa-church"></i>'}</div>
+    <h2 style="margin-top:15px;">${state.settings.service_name}</h2>
     <p style="color:var(--text-light);margin:10px 0;">نظام متكامل متزامن لحظياً</p>
-    <p>الإصدار 2.0.0 - Real-Time Edition</p>
+    <p>الإصدار 3.1.0 - Fixed Edition</p>
     <p style="margin-top:15px;color:#4caf50;"><i class="fas fa-bolt"></i> ${state.rtChannels.length} قنوات مباشرة</p>
     <p style="margin-top:20px;">صُنع بمحبة ❤️</p>
   </div>`;
@@ -1724,46 +2138,55 @@ function showAbout(){
 function openNotifications(){
   $('genericTitle').textContent='الإشعارات';
   $('notifBadge').style.display='none';
-  const t = today();
-  const todayAtt = state.attendance.filter(a=>a.date===t).length;
+  const d = getOpDate();
+  const todayAtt = state.attendance.filter(a=>a.date===d && a.status==='present').length;
   const birthdays = state.children.filter(c=>{
     if(!c.birth_date) return false;
     const b=new Date(c.birth_date), n=new Date();
     return b.getMonth()===n.getMonth() && b.getDate()===n.getDate();
   });
-  const liveList = state.notifications.slice(0,5).map(n=>`
-    <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;">
-      <i class="fas fa-bolt" style="color:#9c27b0"></i> <strong>${n.title}</strong><br><small>${n.body||''}</small>
-    </div>`).join('');
   $('genericBody').innerHTML = `
-    ${liveList}
-    <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:#4caf50"></i> ${todayAtt} طفل حضر اليوم</div>
-    ${birthdays.map(c=>`<div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-birthday-cake" style="color:#ff9800"></i> عيد ميلاد ${c.name} 🎉</div>`).join('')}`;
+    <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:#4caf50"></i> ${todayAtt} طفل حضر في ${d}</div>
+    ${birthdays.map(c=>`<div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-birthday-cake" style="color:#ff9800"></i> عيد ميلاد ${c.name} 🎉</div>`).join('')||''}
+    ${birthdays.length===0?'<p style="color:var(--text-light);text-align:center;">لا توجد إشعارات أخرى</p>':''}`;
   openModal('genericModal');
 }
 
-// ============== CONNECTION MONITORING ==============
+// ========= CONNECTION =========
 function updateConnectionStatus(){
   const el = $('connectionStatus');
+  if(!el) return;
   if(navigator.onLine){
     el.className = 'connection-status online';
     el.innerHTML = '<i class="fas fa-wifi"></i> متصل';
     state.isOnline = true;
     if(state.user && sb && state.rtChannels.length===0){
       RT.start();
-      loadAllData().then(()=>refreshUI(['home','children','statistics']));
+      loadAllData().then(()=>refreshUI(['home','children','statistics','events']));
     }
   } else {
     el.className = 'connection-status offline';
     el.innerHTML = '<i class="fas fa-wifi"></i> غير متصل';
-    state.isOnline = false;
-    setLive(false);
+    state.isOnline = false; setLive(false);
   }
 }
 window.addEventListener('online', updateConnectionStatus);
 window.addEventListener('offline', updateConnectionStatus);
 
-// ============== STARTUP ==============
+// home search wiring
+document.addEventListener('DOMContentLoaded', ()=>{
+  const hs = $('homeSearch');
+  if(hs) hs.addEventListener('input', e=>{
+    const q = e.target.value.trim();
+    if(q.length>=2){
+      showPage('children');
+      $('childrenSearch').value = q;
+      renderChildren();
+    }
+  });
+});
+
+// ========= STARTUP =========
 (async function(){
   const savedTheme = localStorage.getItem('theme');
   if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
@@ -1771,13 +2194,7 @@ window.addEventListener('offline', updateConnectionStatus);
   if(savedUser){ state.user=savedUser; await initApp(); }
   updateConnectionStatus();
 })();
-
-// PWA Service Worker
-if('serviceWorker' in navigator){
-  const swCode = `self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('fetch',e=>{});`;
-  const swBlob = new Blob([swCode],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
-}
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
