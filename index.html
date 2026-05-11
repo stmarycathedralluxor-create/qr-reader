@@ -255,6 +255,79 @@
       .container{padding:0 14px 24px}
       .topbar{margin:10px}
     }
+    /* ===== CONSISTENT SPACING FIX ===== */
+
+/* Equal spacing inside all cards */
+.form-card,
+.card,
+.kid-card,
+.stat,
+.table-shell,
+.auth-card,
+.modal,
+.class-card{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* Equal spacing between form fields */
+.form-grid{
+  gap:16px !important;
+}
+
+.field{
+  margin-bottom:0 !important;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+/* Equal spacing in toolbars */
+.toolbar{
+  gap:16px !important;
+}
+
+/* Equal spacing for buttons */
+.actions{
+  gap:10px !important;
+}
+
+/* Consistent page section spacing */
+.page{
+  display:none;
+  flex-direction:column;
+  gap:20px;
+}
+
+.page.active{
+  display:flex;
+}
+
+/* Better spacing for grids */
+.grid{
+  gap:20px !important;
+}
+
+/* Consistent spacing inside modal */
+.modal .row{
+  gap:16px !important;
+}
+
+/* Prevent cramped inputs/buttons on small screens */
+@media (max-width:640px){
+  .form-grid{
+    gap:14px !important;
+  }
+
+  .grid{
+    gap:16px !important;
+  }
+
+  .actions{
+    gap:8px !important;
+  }
+}
   </style>
 </head>
 <body>
