@@ -650,13 +650,26 @@ const DB = {
     const { error } = await sb.from(table).delete().eq('id', id);
     if(error) throw error;
   },
-  async fetchAll(table, orderBy='created_at'){
+async fetchAll(table, orderBy){
     if(!sb) return [];
-    const { data, error } = await sb.from(table).select('*').order(orderBy, {ascending:false});
-    if(error){ console.error(`Fetch ${table}:`, error); return []; }
+    // ترتيب افتراضي حسب اسم الجدول
+    const defaultOrder = {
+      settings: 'updated_at',
+      classes: 'order_index',
+      attendance: 'date',
+      permissions: 'role'
+    };
+    const orderCol = orderBy || defaultOrder[table] || 'created_at';
+    const { data, error } = await sb.from(table).select('*').order(orderCol, {ascending:false});
+    if(error){ 
+      console.error(`Fetch ${table}:`, error.message); 
+      // محاولة بدون ORDER BY إذا فشل
+      const { data:d2 } = await sb.from(table).select('*');
+      return d2 || [];
+    }
     return data || [];
-  }
-};
+}
+;
 
 // ============== 📡 REALTIME SUBSCRIPTIONS MANAGER ==============
 const RT = {
@@ -1026,7 +1039,7 @@ async function loadAllData(){
     DB.fetchAll('points_history'),
     DB.fetchAll('call_history'),
     DB.fetchAll('users'),
-    DB.fetchAll('settings')
+    DB.fetchAll('settings', 'updated_at')   // ← التعديل هنا
   ]);
   state.children = children;
   state.classes = classes.length ? classes : [];
@@ -1143,7 +1156,10 @@ function renderChildren(){
     return;
   }
   grid.innerHTML = list.map(renderChildCard).join('');
+  // ⚡ بعد أي إعادة رسم، نحدّث labels لتعكس اختيار المستخدم الحالي
+  updateActionLabels();
 }
+
 
 function renderChildCard(c){
   const img = c.photo_url ? `<img src="${c.photo_url}">` : initials(c.name);
@@ -1172,10 +1188,28 @@ function renderChildCard(c){
 }
 
 function updateActionLabels(){
-  const f = $('actionFunction').value;
-  const labels = {attendance:'تسجيل حضور',contact:'اتصال',whatsapp:'واتساب',sms:'SMS',addPoints:'+ نقاط',deductPoints:'- نقاط',edit:'تعديل',delete:'حذف',qr:'QR',transfer:'نقل',absent:'غياب',note:'ملاحظة',behavior:'سلوك'};
-  document.querySelectorAll('.action-label').forEach(el=>el.textContent=labels[f]||'تنفيذ');
+  const sel = $('actionFunction');
+  if(!sel) return;
+  const f = sel.value;
+  const labels = {
+    attendance:'تسجيل حضور', contact:'اتصال', whatsapp:'واتساب', sms:'SMS',
+    addPoints:'+ نقاط', deductPoints:'- نقاط', edit:'تعديل', delete:'حذف',
+    qr:'QR', transfer:'نقل', absent:'غياب', note:'ملاحظة', behavior:'سلوك'
+  };
+  // أيقونات مناسبة لكل عملية
+  const icons = {
+    attendance:'fa-bolt', contact:'fa-phone', whatsapp:'fa-whatsapp', sms:'fa-sms',
+    addPoints:'fa-plus-circle', deductPoints:'fa-minus-circle', edit:'fa-edit', 
+    delete:'fa-trash', qr:'fa-qrcode', transfer:'fa-exchange-alt', 
+    absent:'fa-times', note:'fa-sticky-note', behavior:'fa-comment'
+  };
+  document.querySelectorAll('.action-label').forEach(el=>el.textContent = labels[f]||'تنفيذ');
+  // تحديث الأيقونات أيضاً
+  document.querySelectorAll('.child-actions .btn-primary i').forEach(i=>{
+    i.className = 'fas '+(icons[f]||'fa-bolt');
+  });
 }
+
 
 async function execAction(id){
   const c = state.children.find(x=>x.id===id);
@@ -1575,11 +1609,14 @@ function openServiceDaysModal(){
 async function saveServiceDays(){
   const days = [...document.querySelectorAll('#genericBody input[data-day]:checked')].map(i=>parseInt(i.dataset.day));
   try{
-    const settings = await DB.fetchAll('settings');
-    if(settings[0]) await DB.update('settings',settings[0].id,{service_days:days});
-    closeModal('genericModal'); toast('تم الحفظ','success');
+    const settings = await DB.fetchAll('settings', 'updated_at');
+    if(settings[0]) await DB.update('settings', settings[0].id, {service_days: days});
+    else await DB.insert('settings', {service_days: days});
+    closeModal('genericModal'); 
+    toast('تم الحفظ ومزامنته','success');
   }catch(e){ toast(e.message,'error'); }
 }
+
 
 function openTemplatesModal(){
   $('genericTitle').textContent='قوالب الرسائل';
@@ -1591,18 +1628,53 @@ function openTemplatesModal(){
 }
 async function saveTpl(){
   try{
-    const settings = await DB.fetchAll('settings');
-    if(settings[0]) await DB.update('settings',settings[0].id,{whatsapp_template:$('waTpl').value,sms_template:$('smsTpl').value});
-    closeModal('genericModal'); toast('تم الحفظ','success');
+    const settings = await DB.fetchAll('settings', 'updated_at');
+    const payload = {whatsapp_template: $('waTpl').value, sms_template: $('smsTpl').value};
+    if(settings[0]) await DB.update('settings', settings[0].id, payload);
+    else await DB.insert('settings', payload);
+    closeModal('genericModal'); 
+    toast('تم الحفظ ومزامنته','success');
   }catch(e){ toast(e.message,'error'); }
 }
 
+
 function backupData(){
-  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'backup_'+today()+'.json'; a.click();
-  toast('تم النسخ','success');
+  // نستخرج البيانات الصافية فقط بدون objects الـ Chart.js والقنوات والـ user
+  const cleanData = {
+    version: '2.0',
+    exported_at: new Date().toISOString(),
+    exported_by: state.user?.name || 'Unknown',
+    children: state.children,
+    classes: state.classes,
+    attendance: state.attendance,
+    pointsHistory: state.pointsHistory,
+    callHistory: state.callHistory,
+    servants: state.servants,
+    notifications: state.notifications,
+    settings: {
+      service_name: state.settings.service_name,
+      primary_color: state.settings.primary_color,
+      secondary_color: state.settings.secondary_color,
+      service_days: state.settings.service_days,
+      points_default: state.settings.points_default,
+      whatsapp_template: state.settings.whatsapp_template,
+      sms_template: state.settings.sms_template
+    }
+  };
+  try{
+    const blob = new Blob([JSON.stringify(cleanData, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); 
+    a.download = 'backup_'+today()+'.json'; 
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast(`✓ تم حفظ ${cleanData.children.length} طفل و ${cleanData.attendance.length} حضور`,'success');
+  }catch(e){
+    toast('فشل النسخ: '+e.message,'error');
+    console.error(e);
+  }
 }
+
 function exportData(){ backupData(); }
 
 function importData(){
