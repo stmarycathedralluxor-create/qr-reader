@@ -668,6 +668,7 @@ async fetchAll(table, orderBy){
       return d2 || [];
     }
     return data || [];
+}
 };
 
 // ============== 📡 REALTIME SUBSCRIPTIONS MANAGER ==============
@@ -1159,7 +1160,6 @@ function renderChildren(){
   updateActionLabels();
 }
 
-
 function renderChildCard(c){
   const img = c.photo_url ? `<img src="${c.photo_url}">` : initials(c.name);
   const bg = c.photo_url ? '' : `style="background:${avatarColor(c.name)}"`;
@@ -1208,7 +1208,6 @@ function updateActionLabels(){
     i.className = 'fas '+(icons[f]||'fa-bolt');
   });
 }
-
 
 async function execAction(id){
   const c = state.children.find(x=>x.id===id);
@@ -1616,7 +1615,6 @@ async function saveServiceDays(){
   }catch(e){ toast(e.message,'error'); }
 }
 
-
 function openTemplatesModal(){
   $('genericTitle').textContent='قوالب الرسائل';
   $('genericBody').innerHTML = `
@@ -1635,7 +1633,6 @@ async function saveTpl(){
     toast('تم الحفظ ومزامنته','success');
   }catch(e){ toast(e.message,'error'); }
 }
-
 
 function backupData(){
   // نستخرج البيانات الصافية فقط بدون objects الـ Chart.js والقنوات والـ user
@@ -1673,7 +1670,6 @@ function backupData(){
     console.error(e);
   }
 }
-
 function exportData(){ backupData(); }
 
 function importData(){
