@@ -16,36 +16,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
-  --primary:#a8c5ff;
-  --primary-dark:#7da3f0;
-  --secondary:#c5b3ff;
-  --success:#b3e5c7;
-  --warning:#ffd3a5;
-  --danger:#ffb3b3;
-  --info:#b3e0ff;
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --text:#2c3e50;
-  --text-light:#7f8c9b;
-  --border:#e8ecf3;
-  --shadow:0 4px 20px rgba(168,197,255,0.15);
-  --shadow-lg:0 10px 40px rgba(168,197,255,0.25);
-  --radius:20px;
-  --radius-sm:12px;
+  --primary:#a8c5ff;--primary-dark:#7da3f0;--secondary:#c5b3ff;
+  --success:#b3e5c7;--warning:#ffd3a5;--danger:#ffb3b3;--info:#b3e0ff;
+  --bg:#f5f7fb;--card:#ffffff;--text:#2c3e50;--text-light:#7f8c9b;--border:#e8ecf3;
+  --shadow:0 4px 20px rgba(168,197,255,0.15);--shadow-lg:0 10px 40px rgba(168,197,255,0.25);
+  --radius:20px;--radius-sm:12px;
   --gradient:linear-gradient(135deg,#a8c5ff 0%,#c5b3ff 100%);
   --gradient-success:linear-gradient(135deg,#b3e5c7 0%,#a8d8b9 100%);
   --gradient-warning:linear-gradient(135deg,#ffd3a5 0%,#ffb88c 100%);
   --gradient-danger:linear-gradient(135deg,#ffb3b3 0%,#ff9999 100%);
   --gradient-info:linear-gradient(135deg,#b3e0ff 0%,#8cc8ff 100%);
 }
-[data-theme="dark"]{
-  --bg:#1a1d29;
-  --card:#252836;
-  --text:#e8ecf3;
-  --text-light:#a0a8b8;
-  --border:#353948;
-  --shadow:0 4px 20px rgba(0,0,0,0.3);
-}
+[data-theme="dark"]{--bg:#1a1d29;--card:#252836;--text:#e8ecf3;--text-light:#a0a8b8;--border:#353948;--shadow:0 4px 20px rgba(0,0,0,0.3);}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{font-family:'Cairo','Tajawal',sans-serif;background:var(--bg);color:var(--text);direction:rtl;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
 body{min-height:100vh;padding-bottom:80px;}
@@ -56,7 +38,6 @@ a{color:inherit;text-decoration:none;}
 ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:10px;}
 ::-webkit-scrollbar-track{background:transparent;}
 
-/* Login */
 .login-page{position:fixed;inset:0;background:linear-gradient(135deg,#a8c5ff 0%,#c5b3ff 50%,#ffb3d9 100%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;overflow:hidden;}
 .login-page::before{content:'';position:absolute;width:300px;height:300px;background:rgba(255,255,255,0.2);border-radius:50%;top:-100px;right:-100px;animation:float 6s ease-in-out infinite;}
 .login-page::after{content:'';position:absolute;width:400px;height:400px;background:rgba(255,255,255,0.15);border-radius:50%;bottom:-150px;left:-150px;animation:float 8s ease-in-out infinite reverse;}
@@ -90,7 +71,6 @@ a{color:inherit;text-decoration:none;}
 .spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* App */
 .app{display:none;min-height:100vh;}
 .app.active{display:block;}
 .header{position:sticky;top:0;background:var(--card);box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;z-index:50;backdrop-filter:blur(10px);}
@@ -102,7 +82,17 @@ a{color:inherit;text-decoration:none;}
 .icon-btn:hover{background:var(--primary);color:#fff;}
 .notif-badge{position:absolute;top:6px;left:6px;width:8px;height:8px;background:#ff6b6b;border-radius:50%;}
 
-/* Side menu */
+.live-indicator{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:rgba(76,175,80,0.12);border-radius:20px;font-size:10px;font-weight:700;color:#4caf50;margin-top:2px;}
+.live-dot{width:7px;height:7px;background:#4caf50;border-radius:50%;animation:pulseLive 1.8s infinite;transition:all 0.3s;}
+.live-indicator.offline{background:rgba(244,67,54,0.12);color:#f44336;}
+.live-indicator.offline .live-dot{background:#f44336;animation:none;}
+@keyframes pulseLive{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(76,175,80,0.6);}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(76,175,80,0);}}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-40px);}}
+.flash-update{animation:flashHL 1s ease;}
+@keyframes flashHL{0%{background:rgba(168,197,255,0.6);}100%{background:transparent;}}
+.online-users{display:flex;gap:-8px;margin-right:8px;}
+.online-user-dot{width:24px;height:24px;border-radius:50%;background:var(--gradient);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--card);margin-right:-8px;}
+
 .side-menu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:var(--card);box-shadow:-10px 0 30px rgba(0,0,0,0.1);z-index:200;transition:right 0.3s;overflow-y:auto;}
 .side-menu.open{right:0;}
 .side-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:199;opacity:0;visibility:hidden;transition:all 0.3s;}
@@ -117,19 +107,16 @@ a{color:inherit;text-decoration:none;}
 .side-item i{width:24px;color:var(--primary);}
 .side-item.danger i,.side-item.danger{color:#ff6b6b;}
 
-/* Main */
 .main{padding:16px;max-width:900px;margin:0 auto;}
 .page{display:none;animation:fadeIn 0.4s;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-/* Bottom nav */
 .bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--card);border-radius:25px;padding:8px;display:flex;gap:4px;box-shadow:var(--shadow-lg);z-index:90;width:calc(100% - 24px);max-width:480px;justify-content:space-around;}
 .nav-item{flex:1;padding:10px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-light);transition:all 0.3s;cursor:pointer;font-size:11px;font-weight:600;background:transparent;}
 .nav-item.active{background:var(--gradient);color:#fff;box-shadow:0 6px 18px rgba(168,197,255,0.5);transform:translateY(-4px);}
 .nav-item i{font-size:18px;}
 
-/* Cards */
 .welcome-card{background:var(--gradient);color:#fff;padding:24px;border-radius:var(--radius);margin-bottom:20px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
 .welcome-card::before{content:'';position:absolute;top:-50px;left:-50px;width:200px;height:200px;background:rgba(255,255,255,0.15);border-radius:50%;}
 .welcome-card h2{font-size:22px;font-weight:800;margin-bottom:6px;position:relative;}
@@ -139,14 +126,15 @@ a{color:inherit;text-decoration:none;}
 .stat-card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);text-align:center;transition:all 0.3s;cursor:pointer;}
 .stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
 .stat-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 10px;color:#fff;}
-.stat-value{font-size:24px;font-weight:800;color:var(--text);}
+.stat-value{font-size:24px;font-weight:800;color:var(--text);transition:all 0.3s;}
+.stat-value.bump{animation:bump 0.5s;}
+@keyframes bump{50%{transform:scale(1.3);color:#4caf50;}}
 .stat-label{font-size:12px;color:var(--text-light);margin-top:4px;}
 
 .section{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:20px;}
 .section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-weight:700;font-size:16px;}
 .section-title i{color:var(--primary);}
 
-/* Search/Filter */
 .search-bar{background:var(--card);border-radius:15px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);margin-bottom:14px;}
 .search-bar input{flex:1;border:none;background:transparent;color:var(--text);font-size:14px;}
 .search-bar i{color:var(--text-light);}
@@ -154,11 +142,11 @@ a{color:inherit;text-decoration:none;}
 .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
 .controls select,.controls input{padding:10px 14px;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--text);font-size:13px;flex:1;min-width:120px;}
 
-/* Child cards */
 .children-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
 .child-card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);transition:all 0.3s;position:relative;overflow:hidden;}
 .child-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:var(--gradient);opacity:0.1;border-radius:0 0 0 80px;}
 .child-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.child-card.live-update{box-shadow:0 0 25px rgba(76,175,80,0.6);transform:scale(1.02);}
 .child-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative;}
 .child-avatar{width:60px;height:60px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px;overflow:hidden;flex-shrink:0;}
 .child-avatar img{width:100%;height:100%;object-fit:cover;}
@@ -172,7 +160,6 @@ a{color:inherit;text-decoration:none;}
 .child-actions{display:flex;gap:6px;flex-wrap:wrap;}
 .child-actions .btn{flex:1;padding:8px 10px;font-size:12px;min-width:80px;}
 
-/* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
 .modal.open{display:flex;animation:fadeIn 0.3s;}
 .modal-content{background:var(--card);border-radius:25px 25px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:slideUpModal 0.3s;}
@@ -182,57 +169,44 @@ a{color:inherit;text-decoration:none;}
 .modal-title{font-weight:800;font-size:18px;}
 .modal-close{width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
 .modal-body{padding:20px;}
-.modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;}
 
-/* Scanner */
 .scanner-container{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;}
 #qr-reader{width:100%;}
 #qr-reader video{border-radius:var(--radius);}
 .scanner-controls{padding:16px;display:flex;flex-direction:column;gap:10px;}
 
-/* Toast */
-.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:90%;}
 .toast{background:var(--card);padding:14px 20px;border-radius:15px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;min-width:280px;animation:slideDown 0.3s;border-right:4px solid var(--primary);}
 .toast.success{border-right-color:#4caf50;}
 .toast.error{border-right-color:#f44336;}
 .toast.warning{border-right-color:#ff9800;}
+.toast.live{border-right-color:#9c27b0;background:linear-gradient(90deg,rgba(156,39,176,0.05),var(--card));}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
 
-/* Loader */
 .loader-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.7);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .loader-overlay.show{display:flex;}
 .loader{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
 
-/* Empty state */
 .empty-state{text-align:center;padding:60px 20px;color:var(--text-light);}
 .empty-state i{font-size:60px;margin-bottom:16px;opacity:0.4;}
 .empty-state p{font-size:15px;}
 
-/* FAB */
 .fab{position:fixed;bottom:90px;left:20px;width:56px;height:56px;border-radius:50%;background:var(--gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:var(--shadow-lg);z-index:80;cursor:pointer;transition:all 0.3s;}
 .fab:hover{transform:scale(1.1) rotate(90deg);}
 
-/* Chart */
 .chart-container{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:16px;}
 .chart-container canvas{max-height:300px;}
 
-/* Tabs */
 .tabs{display:flex;gap:6px;background:var(--card);border-radius:15px;padding:6px;margin-bottom:14px;box-shadow:var(--shadow);overflow-x:auto;}
 .tab{padding:10px 16px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.3s;color:var(--text-light);white-space:nowrap;}
 .tab.active{background:var(--gradient);color:#fff;}
 
-/* Badge */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .badge-success{background:var(--success);color:#1d6b3a;}
 .badge-warning{background:var(--warning);color:#7a4a14;}
 .badge-danger{background:var(--danger);color:#7a1d1d;}
 .badge-info{background:var(--info);color:#0a4f7a;}
 
-/* Skeleton */
-.skeleton{background:linear-gradient(90deg,var(--border) 0%,var(--bg) 50%,var(--border) 100%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
-@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-
-/* Settings */
 .settings-list{display:flex;flex-direction:column;gap:10px;}
 .settings-item{background:var(--bg);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.3s;}
 .settings-item:hover{background:var(--border);}
@@ -241,9 +215,12 @@ a{color:inherit;text-decoration:none;}
 .settings-item-title{font-weight:600;font-size:14px;}
 .settings-item-desc{font-size:12px;color:var(--text-light);}
 
-/* QR */
 .qr-display{text-align:center;padding:20px;}
 .qr-display #qrcode{display:inline-block;padding:16px;background:#fff;border-radius:15px;}
+
+.connection-status{position:fixed;bottom:90px;right:20px;background:var(--card);padding:8px 14px;border-radius:20px;box-shadow:var(--shadow);font-size:11px;font-weight:700;z-index:85;display:flex;align-items:center;gap:6px;transition:all 0.3s;}
+.connection-status.online{color:#4caf50;}
+.connection-status.offline{color:#f44336;}
 
 @media(max-width:480px){
   .stats-grid{grid-template-columns:repeat(2,1fr);}
@@ -259,7 +236,7 @@ a{color:inherit;text-decoration:none;}
   <div class="login-card">
     <div class="login-logo"><i class="fas fa-church"></i></div>
     <h1 class="login-title">خدمة مدارس الأحد</h1>
-    <p class="login-subtitle">نظام إدارة الخدمة الكنسية</p>
+    <p class="login-subtitle">نظام إدارة الخدمة الكنسية - متزامن لحظياً</p>
     <form id="loginForm">
       <div class="form-group">
         <label class="form-label">اسم المستخدم</label>
@@ -292,19 +269,22 @@ a{color:inherit;text-decoration:none;}
 
 <!-- APP -->
 <div class="app" id="app">
-  <!-- Header -->
   <header class="header">
     <div class="header-brand">
       <div class="header-logo"><i class="fas fa-church"></i></div>
       <div>
         <div class="header-title" id="appName">خدمة مدارس الأحد</div>
-        <div style="font-size:11px;color:var(--text-light);" id="currentDate"></div>
+        <div class="live-indicator" id="liveIndicator">
+          <span class="live-dot" id="liveDot"></span>
+          <span id="liveText">مباشر</span>
+        </div>
       </div>
     </div>
     <div class="header-actions">
+      <div class="online-users" id="onlineUsers"></div>
       <button class="icon-btn" onclick="openNotifications()">
         <i class="fas fa-bell"></i>
-        <span class="notif-badge"></span>
+        <span class="notif-badge" id="notifBadge" style="display:none;"></span>
       </button>
       <button class="icon-btn" onclick="toggleSideMenu()">
         <i class="fas fa-bars"></i>
@@ -312,7 +292,6 @@ a{color:inherit;text-decoration:none;}
     </div>
   </header>
 
-  <!-- Side Menu -->
   <div class="side-overlay" id="sideOverlay" onclick="toggleSideMenu()"></div>
   <aside class="side-menu" id="sideMenu">
     <div class="side-header">
@@ -328,19 +307,18 @@ a{color:inherit;text-decoration:none;}
       <div class="side-item" onclick="showPage('settings');toggleSideMenu()"><i class="fas fa-cog"></i> الإعدادات</div>
       <div class="side-item" onclick="toggleTheme()"><i class="fas fa-moon"></i> تبديل المظهر</div>
       <div class="side-item" onclick="backupData()"><i class="fas fa-cloud-download-alt"></i> نسخة احتياطية</div>
+      <div class="side-item" onclick="forceSync()"><i class="fas fa-sync-alt"></i> مزامنة الآن</div>
       <div class="side-item" onclick="showAbout()"><i class="fas fa-info-circle"></i> عن التطبيق</div>
       <div class="side-item danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
     </div>
   </aside>
 
-  <!-- Main Content -->
   <main class="main">
 
-    <!-- HOME PAGE -->
     <div class="page active" id="page-home">
       <div class="welcome-card">
         <h2 id="welcomeText">أهلاً بك 👋</h2>
-        <p>نسأل الله أن يبارك خدمتك اليوم</p>
+        <p id="currentDate">نسأل الله أن يبارك خدمتك اليوم</p>
       </div>
 
       <div class="search-bar">
@@ -367,14 +345,12 @@ a{color:inherit;text-decoration:none;}
         <div class="stat-card">
           <div class="stat-icon" style="background:var(--gradient-info)"><i class="fas fa-users"></i></div>
           <div class="stat-value" id="totalServants">0</div>
-          <div class="stat-label">الخدام</div>
+          <div class="stat-label">المتصلون</div>
         </div>
       </div>
 
       <div class="section">
-        <div class="section-title">
-          <span><i class="fas fa-bolt"></i> إجراءات سريعة</span>
-        </div>
+        <div class="section-title"><span><i class="fas fa-bolt"></i> إجراءات سريعة</span></div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
           <button class="btn btn-primary" onclick="openAddChildModal()"><i class="fas fa-plus"></i> إضافة طفل</button>
           <button class="btn btn-success" onclick="showPage('scanner')"><i class="fas fa-qrcode"></i> مسح QR</button>
@@ -389,21 +365,16 @@ a{color:inherit;text-decoration:none;}
       </div>
 
       <div class="section">
-        <div class="section-title">
-          <span><i class="fas fa-trophy"></i> الأطفال الأعلى نقاطاً</span>
-        </div>
+        <div class="section-title"><span><i class="fas fa-trophy"></i> الأطفال الأعلى نقاطاً</span></div>
         <div id="topChildren"></div>
       </div>
 
       <div class="section">
-        <div class="section-title">
-          <span><i class="fas fa-history"></i> أحدث الأنشطة</span>
-        </div>
+        <div class="section-title"><span><i class="fas fa-history"></i> أحدث الأنشطة (مباشر)</span></div>
         <div id="recentActivities"></div>
       </div>
     </div>
 
-    <!-- CHILDREN PAGE -->
     <div class="page" id="page-children">
       <div class="search-bar">
         <i class="fas fa-search"></i>
@@ -432,17 +403,14 @@ a{color:inherit;text-decoration:none;}
           <option value="note">إضافة ملاحظة</option>
           <option value="behavior">تقرير سلوك</option>
         </select>
-        <input type="number" id="pointsValue" value="1" min="1" placeholder="قيمة النقاط" style="max-width:100px;">
+        <input type="number" id="pointsValue" value="1" min="1" style="max-width:100px;">
       </div>
       <div class="children-grid" id="childrenGrid"></div>
     </div>
 
-    <!-- SCANNER PAGE -->
     <div class="page" id="page-scanner">
       <div class="section">
-        <div class="section-title">
-          <span><i class="fas fa-qrcode"></i> ماسح QR</span>
-        </div>
+        <div class="section-title"><span><i class="fas fa-qrcode"></i> ماسح QR</span></div>
         <div class="controls">
           <select id="scannerFunction">
             <option value="attendance">تسجيل حضور</option>
@@ -450,7 +418,7 @@ a{color:inherit;text-decoration:none;}
             <option value="deductPoints">خصم نقاط</option>
             <option value="quickActions">إجراءات سريعة</option>
           </select>
-          <input type="number" id="scannerPoints" value="1" min="1" placeholder="عدد النقاط" style="max-width:100px;">
+          <input type="number" id="scannerPoints" value="1" min="1" style="max-width:100px;">
         </div>
       </div>
       <div class="scanner-container">
@@ -461,12 +429,11 @@ a{color:inherit;text-decoration:none;}
         </div>
       </div>
       <div class="section">
-        <div class="section-title"><span><i class="fas fa-list"></i> آخر العمليات</span></div>
+        <div class="section-title"><span><i class="fas fa-list"></i> آخر العمليات (مباشر)</span></div>
         <div id="scanHistory"></div>
       </div>
     </div>
 
-    <!-- STATISTICS PAGE -->
     <div class="page" id="page-statistics">
       <div class="tabs">
         <div class="tab active" onclick="switchStatsTab('attendance',event)">الحضور</div>
@@ -487,99 +454,31 @@ a{color:inherit;text-decoration:none;}
         <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-warning)"><i class="fas fa-medal"></i></div><div class="stat-value" id="statTopChild">-</div><div class="stat-label">الأعلى حضوراً</div></div>
         <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-info)"><i class="fas fa-phone"></i></div><div class="stat-value" id="statTotalCalls">0</div><div class="stat-label">عدد المكالمات</div></div>
       </div>
-      <div class="chart-container">
-        <div class="section-title"><span><i class="fas fa-chart-bar"></i> الحضور الأسبوعي</span></div>
-        <canvas id="weeklyChart"></canvas>
-      </div>
-      <div class="chart-container">
-        <div class="section-title"><span><i class="fas fa-chart-pie"></i> التوزيع حسب الفصل</span></div>
-        <canvas id="classChart"></canvas>
-      </div>
-      <div class="chart-container">
-        <div class="section-title"><span><i class="fas fa-chart-line"></i> نمو الخدمة</span></div>
-        <canvas id="growthChart"></canvas>
-      </div>
+      <div class="chart-container"><div class="section-title"><span><i class="fas fa-chart-bar"></i> الحضور الأسبوعي</span></div><canvas id="weeklyChart"></canvas></div>
+      <div class="chart-container"><div class="section-title"><span><i class="fas fa-chart-pie"></i> التوزيع حسب الفصل</span></div><canvas id="classChart"></canvas></div>
+      <div class="chart-container"><div class="section-title"><span><i class="fas fa-chart-line"></i> نمو الخدمة</span></div><canvas id="growthChart"></canvas></div>
     </div>
 
-    <!-- SETTINGS PAGE -->
     <div class="page" id="page-settings">
       <div class="section">
         <div class="section-title"><span><i class="fas fa-cog"></i> إعدادات عامة</span></div>
         <div class="settings-list">
-          <div class="settings-item" onclick="openServantsModal()">
-            <i class="fas fa-users"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">إدارة الخدام</div>
-              <div class="settings-item-desc">إضافة وتعديل وصلاحيات</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="openClassesModal()">
-            <i class="fas fa-layer-group"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">الفصول والمراحل</div>
-              <div class="settings-item-desc">إدارة فصول الخدمة</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="openAddChildModal()">
-            <i class="fas fa-user-plus"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">إضافة طفل جديد</div>
-              <div class="settings-item-desc">تسجيل طفل في الخدمة</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="openServiceDaysModal()">
-            <i class="fas fa-calendar"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">أيام الخدمة</div>
-              <div class="settings-item-desc">تحديد أيام الاجتماع</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="openTemplatesModal()">
-            <i class="fas fa-comment-dots"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">قوالب الرسائل</div>
-              <div class="settings-item-desc">واتساب و SMS</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="backupData()">
-            <i class="fas fa-cloud"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">النسخ الاحتياطي</div>
-              <div class="settings-item-desc">حفظ واستعادة البيانات</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="importData()">
-            <i class="fas fa-file-import"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">استيراد Excel</div>
-              <div class="settings-item-desc">إضافة بيانات من ملف</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
-          <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
-            <div class="settings-item-text">
-              <div class="settings-item-title">المظهر</div>
-              <div class="settings-item-desc">تبديل بين الفاتح والداكن</div>
-            </div>
-            <i class="fas fa-chevron-left" style="color:var(--text-light)"></i>
-          </div>
+          <div class="settings-item" onclick="openServantsModal()"><i class="fas fa-users"></i><div class="settings-item-text"><div class="settings-item-title">إدارة الخدام</div><div class="settings-item-desc">إضافة وصلاحيات</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="openClassesModal()"><i class="fas fa-layer-group"></i><div class="settings-item-text"><div class="settings-item-title">الفصول والمراحل</div><div class="settings-item-desc">إدارة فصول الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="openAddChildModal()"><i class="fas fa-user-plus"></i><div class="settings-item-text"><div class="settings-item-title">إضافة طفل جديد</div><div class="settings-item-desc">تسجيل طفل في الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="openServiceDaysModal()"><i class="fas fa-calendar"></i><div class="settings-item-text"><div class="settings-item-title">أيام الخدمة</div><div class="settings-item-desc">تحديد أيام الاجتماع</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="openTemplatesModal()"><i class="fas fa-comment-dots"></i><div class="settings-item-text"><div class="settings-item-title">قوالب الرسائل</div><div class="settings-item-desc">واتساب و SMS</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="backupData()"><i class="fas fa-cloud"></i><div class="settings-item-text"><div class="settings-item-title">النسخ الاحتياطي</div><div class="settings-item-desc">حفظ واستعادة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="importData()"><i class="fas fa-file-import"></i><div class="settings-item-text"><div class="settings-item-title">استيراد Excel</div><div class="settings-item-desc">إضافة بيانات من ملف</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="toggleTheme()"><i class="fas fa-moon"></i><div class="settings-item-text"><div class="settings-item-title">المظهر</div><div class="settings-item-desc">فاتح/داكن</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- FAB -->
   <button class="fab" onclick="openAddChildModal()" title="إضافة طفل"><i class="fas fa-plus"></i></button>
 
-  <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <div class="nav-item active" data-page="home" onclick="showPage('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
     <div class="nav-item" data-page="children" onclick="showPage('children')"><i class="fas fa-child"></i><span>الأطفال</span></div>
@@ -589,13 +488,9 @@ a{color:inherit;text-decoration:none;}
   </nav>
 </div>
 
-<!-- Modals Container -->
 <div class="modal" id="childModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title" id="childModalTitle">إضافة طفل</div>
-      <div class="modal-close" onclick="closeModal('childModal')"><i class="fas fa-times"></i></div>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="childModalTitle">إضافة طفل</div><div class="modal-close" onclick="closeModal('childModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
       <form id="childForm">
         <input type="hidden" id="childId">
@@ -605,14 +500,14 @@ a{color:inherit;text-decoration:none;}
           <div class="form-group"><label class="form-label">النوع</label><select class="form-input" id="cGender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
           <div class="form-group"><label class="form-label">تاريخ الميلاد</label><input type="date" class="form-input" id="cBirth"></div>
         </div>
-        <div class="form-group"><label class="form-label">الفصل / المرحلة</label><select class="form-input" id="cClass"></select></div>
+        <div class="form-group"><label class="form-label">الفصل</label><select class="form-input" id="cClass"></select></div>
         <div class="form-group"><label class="form-label">المدرسة</label><input type="text" class="form-input" id="cSchool"></div>
         <div class="form-group"><label class="form-label">اسم ولي الأمر</label><input type="text" class="form-input" id="cParent"></div>
         <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-input" id="cPhone"></div>
         <div class="form-group"><label class="form-label">العنوان</label><input type="text" class="form-input" id="cAddress"></div>
         <div class="form-group"><label class="form-label">ملاحظات</label><textarea class="form-input" id="cNotes" rows="3"></textarea></div>
         <div class="form-group"><label class="form-label">ملاحظات طبية</label><textarea class="form-input" id="cMedical" rows="2"></textarea></div>
-        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> حفظ</button>
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> حفظ ومزامنة</button>
       </form>
     </div>
   </div>
@@ -620,16 +515,9 @@ a{color:inherit;text-decoration:none;}
 
 <div class="modal" id="qrModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">رمز QR</div>
-      <div class="modal-close" onclick="closeModal('qrModal')"><i class="fas fa-times"></i></div>
-    </div>
+    <div class="modal-header"><div class="modal-title">رمز QR</div><div class="modal-close" onclick="closeModal('qrModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
-      <div class="qr-display">
-        <div id="qrcode"></div>
-        <h3 id="qrChildName" style="margin-top:16px;"></h3>
-        <p id="qrChildClass" style="color:var(--text-light);"></p>
-      </div>
+      <div class="qr-display"><div id="qrcode"></div><h3 id="qrChildName" style="margin-top:16px;"></h3><p id="qrChildClass" style="color:var(--text-light);"></p></div>
       <button class="btn btn-primary btn-block" onclick="printQR()"><i class="fas fa-print"></i> طباعة</button>
     </div>
   </div>
@@ -637,36 +525,41 @@ a{color:inherit;text-decoration:none;}
 
 <div class="modal" id="profileModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">ملف الطفل</div>
-      <div class="modal-close" onclick="closeModal('profileModal')"><i class="fas fa-times"></i></div>
-    </div>
+    <div class="modal-header"><div class="modal-title">ملف الطفل</div><div class="modal-close" onclick="closeModal('profileModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body" id="profileBody"></div>
   </div>
 </div>
 
 <div class="modal" id="genericModal">
   <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title" id="genericTitle"></div>
-      <div class="modal-close" onclick="closeModal('genericModal')"><i class="fas fa-times"></i></div>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="genericTitle"></div><div class="modal-close" onclick="closeModal('genericModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body" id="genericBody"></div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast-container" id="toastContainer"></div>
-
-<!-- Loader -->
 <div class="loader-overlay" id="loaderOverlay"><div class="loader"></div></div>
+<div class="connection-status online" id="connectionStatus"><i class="fas fa-wifi"></i> <span>متصل</span></div>
 
 <script>
-// ============== CONFIGURATION ==============
+/* ============================================================
+   ⚡ REAL-TIME SUNDAY SCHOOL APP
+   كل العمليات تتزامن لحظياً بين جميع المستخدمين عبر Supabase
+   ============================================================ */
+
+// ============== SUPABASE CONFIGURATION ==============
 const SUPABASE_URL = 'https://cjxlwfrqfqwjhugpjdxz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ';
+
 let sb = null;
-try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn('Supabase not configured, using local mode'); }
+try {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    realtime: { params: { eventsPerSecond: 20 } }
+  });
+  console.log('✅ Supabase Realtime client ready');
+} catch(e) {
+  console.error('❌ Supabase init failed:', e);
+}
 
 // ============== STATE ==============
 const state = {
@@ -677,55 +570,48 @@ const state = {
   pointsHistory: [],
   callHistory: [],
   servants: [],
-  settings: {
-    serviceName: 'خدمة مدارس الأحد',
-    pointsDefault: 1,
-    theme: 'light'
-  },
-  scanner: null,
-  charts: {}
+  notifications: [],
+  onlineUsers: [],
+  settings: { serviceName: 'خدمة مدارس الأحد', pointsDefault: 1 },
+  charts: {},
+  rtChannels: [],
+  presenceChannel: null,
+  isOnline: navigator.onLine,
+  lastSync: null
 };
-
-const LS_KEY = 'sundaySchoolData';
 
 // ============== UTILITIES ==============
 const $ = id => document.getElementById(id);
-const uid = () => 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
 const today = () => new Date().toISOString().split('T')[0];
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
 
 function showLoader(show=true){ $('loaderOverlay').classList.toggle('show', show); }
 
 function toast(msg, type='success'){
   const t = document.createElement('div');
   t.className = 'toast ' + type;
-  const icons = {success:'check-circle',error:'times-circle',warning:'exclamation-circle',info:'info-circle'};
-  t.innerHTML = `<i class="fas fa-${icons[type]}" style="color:${type==='success'?'#4caf50':type==='error'?'#f44336':type==='warning'?'#ff9800':'#2196f3'}"></i><span>${msg}</span>`;
+  const icons = {success:'check-circle',error:'times-circle',warning:'exclamation-circle',info:'info-circle',live:'broadcast-tower'};
+  const colors = {success:'#4caf50',error:'#f44336',warning:'#ff9800',info:'#2196f3',live:'#9c27b0'};
+  t.innerHTML = `<i class="fas fa-${icons[type]}" style="color:${colors[type]}"></i><span>${msg}</span>`;
   $('toastContainer').appendChild(t);
   setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>t.remove(),300);}, 3000);
 }
 
-function confirmDialog(msg){
-  return new Promise(resolve=>{
-    if(confirm(msg)) resolve(true); else resolve(false);
-  });
-}
-
 function vibrate(ms=100){ if(navigator.vibrate) navigator.vibrate(ms); }
 
-function playBeep(){
+function playBeep(freq=800){
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
     osc.connect(gain); gain.connect(ctx.destination);
-    osc.frequency.value = 800; gain.gain.value = 0.1;
+    osc.frequency.value = freq; gain.gain.value = 0.08;
     osc.start(); setTimeout(()=>osc.stop(),150);
   }catch(e){}
 }
 
 function avatarColor(name){
   const colors = ['#a8c5ff','#c5b3ff','#ffb3d9','#b3e5c7','#ffd3a5','#b3e0ff'];
-  let h = 0; for(let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
+  let h = 0; for(let i=0;i<(name||'').length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
   return colors[Math.abs(h)%colors.length];
 }
 
@@ -735,29 +621,319 @@ function initials(name){
   return (parts[0][0] + (parts[1]?parts[1][0]:'')).toUpperCase();
 }
 
-// ============== LOCAL STORAGE ==============
-function saveLocal(){
-  try{
-    localStorage.setItem(LS_KEY, JSON.stringify({
-      children: state.children,
-      classes: state.classes,
-      attendance: state.attendance,
-      pointsHistory: state.pointsHistory,
-      callHistory: state.callHistory,
-      servants: state.servants,
-      settings: state.settings
-    }));
-  }catch(e){console.error(e);}
+function getClassName(id){ const c = state.classes.find(x=>x.id===id); return c?c.name:'غير محدد'; }
+
+function bumpStat(id){
+  const el = $(id);
+  if(!el) return;
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
 }
 
-function loadLocal(){
-  try{
-    const d = localStorage.getItem(LS_KEY);
-    if(d){
-      const p = JSON.parse(d);
-      Object.assign(state, p);
+// ============== 🔌 SUPABASE DATA LAYER (Real-Time CRUD) ==============
+const DB = {
+  async insert(table, data){
+    if(!sb) throw new Error('Supabase غير متصل');
+    const { data:r, error } = await sb.from(table).insert(data).select().single();
+    if(error) throw error;
+    return r;
+  },
+  async update(table, id, data){
+    if(!sb) throw new Error('Supabase غير متصل');
+    const { data:r, error } = await sb.from(table).update(data).eq('id', id).select().single();
+    if(error) throw error;
+    return r;
+  },
+  async remove(table, id){
+    if(!sb) throw new Error('Supabase غير متصل');
+    const { error } = await sb.from(table).delete().eq('id', id);
+    if(error) throw error;
+  },
+  async fetchAll(table, orderBy='created_at'){
+    if(!sb) return [];
+    const { data, error } = await sb.from(table).select('*').order(orderBy, {ascending:false});
+    if(error){ console.error(`Fetch ${table}:`, error); return []; }
+    return data || [];
+  }
+};
+
+// ============== 📡 REALTIME SUBSCRIPTIONS MANAGER ==============
+const RT = {
+  // إنشاء قناة لكل جدول وربطها بالـ handler
+  start(){
+    if(!sb){ console.warn('No Supabase'); return; }
+    this.stop();
+    
+    this.subscribe('children', this.onChildren);
+    this.subscribe('attendance', this.onAttendance);
+    this.subscribe('points_history', this.onPoints);
+    this.subscribe('call_history', this.onCalls);
+    this.subscribe('classes', this.onClasses);
+    this.subscribe('users', this.onUsers);
+    this.subscribe('notifications', this.onNotifications);
+    this.subscribe('settings', this.onSettings);
+    this.subscribe('child_notes', this.onChildNotes);
+    
+    this.startPresence();
+    
+    setLive(true);
+    console.log(`📡 ${state.rtChannels.length} realtime channels started`);
+  },
+
+  // الاشتراك في تغيرات جدول معين (INSERT/UPDATE/DELETE)
+  subscribe(table, handler){
+    const ch = sb.channel(`rt-${table}-${Date.now()}`)
+      .on('postgres_changes',
+        { event:'*', schema:'public', table },
+        payload => {
+          console.log(`[RT:${table}]`, payload.eventType);
+          handler.call(this, payload);
+          flashLiveIndicator();
+        })
+      .subscribe(status => {
+        if(status==='SUBSCRIBED') console.log(`✅ ${table} live`);
+        if(status==='CHANNEL_ERROR') console.error(`❌ ${table} error`);
+      });
+    state.rtChannels.push(ch);
+  },
+
+  // قناة Presence لمعرفة المستخدمين المتصلين الآن
+  startPresence(){
+    if(!state.user) return;
+    state.presenceChannel = sb.channel('online-users', {
+      config: { presence: { key: state.user.username } }
+    });
+    state.presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const presenceState = state.presenceChannel.presenceState();
+        state.onlineUsers = Object.values(presenceState).flat();
+        renderOnlineUsers();
+      })
+      .on('presence', { event: 'join' }, ({ newPresences }) => {
+        newPresences.forEach(p=>{
+          if(p.username !== state.user.username)
+            toast(`🟢 ${p.name} دخل الآن`, 'live');
+        });
+      })
+      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
+        leftPresences.forEach(p=>{
+          if(p.username !== state.user.username)
+            toast(`⚪ ${p.name} خرج`, 'info');
+        });
+      })
+      .subscribe(async status => {
+        if(status === 'SUBSCRIBED'){
+          await state.presenceChannel.track({
+            username: state.user.username,
+            name: state.user.name,
+            role: state.user.role,
+            online_at: new Date().toISOString()
+          });
+        }
+      });
+  },
+
+  // إيقاف كل القنوات (عند Logout)
+  stop(){
+    state.rtChannels.forEach(ch => { try{ sb.removeChannel(ch); }catch(e){} });
+    state.rtChannels = [];
+    if(state.presenceChannel){ try{ sb.removeChannel(state.presenceChannel); }catch(e){} state.presenceChannel=null; }
+  },
+
+  // =============== HANDLERS ===============
+  
+  // معالج تغيرات الأطفال
+  onChildren(payload){
+    const { eventType, new:N, old:O } = payload;
+    if(eventType==='INSERT'){
+      if(!state.children.find(c=>c.id===N.id)){
+        state.children.unshift(N);
+        if(N.created_by !== state.user.id)
+          toast(`👶 طفل جديد: ${N.name}`,'live');
+      }
+    } else if(eventType==='UPDATE'){
+      const i = state.children.findIndex(c=>c.id===N.id);
+      if(i>-1){
+        const oldPts = state.children[i].points||0;
+        state.children[i] = N;
+        if((N.points||0) > oldPts) flashChildCard(N.id, `+${(N.points||0)-oldPts} ⭐`);
+      } else { state.children.push(N); }
+    } else if(eventType==='DELETE'){
+      state.children = state.children.filter(c=>c.id!==O.id);
+      toast(`🗑️ تم حذف طفل من قِبل خادم آخر`,'warning');
     }
-  }catch(e){console.error(e);}
+    refreshUI(['home','children']);
+  },
+
+  // معالج تغيرات الحضور
+  onAttendance(payload){
+    const { eventType, new:N } = payload;
+    if(eventType==='INSERT'){
+      if(!state.attendance.find(a=>a.id===N.id)){
+        state.attendance.push(N);
+        const ch = state.children.find(c=>c.id===N.child_id);
+        if(ch){
+          if(N.recorded_by !== state.user.id){
+            toast(`✓ حضور لحظي: ${ch.name}`,'live');
+            playBeep(900); vibrate(60);
+          }
+          flashChildCard(ch.id, '✓ حضور');
+        }
+        bumpStat('todayAttendance');
+        addScanHistoryItem(ch, 'حضور');
+      }
+    } else if(eventType==='DELETE'){
+      state.attendance = state.attendance.filter(a=>a.id!==payload.old.id);
+    }
+    refreshUI(['home','statistics','scanner']);
+  },
+
+  // معالج تغيرات النقاط
+  onPoints(payload){
+    if(payload.eventType==='INSERT'){
+      if(!state.pointsHistory.find(p=>p.id===payload.new.id)){
+        state.pointsHistory.push(payload.new);
+        const ch = state.children.find(c=>c.id===payload.new.child_id);
+        if(ch && payload.new.awarded_by !== state.user.id){
+          const p = payload.new.points;
+          toast(`${p>0?'+':''}${p} نقطة لـ ${ch.name}`, 'live');
+        }
+        bumpStat('totalPoints');
+      }
+    }
+    refreshUI(['home','statistics']);
+  },
+
+  // معالج تغيرات المكالمات
+  onCalls(payload){
+    if(payload.eventType==='INSERT'){
+      if(!state.callHistory.find(c=>c.id===payload.new.id)){
+        state.callHistory.push(payload.new);
+      }
+    }
+    refreshUI(['statistics']);
+  },
+
+  // معالج تغيرات الفصول
+  onClasses(payload){
+    const { eventType, new:N, old:O } = payload;
+    if(eventType==='INSERT' && !state.classes.find(c=>c.id===N.id)) state.classes.push(N);
+    else if(eventType==='UPDATE'){
+      const i = state.classes.findIndex(c=>c.id===N.id);
+      if(i>-1) state.classes[i] = N;
+    } else if(eventType==='DELETE'){
+      state.classes = state.classes.filter(c=>c.id!==O.id);
+    }
+    populateClassSelects();
+    refreshUI(['children','statistics']);
+  },
+
+  // معالج تغيرات المستخدمين/الخدام
+  onUsers(payload){
+    const { eventType, new:N, old:O } = payload;
+    if(eventType==='INSERT' && !state.servants.find(s=>s.id===N.id)) state.servants.push(N);
+    else if(eventType==='UPDATE'){
+      const i = state.servants.findIndex(s=>s.id===N.id);
+      if(i>-1) state.servants[i] = N;
+    } else if(eventType==='DELETE'){
+      state.servants = state.servants.filter(s=>s.id!==O.id);
+    }
+  },
+
+  // معالج الإشعارات
+  onNotifications(payload){
+    if(payload.eventType==='INSERT'){
+      state.notifications.unshift(payload.new);
+      $('notifBadge').style.display='block';
+      toast(`🔔 ${payload.new.title}`, 'live');
+    }
+  },
+
+  // معالج الإعدادات
+  onSettings(payload){
+    if(payload.new){
+      Object.assign(state.settings, payload.new);
+      $('appName').textContent = payload.new.service_name || 'خدمة مدارس الأحد';
+      toast('⚙️ تم تحديث الإعدادات','live');
+    }
+  },
+
+  // معالج ملاحظات الأطفال
+  onChildNotes(payload){
+    if(payload.eventType==='INSERT'){
+      const ch = state.children.find(c=>c.id===payload.new.child_id);
+      if(ch && payload.new.created_by !== state.user.id)
+        toast(`📝 ملاحظة جديدة على ${ch.name}`, 'live');
+    }
+  }
+};
+
+// ============== UI HELPERS ==============
+function setLive(on){
+  const el = $('liveIndicator');
+  if(on){ el.classList.remove('offline'); $('liveText').textContent='مباشر'; }
+  else { el.classList.add('offline'); $('liveText').textContent='غير متصل'; }
+}
+
+function flashLiveIndicator(){
+  const dot = $('liveDot');
+  if(!dot) return;
+  dot.style.transform='scale(1.8)';
+  dot.style.background='#9c27b0';
+  setTimeout(()=>{ dot.style.transform=''; dot.style.background='#4caf50'; },500);
+}
+
+function flashChildCard(childId, label){
+  setTimeout(()=>{
+    document.querySelectorAll('.child-card').forEach(card=>{
+      if(card.dataset.id===childId){
+        card.classList.add('live-update');
+        const float = document.createElement('div');
+        float.textContent = label;
+        float.style.cssText = 'position:absolute;top:10px;left:10px;color:#4caf50;font-weight:800;font-size:16px;animation:floatUp 1.5s ease-out forwards;pointer-events:none;z-index:10;background:rgba(255,255,255,0.95);padding:4px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(76,175,80,0.4);';
+        card.appendChild(float);
+        setTimeout(()=>{ card.classList.remove('live-update'); float.remove(); }, 1500);
+      }
+    });
+  }, 50);
+}
+
+function renderOnlineUsers(){
+  const el = $('onlineUsers');
+  if(!el) return;
+  const users = state.onlineUsers.slice(0,3);
+  el.innerHTML = users.map(u=>`<div class="online-user-dot" title="${u.name||u.username}" style="background:${avatarColor(u.name||u.username)}">${initials(u.name||u.username)}</div>`).join('');
+  $('totalServants').textContent = state.onlineUsers.length;
+}
+
+function addScanHistoryItem(child, action){
+  if(!child) return;
+  const h = $('scanHistory');
+  if(!h) return;
+  const item = document.createElement('div');
+  item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;animation:fadeIn 0.4s';
+  item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> ${child.name} - ${action} - ${new Date().toLocaleTimeString('ar-EG')}`;
+  h.prepend(item);
+  if(h.children.length>10) h.lastChild.remove();
+}
+
+// تحديث ذكي للواجهة - فقط الصفحات النشطة
+function refreshUI(pages){
+  pages.forEach(p=>{
+    const pg = $('page-'+p);
+    if(pg && pg.classList.contains('active')){
+      if(p==='home') renderHome();
+      if(p==='children') renderChildren();
+      if(p==='statistics') renderStats();
+    }
+  });
+  // التحديث الدائم للهيدر
+  if($('page-home')){
+    $('totalChildren').textContent = state.children.length;
+    $('todayAttendance').textContent = state.attendance.filter(a=>a.date===today()).length;
+    $('totalPoints').textContent = state.children.reduce((s,c)=>s+(c.points||0),0);
+  }
 }
 
 // ============== AUTH ==============
@@ -768,15 +944,33 @@ $('loginForm').addEventListener('submit', async e=>{
   const btn = $('loginBtn');
   btn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
   btn.disabled = true;
-  await new Promise(r=>setTimeout(r,600));
-  if((u==='admin' && p==='admin123') || (state.servants.find(s=>s.username===u && s.password===p))){
-    const userObj = u==='admin' ? {name:'المدير العام', role:'admin', username:'admin'} : state.servants.find(s=>s.username===u);
-    state.user = userObj;
-    sessionStorage.setItem('user', JSON.stringify(userObj));
-    if($('rememberMe').checked) localStorage.setItem('user', JSON.stringify(userObj));
-    initApp();
-  } else {
-    toast('اسم المستخدم أو كلمة المرور غير صحيحة','error');
+  
+  try{
+    // محاولة جلب المستخدم من Supabase
+    let userObj = null;
+    if(sb){
+      const { data } = await sb.from('users').select('*').eq('username',u).single();
+      if(data && (data.password_hash===p || (u==='admin' && p==='admin123'))){
+        userObj = { id:data.id, name:data.full_name, role:data.role, username:data.username };
+      }
+    }
+    // Fallback افتراضي
+    if(!userObj && u==='admin' && p==='admin123'){
+      userObj = { id:'admin-local', name:'المدير العام', role:'admin', username:'admin' };
+    }
+    
+    if(userObj){
+      state.user = userObj;
+      sessionStorage.setItem('user', JSON.stringify(userObj));
+      if($('rememberMe').checked) localStorage.setItem('user', JSON.stringify(userObj));
+      await initApp();
+    } else {
+      toast('بيانات الدخول غير صحيحة','error');
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>دخول</span>';
+      btn.disabled = false;
+    }
+  }catch(err){
+    toast('خطأ: '+err.message,'error');
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>دخول</span>';
     btn.disabled = false;
   }
@@ -784,6 +978,7 @@ $('loginForm').addEventListener('submit', async e=>{
 
 function logout(){
   if(!confirm('تأكيد تسجيل الخروج؟')) return;
+  RT.stop(); // إيقاف كل قنوات الـ realtime
   state.user = null;
   sessionStorage.removeItem('user');
   localStorage.removeItem('user');
@@ -793,60 +988,66 @@ function logout(){
 }
 
 // ============== APP INIT ==============
-function initApp(){
+async function initApp(){
   $('loginPage').style.display = 'none';
   $('app').classList.add('active');
   $('userName').textContent = state.user.name || 'مستخدم';
   $('userRole').textContent = state.user.role==='admin'?'مسؤول':state.user.role==='supervisor'?'مشرف':'خادم';
   $('welcomeText').textContent = `أهلاً ${state.user.name} 👋`;
   $('currentDate').textContent = new Date().toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
-  $('appName').textContent = state.settings.serviceName;
-  if(state.classes.length===0) seedClasses();
-  if(state.children.length===0) seedSample();
-  populateClassSelects();
-  renderHome();
-  renderChildren();
+  
+  showLoader(true);
+  try{
+    // 1️⃣ تحميل البيانات الأولية من Supabase
+    if(sb){
+      await loadAllData();
+    }
+    // 2️⃣ تشغيل جميع قنوات Realtime
+    RT.start();
+    // 3️⃣ رسم الواجهة
+    populateClassSelects();
+    renderHome();
+    renderChildren();
+    state.lastSync = Date.now();
+    toast('⚡ التطبيق متزامن لحظياً','live');
+  }catch(e){
+    console.error(e);
+    toast('فشل تحميل البيانات: '+e.message,'error');
+    setLive(false);
+  }finally{ showLoader(false); }
 }
 
-function seedClasses(){
-  state.classes = [
-    {id:uid(), name:'حضانة'},
-    {id:uid(), name:'تمهيدي'},
-    {id:uid(), name:'ابتدائي أول'},
-    {id:uid(), name:'ابتدائي ثاني'},
-    {id:uid(), name:'ابتدائي ثالث'},
-    {id:uid(), name:'إعدادي'},
-    {id:uid(), name:'ثانوي'}
-  ];
-  saveLocal();
+// جلب كل البيانات من السيرفر
+async function loadAllData(){
+  const [children, classes, attendance, points, calls, servants, settings] = await Promise.all([
+    DB.fetchAll('children'),
+    DB.fetchAll('classes', 'order_index'),
+    DB.fetchAll('attendance', 'date'),
+    DB.fetchAll('points_history'),
+    DB.fetchAll('call_history'),
+    DB.fetchAll('users'),
+    DB.fetchAll('settings')
+  ]);
+  state.children = children;
+  state.classes = classes.length ? classes : [];
+  state.attendance = attendance;
+  state.pointsHistory = points;
+  state.callHistory = calls;
+  state.servants = servants;
+  if(settings[0]) Object.assign(state.settings, settings[0]);
+  $('appName').textContent = state.settings.service_name || 'خدمة مدارس الأحد';
 }
 
-function seedSample(){
-  const names = ['مارك سامي','مريم عماد','يوسف ميلاد','مينا أمجد','كيرلس ناجي','فيبي عاطف','بطرس رامي','أنجيلا مجدي'];
-  names.forEach((n,i)=>{
-    state.children.push({
-      id: uid(),
-      name: n,
-      nickname:'',
-      gender: i%2===0?'male':'female',
-      birth_date:'2015-0'+((i%9)+1)+'-15',
-      class_id: state.classes[i%state.classes.length].id,
-      school:'مدرسة المستقبل',
-      parent_name:'الأب: عماد',
-      phone:'010'+String(10000000+i*1234567).slice(0,8),
-      address:'القاهرة',
-      points: Math.floor(Math.random()*50),
-      attendance_count: Math.floor(Math.random()*20),
-      qr_id: 'CH-'+(1000+i),
-      status:'active',
-      photo:'',
-      notes:'',
-      medical:'',
-      last_attendance:'',
-      created_at: new Date().toISOString()
-    });
-  });
-  saveLocal();
+// مزامنة يدوية
+async function forceSync(){
+  showLoader(true);
+  try{
+    await loadAllData();
+    refreshUI(['home','children','statistics']);
+    state.lastSync = Date.now();
+    toast('✓ تمت المزامنة','success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); toggleSideMenu(); }
 }
 
 function populateClassSelects(){
@@ -870,7 +1071,6 @@ function toggleSideMenu(){
   $('sideMenu').classList.toggle('open');
   $('sideOverlay').classList.toggle('open');
 }
-
 function openModal(id){ $(id).classList.add('open'); }
 function closeModal(id){ $(id).classList.remove('open'); }
 
@@ -878,27 +1078,27 @@ function closeModal(id){ $(id).classList.remove('open'); }
 function renderHome(){
   $('totalChildren').textContent = state.children.length;
   const t = today();
-  const todayAtt = state.attendance.filter(a=>a.date===t).length;
-  $('todayAttendance').textContent = todayAtt;
+  $('todayAttendance').textContent = state.attendance.filter(a=>a.date===t).length;
   $('totalPoints').textContent = state.children.reduce((s,c)=>s+(c.points||0),0);
-  $('totalServants').textContent = state.servants.length || 1;
+  $('totalServants').textContent = state.onlineUsers.length || 1;
 
-  const top = [...state.children].sort((a,b)=>b.points-a.points).slice(0,5);
+  const top = [...state.children].sort((a,b)=>(b.points||0)-(a.points||0)).slice(0,5);
   $('topChildren').innerHTML = top.length ? top.map((c,i)=>`
     <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;">
       <div style="width:32px;height:32px;border-radius:50%;background:${i<3?'var(--gradient)':'var(--border)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">${i+1}</div>
       <div style="flex:1;"><strong>${c.name}</strong><br><small style="color:var(--text-light)">${getClassName(c.class_id)}</small></div>
-      <span class="badge badge-warning"><i class="fas fa-star"></i> ${c.points}</span>
+      <span class="badge badge-warning"><i class="fas fa-star"></i> ${c.points||0}</span>
     </div>
   `).join('') : '<div class="empty-state"><i class="fas fa-trophy"></i><p>لا توجد بيانات</p></div>';
 
-  const acts = [...state.attendance, ...state.pointsHistory].sort((a,b)=>new Date(b.created_at||b.date) - new Date(a.created_at||a.date)).slice(0,5);
+  const acts = [...state.attendance.map(a=>({...a,_t:'att'})), ...state.pointsHistory.map(p=>({...p,_t:'pts'}))]
+    .sort((a,b)=>new Date(b.created_at||b.date) - new Date(a.created_at||a.date)).slice(0,8);
   $('recentActivities').innerHTML = acts.length ? acts.map(a=>{
     const c = state.children.find(ch=>ch.id===a.child_id);
     return `<div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;">
-      <i class="fas fa-${a.points?'star':'check'}" style="color:var(--primary);"></i>
-      <div style="flex:1;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a.points?(a.points>0?'+':'')+a.points+' نقطة':'تسجيل حضور'}</small></div>
-      <small>${a.date||''}</small>
+      <i class="fas fa-${a._t==='pts'?'star':'check'}" style="color:var(--primary);"></i>
+      <div style="flex:1;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a._t==='pts'?(a.points>0?'+':'')+a.points+' نقطة':'تسجيل حضور'}</small></div>
+      <small>${(a.date||'').slice(5)}</small>
     </div>`;
   }).join('') : '<div class="empty-state"><i class="fas fa-history"></i><p>لا توجد أنشطة بعد</p></div>';
 
@@ -908,25 +1108,23 @@ function renderHome(){
 function drawHomeChart(){
   const ctx = $('homeChart').getContext('2d');
   if(state.charts.home) state.charts.home.destroy();
-  const labels = [], data = [];
+  const labels=[], data=[];
   for(let i=6;i>=0;i--){
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const ds = d.toISOString().split('T')[0];
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
     labels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
     data.push(state.attendance.filter(a=>a.date===ds).length);
   }
   state.charts.home = new Chart(ctx,{
     type:'line',
-    data:{labels, datasets:[{label:'الحضور', data, borderColor:'#a8c5ff', backgroundColor:'rgba(168,197,255,0.2)', fill:true, tension:0.4}]},
-    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+    data:{labels,datasets:[{label:'الحضور',data,borderColor:'#a8c5ff',backgroundColor:'rgba(168,197,255,0.2)',fill:true,tension:0.4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},animation:{duration:400}}
   });
 }
 
 // ============== CHILDREN ==============
-function getClassName(id){ const c = state.classes.find(x=>x.id===id); return c?c.name:'غير محدد'; }
-
 function renderChildren(){
-  const q = $('childrenSearch').value.toLowerCase();
+  const q = ($('childrenSearch').value||'').toLowerCase();
   const cls = $('filterClass').value;
   const sortBy = $('sortBy').value;
   let list = state.children.filter(c =>
@@ -934,26 +1132,26 @@ function renderChildren(){
     (!cls || c.class_id===cls)
   );
   list.sort((a,b)=>{
-    if(sortBy==='points') return b.points-a.points;
+    if(sortBy==='points') return (b.points||0)-(a.points||0);
     if(sortBy==='attendance') return (b.attendance_count||0)-(a.attendance_count||0);
     if(sortBy==='date') return new Date(b.created_at)-new Date(a.created_at);
-    return a.name.localeCompare(b.name,'ar');
+    return (a.name||'').localeCompare(b.name||'','ar');
   });
   const grid = $('childrenGrid');
   if(!list.length){
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-child"></i><p>لا يوجد أطفال</p><button class="btn btn-primary" onclick="openAddChildModal()" style="margin-top:14px;"><i class="fas fa-plus"></i> إضافة طفل</button></div>';
     return;
   }
-  grid.innerHTML = list.map(c=>renderChildCard(c)).join('');
+  grid.innerHTML = list.map(renderChildCard).join('');
 }
 
 function renderChildCard(c){
-  const img = c.photo ? `<img src="${c.photo}">` : initials(c.name);
-  const bgColor = c.photo ? '' : `style="background:${avatarColor(c.name)}"`;
+  const img = c.photo_url ? `<img src="${c.photo_url}">` : initials(c.name);
+  const bg = c.photo_url ? '' : `style="background:${avatarColor(c.name)}"`;
   return `
-    <div class="child-card">
+    <div class="child-card" data-id="${c.id}">
       <div class="child-head" onclick="openProfile('${c.id}')" style="cursor:pointer;">
-        <div class="child-avatar" ${bgColor}>${img}</div>
+        <div class="child-avatar" ${bg}>${img}</div>
         <div class="child-info">
           <div class="child-name">${c.name}</div>
           <div class="child-class"><i class="fas fa-layer-group"></i> ${getClassName(c.class_id)}</div>
@@ -964,23 +1162,18 @@ function renderChildCard(c){
       <div class="child-stats">
         <div class="child-stat"><div class="child-stat-val">${c.points||0}</div><div class="child-stat-lbl">نقاط</div></div>
         <div class="child-stat"><div class="child-stat-val">${c.attendance_count||0}</div><div class="child-stat-lbl">حضور</div></div>
-        <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${c.last_attendance||'-'}</div><div class="child-stat-lbl">آخر حضور</div></div>
+        <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c.last_attendance||'-').toString().slice(5)}</div><div class="child-stat-lbl">آخر حضور</div></div>
       </div>
       <div class="child-actions">
         <button class="btn btn-primary btn-sm" onclick="execAction('${c.id}')"><i class="fas fa-bolt"></i> <span class="action-label">تسجيل حضور</span></button>
         <button class="btn btn-info btn-sm" onclick="showQR('${c.id}')"><i class="fas fa-qrcode"></i> QR</button>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function updateActionLabels(){
   const f = $('actionFunction').value;
-  const labels = {
-    attendance:'تسجيل حضور',contact:'اتصال',whatsapp:'واتساب',sms:'SMS',
-    addPoints:'+ نقاط',deductPoints:'- نقاط',edit:'تعديل',delete:'حذف',
-    qr:'QR',transfer:'نقل فصل',absent:'غياب',note:'ملاحظة',behavior:'سلوك'
-  };
+  const labels = {attendance:'تسجيل حضور',contact:'اتصال',whatsapp:'واتساب',sms:'SMS',addPoints:'+ نقاط',deductPoints:'- نقاط',edit:'تعديل',delete:'حذف',qr:'QR',transfer:'نقل',absent:'غياب',note:'ملاحظة',behavior:'سلوك'};
   document.querySelectorAll('.action-label').forEach(el=>el.textContent=labels[f]||'تنفيذ');
 }
 
@@ -991,95 +1184,122 @@ async function execAction(id){
   const pts = parseInt($('pointsValue').value)||1;
   switch(f){
     case 'attendance': await registerAttendance(c); break;
-    case 'contact': window.open('tel:'+c.phone); logCall(c.id,'phone'); break;
-    case 'whatsapp': window.open(`https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent('سلام المسيح يا '+c.name)}`); logCall(c.id,'whatsapp'); break;
-    case 'sms': window.open(`sms:${c.phone}?body=${encodeURIComponent('سلام المسيح يا '+c.name)}`); logCall(c.id,'sms'); break;
-    case 'addPoints': addPoints(c, pts); break;
-    case 'deductPoints': addPoints(c, -pts); break;
+    case 'contact': window.open('tel:'+c.phone); await logCall(c.id,'phone'); break;
+    case 'whatsapp': window.open(`https://wa.me/${(c.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent('سلام المسيح يا '+c.name)}`); await logCall(c.id,'whatsapp'); break;
+    case 'sms': window.open(`sms:${c.phone}?body=${encodeURIComponent('سلام المسيح يا '+c.name)}`); await logCall(c.id,'sms'); break;
+    case 'addPoints': await addPoints(c, pts); break;
+    case 'deductPoints': await addPoints(c, -pts); break;
     case 'edit': openEditChild(c); break;
-    case 'delete': deleteChild(c); break;
+    case 'delete': await deleteChild(c); break;
     case 'qr': showQR(id); break;
     case 'transfer': transferChild(c); break;
-    case 'absent': toast('تم تسجيل غياب '+c.name,'warning'); break;
+    case 'absent': await registerAttendance(c,'absent'); break;
     case 'note': addNote(c); break;
     case 'behavior': addNote(c, true); break;
   }
 }
 
-async function registerAttendance(c){
+// ============== ⚡ REAL-TIME OPERATIONS ==============
+
+// تسجيل حضور (يتزامن لحظياً)
+async function registerAttendance(c, status='present'){
   const t = today();
   if(state.attendance.find(a=>a.child_id===c.id && a.date===t)){
-    toast('تم تسجيل الحضور مسبقاً لهذا اليوم','warning');
-    return;
+    toast('تم تسجيل الحضور مسبقاً','warning'); return;
   }
-  state.attendance.push({id:uid(), child_id:c.id, date:t, created_at:new Date().toISOString(), recorded_by:state.user.username});
-  c.attendance_count = (c.attendance_count||0)+1;
-  c.last_attendance = t;
-  c.points = (c.points||0) + (state.settings.pointsDefault||1);
-  state.pointsHistory.push({id:uid(), child_id:c.id, points: state.settings.pointsDefault||1, reason:'حضور', date:t, created_at:new Date().toISOString()});
-  saveLocal();
-  vibrate(100); playBeep();
-  toast(`✓ تم تسجيل حضور ${c.name}`,'success');
-  renderChildren(); renderHome();
+  try{
+    showLoader(true);
+    // 1) إدراج في جدول الحضور (سينعكس عبر RT لكل الأجهزة)
+    await DB.insert('attendance', {
+      child_id: c.id, date: t, status,
+      method: 'manual',
+      recorded_by: state.user.id === 'admin-local' ? null : state.user.id
+    });
+    // 2) إضافة نقاط الحضور (سينعكس عبر RT)
+    if(status==='present'){
+      await DB.insert('points_history', {
+        child_id: c.id,
+        points: state.settings.points_default || 1,
+        reason: 'حضور', type: 'attendance',
+        awarded_by: state.user.id === 'admin-local' ? null : state.user.id
+      });
+    }
+    vibrate(100); playBeep();
+    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name}`,'success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); }
 }
 
-function addPoints(c, amount){
-  c.points = (c.points||0) + amount;
-  state.pointsHistory.push({id:uid(), child_id:c.id, points:amount, reason: amount>0?'إضافة':'خصم', date:today(), created_at:new Date().toISOString()});
-  saveLocal();
-  toast(`${amount>0?'+':''}${amount} نقطة لـ ${c.name}`, amount>0?'success':'warning');
-  renderChildren(); renderHome();
+// إضافة/خصم نقاط (يتزامن لحظياً)
+async function addPoints(c, amount){
+  try{
+    await DB.insert('points_history', {
+      child_id: c.id, points: amount,
+      reason: amount>0?'إضافة يدوية':'خصم يدوي',
+      type: 'manual',
+      awarded_by: state.user.id === 'admin-local' ? null : state.user.id
+    });
+    toast(`${amount>0?'+':''}${amount} نقطة لـ ${c.name}`, amount>0?'success':'warning');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
-function logCall(childId, type){
-  state.callHistory.push({id:uid(), child_id:childId, type, date:today(), created_at:new Date().toISOString()});
-  saveLocal();
+// تسجيل مكالمة (يتزامن)
+async function logCall(childId, type){
+  try{
+    await DB.insert('call_history', {
+      child_id: childId, type,
+      called_by: state.user.id === 'admin-local' ? null : state.user.id
+    });
+  }catch(e){ console.error(e); }
 }
 
+// حذف طفل (يتزامن)
 async function deleteChild(c){
-  if(!await confirmDialog(`حذف الطفل ${c.name}؟`)) return;
-  state.children = state.children.filter(x=>x.id!==c.id);
-  saveLocal();
-  toast('تم الحذف','success');
-  renderChildren();
+  if(!confirm(`حذف الطفل ${c.name}؟`)) return;
+  try{
+    await DB.remove('children', c.id);
+    toast('تم الحذف','success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
+// نقل طفل لفصل آخر (يتزامن)
 function transferChild(c){
   const opts = state.classes.map(cl=>`<option value="${cl.id}" ${cl.id===c.class_id?'selected':''}>${cl.name}</option>`).join('');
   $('genericTitle').textContent = 'نقل '+c.name;
   $('genericBody').innerHTML = `
-    <div class="form-group"><label class="form-label">اختر الفصل الجديد</label>
-    <select class="form-input" id="transferClass">${opts}</select></div>
-    <button class="btn btn-primary btn-block" onclick="doTransfer('${c.id}')"><i class="fas fa-arrow-left"></i> نقل</button>
-  `;
+    <div class="form-group"><label class="form-label">اختر الفصل</label><select class="form-input" id="transferClass">${opts}</select></div>
+    <button class="btn btn-primary btn-block" onclick="doTransfer('${c.id}')"><i class="fas fa-arrow-left"></i> نقل</button>`;
   openModal('genericModal');
 }
-function doTransfer(id){
-  const c = state.children.find(x=>x.id===id);
-  c.class_id = $('transferClass').value;
-  saveLocal();
-  closeModal('genericModal');
-  toast('تم النقل','success');
-  renderChildren();
+async function doTransfer(id){
+  try{
+    await DB.update('children', id, { class_id: $('transferClass').value });
+    closeModal('genericModal');
+    toast('تم النقل','success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
+// إضافة ملاحظة (يتزامن)
 function addNote(c, behavior=false){
   $('genericTitle').textContent = behavior?'تقرير سلوك':'إضافة ملاحظة';
   $('genericBody').innerHTML = `
     <div class="form-group"><label class="form-label">${behavior?'تقرير السلوك':'الملاحظة'}</label>
     <textarea class="form-input" id="noteText" rows="4"></textarea></div>
-    <button class="btn btn-primary btn-block" onclick="saveNote('${c.id}',${behavior})"><i class="fas fa-save"></i> حفظ</button>
-  `;
+    <button class="btn btn-primary btn-block" onclick="saveNote('${c.id}',${behavior})"><i class="fas fa-save"></i> حفظ ومزامنة</button>`;
   openModal('genericModal');
 }
-function saveNote(id, behavior){
-  const c = state.children.find(x=>x.id===id);
+async function saveNote(id, behavior){
   const txt = $('noteText').value.trim();
   if(!txt) return;
-  c.notes = (c.notes||'') + `\n[${today()}] ${behavior?'سلوك: ':''}${txt}`;
-  saveLocal();
-  closeModal('genericModal');
-  toast('تم الحفظ','success');
+  try{
+    await DB.insert('child_notes', {
+      child_id: id, note: txt,
+      type: behavior?'behavior':'general',
+      created_by: state.user.id === 'admin-local' ? null : state.user.id
+    });
+    closeModal('genericModal');
+    toast('تم الحفظ','success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
 function openAddChildModal(){
@@ -1090,7 +1310,7 @@ function openAddChildModal(){
 }
 
 function openEditChild(c){
-  $('childModalTitle').textContent = 'تعديل بيانات '+c.name;
+  $('childModalTitle').textContent = 'تعديل '+c.name;
   $('childId').value = c.id;
   $('cName').value = c.name||'';
   $('cNick').value = c.nickname||'';
@@ -1102,36 +1322,42 @@ function openEditChild(c){
   $('cPhone').value = c.phone||'';
   $('cAddress').value = c.address||'';
   $('cNotes').value = c.notes||'';
-  $('cMedical').value = c.medical||'';
+  $('cMedical').value = c.medical_notes||'';
   openModal('childModal');
 }
 
-$('childForm').addEventListener('submit', e=>{
+// إضافة/تعديل طفل (يتزامن لحظياً)
+$('childForm').addEventListener('submit', async e=>{
   e.preventDefault();
   const id = $('childId').value;
   const data = {
     name: $('cName').value.trim(),
     nickname: $('cNick').value.trim(),
     gender: $('cGender').value,
-    birth_date: $('cBirth').value,
-    class_id: $('cClass').value,
+    birth_date: $('cBirth').value||null,
+    class_id: $('cClass').value||null,
     school: $('cSchool').value,
     parent_name: $('cParent').value,
     phone: $('cPhone').value,
     address: $('cAddress').value,
     notes: $('cNotes').value,
-    medical: $('cMedical').value,
+    medical_notes: $('cMedical').value
   };
-  if(id){
-    Object.assign(state.children.find(x=>x.id===id), data);
-    toast('تم تحديث البيانات','success');
-  } else {
-    state.children.push({id:uid(), ...data, points:0, attendance_count:0, status:'active', qr_id:'CH-'+Date.now(), created_at:new Date().toISOString()});
-    toast('تم إضافة الطفل','success');
-  }
-  saveLocal();
-  closeModal('childModal');
-  renderChildren(); renderHome();
+  try{
+    showLoader(true);
+    if(id){
+      await DB.update('children', id, data);
+      toast('تم التحديث','success');
+    } else {
+      data.qr_id = 'CH-'+Date.now()+'-'+Math.floor(Math.random()*999);
+      data.points = 0; data.attendance_count = 0; data.status='active';
+      if(state.user.id !== 'admin-local') data.created_by = state.user.id;
+      await DB.insert('children', data);
+      toast('تم الإضافة','success');
+    }
+    closeModal('childModal');
+  }catch(err){ toast('خطأ: '+err.message,'error'); }
+  finally{ showLoader(false); }
 });
 
 function showQR(id){
@@ -1159,14 +1385,14 @@ function openProfile(id){
       <div class="child-avatar" style="width:80px;height:80px;font-size:28px;margin:0 auto 12px;background:${avatarColor(c.name)}">${initials(c.name)}</div>
       <h2>${c.name}</h2>
       <p style="color:var(--text-light)">${getClassName(c.class_id)}</p>
+      <div class="live-indicator" style="margin-top:8px;"><span class="live-dot"></span><span>تحديث مباشر</span></div>
     </div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-value">${c.points||0}</div><div class="stat-label">النقاط</div></div>
       <div class="stat-card"><div class="stat-value">${c.attendance_count||0}</div><div class="stat-label">الحضور</div></div>
     </div>
     <div class="section">
-      <h4><i class="fas fa-user"></i> البيانات الشخصية</h4>
-      <p>الاسم المستعار: ${c.nickname||'-'}</p>
+      <h4><i class="fas fa-user"></i> البيانات</h4>
       <p>تاريخ الميلاد: ${c.birth_date||'-'}</p>
       <p>المدرسة: ${c.school||'-'}</p>
       <p>ولي الأمر: ${c.parent_name||'-'}</p>
@@ -1179,14 +1405,9 @@ function openProfile(id){
     </div>
     <div class="section">
       <h4><i class="fas fa-star"></i> سجل النقاط</h4>
-      ${points.slice(-10).reverse().map(p=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${p.date}: ${p.points>0?'+':''}${p.points} (${p.reason})</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
+      ${points.slice(-10).reverse().map(p=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${p.date||p.created_at?.slice(0,10)}: ${p.points>0?'+':''}${p.points} (${p.reason||''})</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
     </div>
-    <div class="section">
-      <h4><i class="fas fa-sticky-note"></i> الملاحظات</h4>
-      <pre style="white-space:pre-wrap;font-family:inherit;">${c.notes||'لا توجد ملاحظات'}</pre>
-    </div>
-    <button class="btn btn-primary btn-block" onclick="openEditChild(state.children.find(x=>x.id==='${c.id}'));closeModal('profileModal')"><i class="fas fa-edit"></i> تعديل</button>
-  `;
+    <button class="btn btn-primary btn-block" onclick="closeModal('profileModal');openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>`;
   openModal('profileModal');
 }
 
@@ -1204,7 +1425,6 @@ async function startScanner(){
     $('stopScanBtn').style.display='none';
   }
 }
-
 async function stopScanner(){
   if(scannerInstance){
     try{ await scannerInstance.stop(); scannerInstance.clear(); }catch(e){}
@@ -1213,30 +1433,25 @@ async function stopScanner(){
   $('startScanBtn').style.display='flex';
   $('stopScanBtn').style.display='none';
 }
-
 let lastScan = {};
-function onScanSuccess(text){
-  if(lastScan[text] && Date.now()-lastScan[text]<2000) return;
+async function onScanSuccess(text){
+  if(lastScan[text] && Date.now()-lastScan[text]<2500) return;
   lastScan[text] = Date.now();
   const c = state.children.find(x=>x.qr_id===text);
-  if(!c){ toast('QR غير معروف: '+text,'error'); return; }
+  if(!c){ toast('QR غير معروف','error'); return; }
   const f = $('scannerFunction').value;
   const pts = parseInt($('scannerPoints').value)||1;
-  if(f==='attendance') registerAttendance(c);
-  else if(f==='addPoints') addPoints(c,pts);
-  else if(f==='deductPoints') addPoints(c,-pts);
-  else if(f==='quickActions') { stopScanner(); openProfile(c.id); }
-  const h = $('scanHistory');
-  const item = document.createElement('div');
-  item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;';
-  item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> ${c.name} - ${new Date().toLocaleTimeString('ar-EG')}`;
-  h.prepend(item);
+  if(f==='attendance') await registerAttendance(c);
+  else if(f==='addPoints') await addPoints(c,pts);
+  else if(f==='deductPoints') await addPoints(c,-pts);
+  else if(f==='quickActions'){ await stopScanner(); openProfile(c.id); }
+  addScanHistoryItem(c, f==='attendance'?'حضور':f==='addPoints'?'+'+pts:f==='deductPoints'?'-'+pts:'سريع');
 }
 
 // ============== STATISTICS ==============
 function renderStats(){
   $('statTotalAttendance').textContent = state.attendance.length;
-  const rate = state.children.length? Math.round(state.attendance.length/(state.children.length*7)*100): 0;
+  const rate = state.children.length? Math.round(state.attendance.length/(state.children.length*7)*100):0;
   $('statAvgRate').textContent = Math.min(rate,100)+'%';
   const top = [...state.children].sort((a,b)=>(b.attendance_count||0)-(a.attendance_count||0))[0];
   $('statTopChild').textContent = top? top.name.split(' ')[0]:'-';
@@ -1253,18 +1468,12 @@ function drawStatsCharts(){
     data.push(state.attendance.filter(a=>a.date===ds).length);
   }
   if(state.charts.weekly) state.charts.weekly.destroy();
-  state.charts.weekly = new Chart($('weeklyChart'),{
-    type:'bar',
-    data:{labels,datasets:[{label:'حضور',data,backgroundColor:'#a8c5ff',borderRadius:10}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
-  });
+  state.charts.weekly = new Chart($('weeklyChart'),{type:'bar',data:{labels,datasets:[{label:'حضور',data,backgroundColor:'#a8c5ff',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  
   const clsData = state.classes.map(cl=>state.children.filter(c=>c.class_id===cl.id).length);
   if(state.charts.cls) state.charts.cls.destroy();
-  state.charts.cls = new Chart($('classChart'),{
-    type:'doughnut',
-    data:{labels:state.classes.map(c=>c.name),datasets:[{data:clsData,backgroundColor:['#a8c5ff','#c5b3ff','#b3e5c7','#ffd3a5','#ffb3b3','#b3e0ff','#ffb3d9']}]},
-    options:{responsive:true,maintainAspectRatio:false}
-  });
+  state.charts.cls = new Chart($('classChart'),{type:'doughnut',data:{labels:state.classes.map(c=>c.name),datasets:[{data:clsData,backgroundColor:['#a8c5ff','#c5b3ff','#b3e5c7','#ffd3a5','#ffb3b3','#b3e0ff','#ffb3d9']}]},options:{responsive:true,maintainAspectRatio:false}});
+  
   if(state.charts.growth) state.charts.growth.destroy();
   const g_labels=[], g_data=[];
   for(let i=11;i>=0;i--){
@@ -1272,11 +1481,7 @@ function drawStatsCharts(){
     g_labels.push(d.toLocaleDateString('ar-EG',{month:'short'}));
     g_data.push(state.children.filter(c=>new Date(c.created_at)<=d).length);
   }
-  state.charts.growth = new Chart($('growthChart'),{
-    type:'line',
-    data:{labels:g_labels,datasets:[{label:'إجمالي الأطفال',data:g_data,borderColor:'#c5b3ff',backgroundColor:'rgba(197,179,255,0.2)',fill:true,tension:0.4}]},
-    options:{responsive:true,maintainAspectRatio:false}
-  });
+  state.charts.growth = new Chart($('growthChart'),{type:'line',data:{labels:g_labels,datasets:[{label:'الأطفال',data:g_data,borderColor:'#c5b3ff',backgroundColor:'rgba(197,179,255,0.2)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}});
 }
 
 function switchStatsTab(tab,e){
@@ -1284,75 +1489,59 @@ function switchStatsTab(tab,e){
   e.target.classList.add('active');
   renderStats();
 }
-
 function refreshStats(){ renderStats(); toast('تم التحديث','success'); }
 
 function exportStatsExcel(){
   const wb = XLSX.utils.book_new();
-  const ws1 = XLSX.utils.json_to_sheet(state.children.map(c=>({
-    الاسم:c.name, الفصل:getClassName(c.class_id), الهاتف:c.phone, النقاط:c.points, الحضور:c.attendance_count
-  })));
+  const ws1 = XLSX.utils.json_to_sheet(state.children.map(c=>({الاسم:c.name,الفصل:getClassName(c.class_id),الهاتف:c.phone,النقاط:c.points,الحضور:c.attendance_count})));
   XLSX.utils.book_append_sheet(wb,ws1,'الأطفال');
-  const ws2 = XLSX.utils.json_to_sheet(state.attendance.map(a=>({
-    الطفل: state.children.find(c=>c.id===a.child_id)?.name||'', التاريخ:a.date
-  })));
-  XLSX.utils.book_append_sheet(wb,ws2,'الحضور');
-  XLSX.writeFile(wb,'تقرير_الخدمة_'+today()+'.xlsx');
+  XLSX.writeFile(wb,'تقرير_'+today()+'.xlsx');
   toast('تم تصدير Excel','success');
 }
-
 function exportStatsPDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.text('Sunday School Report',10,10);
   doc.text('Total children: '+state.children.length,10,20);
   doc.text('Total attendance: '+state.attendance.length,10,30);
-  doc.text('Date: '+today(),10,40);
   doc.save('report_'+today()+'.pdf');
   toast('تم تصدير PDF','success');
 }
 
-// ============== SETTINGS MODALS ==============
+// ============== SETTINGS MODALS (Real-time) ==============
 function openServantsModal(){
   $('genericTitle').textContent='إدارة الخدام';
   const list = state.servants.map(s=>`
     <div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
-      <div class="child-avatar" style="width:40px;height:40px;font-size:14px;background:${avatarColor(s.name)}">${initials(s.name)}</div>
-      <div style="flex:1;"><strong>${s.name}</strong><br><small>${s.username} - ${s.role}</small></div>
+      <div class="child-avatar" style="width:40px;height:40px;font-size:14px;background:${avatarColor(s.full_name||s.username)}">${initials(s.full_name||s.username)}</div>
+      <div style="flex:1;"><strong>${s.full_name||s.username}</strong><br><small>${s.username} - ${s.role}</small></div>
       <button class="btn btn-danger btn-sm" onclick="delServant('${s.id}')"><i class="fas fa-trash"></i></button>
     </div>`).join('') || '<p style="color:var(--text-light);text-align:center;">لا يوجد خدام</p>';
-  $('genericBody').innerHTML = `
-    ${list}
+  $('genericBody').innerHTML = `${list}
     <hr style="margin:15px 0;border:none;border-top:1px dashed var(--border)">
-    <h4>إضافة خادم جديد</h4>
+    <h4>إضافة خادم</h4>
     <div class="form-group"><input class="form-input" id="sName" placeholder="الاسم"></div>
     <div class="form-group"><input class="form-input" id="sUser" placeholder="اسم المستخدم"></div>
     <div class="form-group"><input type="password" class="form-input" id="sPass" placeholder="كلمة المرور"></div>
     <div class="form-group"><select class="form-input" id="sRole">
-      <option value="admin">مسؤول</option>
-      <option value="supervisor">مشرف</option>
-      <option value="servant">خادم</option>
-      <option value="readonly">قراءة فقط</option>
+      <option value="admin">مسؤول</option><option value="supervisor">مشرف</option>
+      <option value="servant">خادم</option><option value="readonly">قراءة فقط</option>
     </select></div>
-    <button class="btn btn-primary btn-block" onclick="addServant()"><i class="fas fa-plus"></i> إضافة</button>
-  `;
+    <button class="btn btn-primary btn-block" onclick="addServant()"><i class="fas fa-plus"></i> إضافة</button>`;
   openModal('genericModal');
 }
-
-function addServant(){
+async function addServant(){
   const n=$('sName').value.trim(), u=$('sUser').value.trim(), p=$('sPass').value.trim();
   if(!n||!u||!p){ toast('املأ الحقول','error'); return; }
-  state.servants.push({id:uid(),name:n,username:u,password:p,role:$('sRole').value,active:true,created_at:new Date().toISOString()});
-  saveLocal();
-  toast('تم الإضافة','success');
-  openServantsModal();
+  try{
+    await DB.insert('users',{username:u,password_hash:p,full_name:n,role:$('sRole').value,active:true});
+    toast('تم الإضافة','success');
+    openServantsModal();
+  }catch(e){ toast('فشل: '+e.message,'error'); }
 }
-
-function delServant(id){
-  if(!confirm('حذف الخادم؟')) return;
-  state.servants = state.servants.filter(s=>s.id!==id);
-  saveLocal();
-  openServantsModal();
+async function delServant(id){
+  if(!confirm('حذف؟')) return;
+  try{ await DB.remove('users',id); openServantsModal(); }catch(e){ toast(e.message,'error'); }
 }
 
 function openClassesModal(){
@@ -1365,167 +1554,158 @@ function openClassesModal(){
     </div>`).join('');
   $('genericBody').innerHTML = list + `
     <div class="form-group" style="margin-top:15px;"><input class="form-input" id="newClassName" placeholder="اسم الفصل"></div>
-    <button class="btn btn-primary btn-block" onclick="addClass()"><i class="fas fa-plus"></i> إضافة فصل</button>
-  `;
+    <button class="btn btn-primary btn-block" onclick="addClass()"><i class="fas fa-plus"></i> إضافة</button>`;
   openModal('genericModal');
 }
-
-function addClass(){
+async function addClass(){
   const n=$('newClassName').value.trim();
   if(!n) return;
-  state.classes.push({id:uid(),name:n});
-  saveLocal();
-  populateClassSelects();
-  openClassesModal();
+  try{ await DB.insert('classes',{name:n}); openClassesModal(); }catch(e){ toast(e.message,'error'); }
 }
-
-function delClass(id){
-  if(!confirm('حذف الفصل؟')) return;
-  state.classes = state.classes.filter(c=>c.id!==id);
-  saveLocal(); populateClassSelects(); openClassesModal();
+async function delClass(id){
+  if(!confirm('حذف؟')) return;
+  try{ await DB.remove('classes',id); openClassesModal(); }catch(e){ toast(e.message,'error'); }
 }
 
 function openServiceDaysModal(){
   $('genericTitle').textContent='أيام الخدمة';
-  $('genericBody').innerHTML = `
-    <p>اختر أيام الاجتماع المسموحة لتسجيل الحضور:</p>
-    ${['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].map((d,i)=>`
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:6px;">
-        <input type="checkbox" ${(state.settings.serviceDays||[0,5]).includes(i)?'checked':''} data-day="${i}">
-        ${d}
-      </label>
-    `).join('')}
-    <button class="btn btn-primary btn-block" onclick="saveServiceDays()"><i class="fas fa-save"></i> حفظ</button>
-  `;
+  $('genericBody').innerHTML = `<p>اختر الأيام:</p>${['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].map((d,i)=>`<label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:6px;"><input type="checkbox" ${(state.settings.service_days||[0,5]).includes(i)?'checked':''} data-day="${i}">${d}</label>`).join('')}<button class="btn btn-primary btn-block" onclick="saveServiceDays()"><i class="fas fa-save"></i> حفظ</button>`;
   openModal('genericModal');
 }
-
-function saveServiceDays(){
+async function saveServiceDays(){
   const days = [...document.querySelectorAll('#genericBody input[data-day]:checked')].map(i=>parseInt(i.dataset.day));
-  state.settings.serviceDays = days;
-  saveLocal();
-  closeModal('genericModal');
-  toast('تم الحفظ','success');
+  try{
+    const settings = await DB.fetchAll('settings');
+    if(settings[0]) await DB.update('settings',settings[0].id,{service_days:days});
+    closeModal('genericModal'); toast('تم الحفظ','success');
+  }catch(e){ toast(e.message,'error'); }
 }
 
 function openTemplatesModal(){
   $('genericTitle').textContent='قوالب الرسائل';
   $('genericBody').innerHTML = `
-    <div class="form-group"><label class="form-label">قالب واتساب</label>
-      <textarea class="form-input" id="waTpl" rows="3">${state.settings.waTemplate||'سلام المسيح يا {name}، نفتقدك في الخدمة'}</textarea></div>
-    <div class="form-group"><label class="form-label">قالب SMS</label>
-      <textarea class="form-input" id="smsTpl" rows="3">${state.settings.smsTemplate||'تذكير: اجتماع مدارس الأحد غداً'}</textarea></div>
-    <button class="btn btn-primary btn-block" onclick="saveTpl()"><i class="fas fa-save"></i> حفظ</button>
-  `;
+    <div class="form-group"><label class="form-label">قالب واتساب</label><textarea class="form-input" id="waTpl" rows="3">${state.settings.whatsapp_template||''}</textarea></div>
+    <div class="form-group"><label class="form-label">قالب SMS</label><textarea class="form-input" id="smsTpl" rows="3">${state.settings.sms_template||''}</textarea></div>
+    <button class="btn btn-primary btn-block" onclick="saveTpl()"><i class="fas fa-save"></i> حفظ</button>`;
   openModal('genericModal');
 }
-function saveTpl(){
-  state.settings.waTemplate=$('waTpl').value;
-  state.settings.smsTemplate=$('smsTpl').value;
-  saveLocal(); closeModal('genericModal'); toast('تم الحفظ','success');
+async function saveTpl(){
+  try{
+    const settings = await DB.fetchAll('settings');
+    if(settings[0]) await DB.update('settings',settings[0].id,{whatsapp_template:$('waTpl').value,sms_template:$('smsTpl').value});
+    closeModal('genericModal'); toast('تم الحفظ','success');
+  }catch(e){ toast(e.message,'error'); }
 }
 
-// ============== BACKUP & RESTORE ==============
 function backupData(){
   const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'backup_'+today()+'.json';
-  a.click();
-  toast('تم إنشاء النسخة الاحتياطية','success');
+  a.href = URL.createObjectURL(blob); a.download = 'backup_'+today()+'.json'; a.click();
+  toast('تم النسخ','success');
 }
+function exportData(){ backupData(); }
 
 function importData(){
   const inp = document.createElement('input');
-  inp.type='file'; inp.accept='.json,.xlsx';
-  inp.onchange = e=>{
-    const f = e.target.files[0];
-    const r = new FileReader();
-    r.onload = ev=>{
+  inp.type='file'; inp.accept='.xlsx,.json';
+  inp.onchange = async e=>{
+    const f = e.target.files[0]; const r = new FileReader();
+    r.onload = async ev=>{
       try{
-        if(f.name.endsWith('.json')){
-          const d = JSON.parse(ev.target.result);
-          if(d.children) state.children = d.children;
-          if(d.classes) state.classes = d.classes;
-          if(d.attendance) state.attendance = d.attendance;
-          saveLocal();
-          toast('تم الاستيراد','success');
-          renderHome(); renderChildren();
-        } else {
-          const wb = XLSX.read(ev.target.result, {type:'array'});
+        if(f.name.endsWith('.xlsx')){
+          const wb = XLSX.read(ev.target.result,{type:'array'});
           const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-          rows.forEach(r=>{
-            state.children.push({id:uid(), name:r.الاسم||r.name||'بدون اسم', phone:r.الهاتف||r.phone||'', points:0, attendance_count:0, qr_id:'CH-'+Date.now()+Math.random(), status:'active', class_id:state.classes[0]?.id, created_at:new Date().toISOString()});
-          });
-          saveLocal();
+          for(const row of rows){
+            await DB.insert('children',{
+              name: row.الاسم||row.name||'بدون اسم',
+              phone: row.الهاتف||row.phone||'',
+              qr_id: 'CH-'+Date.now()+Math.random(),
+              points:0, attendance_count:0, status:'active',
+              class_id: state.classes[0]?.id || null
+            });
+          }
           toast('تم استيراد '+rows.length+' طفل','success');
-          renderChildren();
         }
-      }catch(err){ toast('خطأ في الملف','error'); }
+      }catch(err){ toast('خطأ: '+err.message,'error'); }
     };
-    if(f.name.endsWith('.json')) r.readAsText(f); else r.readAsArrayBuffer(f);
+    r.readAsArrayBuffer(f);
   };
   inp.click();
 }
 
-function exportData(){ backupData(); }
-
-// ============== THEME ==============
 function toggleTheme(){
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',next);
-  state.settings.theme=next;
   localStorage.setItem('theme',next);
-  saveLocal();
   toast('تم تغيير المظهر','info');
 }
 
 function showAbout(){
   $('genericTitle').textContent='عن التطبيق';
-  $('genericBody').innerHTML = `
-    <div style="text-align:center;padding:20px;">
-      <div class="login-logo"><i class="fas fa-church"></i></div>
-      <h2 style="margin-top:15px;">خدمة مدارس الأحد</h2>
-      <p style="color:var(--text-light);margin:10px 0;">نظام متكامل لإدارة الخدمة الكنسية</p>
-      <p>الإصدار 1.0.0</p>
-      <p style="margin-top:20px;">صُنع بمحبة ❤️ لخدمة الكنيسة</p>
-    </div>
-  `;
+  $('genericBody').innerHTML = `<div style="text-align:center;padding:20px;">
+    <div class="login-logo"><i class="fas fa-church"></i></div>
+    <h2 style="margin-top:15px;">خدمة مدارس الأحد</h2>
+    <p style="color:var(--text-light);margin:10px 0;">نظام متكامل متزامن لحظياً</p>
+    <p>الإصدار 2.0.0 - Real-Time Edition</p>
+    <p style="margin-top:15px;color:#4caf50;"><i class="fas fa-bolt"></i> ${state.rtChannels.length} قنوات مباشرة</p>
+    <p style="margin-top:20px;">صُنع بمحبة ❤️</p>
+  </div>`;
   openModal('genericModal');
 }
 
 function openNotifications(){
   $('genericTitle').textContent='الإشعارات';
+  $('notifBadge').style.display='none';
   const t = today();
   const todayAtt = state.attendance.filter(a=>a.date===t).length;
   const birthdays = state.children.filter(c=>{
     if(!c.birth_date) return false;
-    const b=new Date(c.birth_date);
-    const n=new Date();
+    const b=new Date(c.birth_date), n=new Date();
     return b.getMonth()===n.getMonth() && b.getDate()===n.getDate();
   });
-  $('genericBody').innerHTML = `
+  const liveList = state.notifications.slice(0,5).map(n=>`
     <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;">
-      <i class="fas fa-check-circle" style="color:#4caf50"></i> تم تسجيل ${todayAtt} طفل اليوم
-    </div>
-    ${birthdays.map(c=>`
-      <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;">
-        <i class="fas fa-birthday-cake" style="color:#ff9800"></i> عيد ميلاد ${c.name} اليوم 🎉
-      </div>
-    `).join('')}
-    ${birthdays.length===0&&todayAtt===0?'<div class="empty-state"><i class="fas fa-bell-slash"></i><p>لا توجد إشعارات</p></div>':''}
-  `;
+      <i class="fas fa-bolt" style="color:#9c27b0"></i> <strong>${n.title}</strong><br><small>${n.body||''}</small>
+    </div>`).join('');
+  $('genericBody').innerHTML = `
+    ${liveList}
+    <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:#4caf50"></i> ${todayAtt} طفل حضر اليوم</div>
+    ${birthdays.map(c=>`<div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-birthday-cake" style="color:#ff9800"></i> عيد ميلاد ${c.name} 🎉</div>`).join('')}`;
   openModal('genericModal');
 }
 
-// ============== STARTUP ==============
-loadLocal();
-const savedTheme = localStorage.getItem('theme');
-if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
-const savedUser = JSON.parse(localStorage.getItem('user')||sessionStorage.getItem('user')||'null');
-if(savedUser){ state.user=savedUser; initApp(); }
+// ============== CONNECTION MONITORING ==============
+function updateConnectionStatus(){
+  const el = $('connectionStatus');
+  if(navigator.onLine){
+    el.className = 'connection-status online';
+    el.innerHTML = '<i class="fas fa-wifi"></i> متصل';
+    state.isOnline = true;
+    if(state.user && sb && state.rtChannels.length===0){
+      RT.start();
+      loadAllData().then(()=>refreshUI(['home','children','statistics']));
+    }
+  } else {
+    el.className = 'connection-status offline';
+    el.innerHTML = '<i class="fas fa-wifi"></i> غير متصل';
+    state.isOnline = false;
+    setLive(false);
+  }
+}
+window.addEventListener('online', updateConnectionStatus);
+window.addEventListener('offline', updateConnectionStatus);
 
+// ============== STARTUP ==============
+(async function(){
+  const savedTheme = localStorage.getItem('theme');
+  if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
+  const savedUser = JSON.parse(localStorage.getItem('user')||sessionStorage.getItem('user')||'null');
+  if(savedUser){ state.user=savedUser; await initApp(); }
+  updateConnectionStatus();
+})();
+
+// PWA Service Worker
 if('serviceWorker' in navigator){
   const swCode = `self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('fetch',e=>{});`;
   const swBlob = new Blob([swCode],{type:'application/javascript'});
