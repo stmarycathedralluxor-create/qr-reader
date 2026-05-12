@@ -440,6 +440,8 @@ a{color:inherit;text-decoration:none;}
         </select>
         <select id="actionFunction" onchange="updateActionLabels()">
           <option value="attendance">تسجيل حضور</option>
+          <option value="cancelAttendance">إلغاء الحضور</option>
+          <option value="clearPoints">مسح النقاط المضافة</option>
           <option value="contact">اتصال</option>
           <option value="whatsapp">واتساب</option>
           <option value="sms">رسالة SMS</option>
@@ -447,12 +449,10 @@ a{color:inherit;text-decoration:none;}
           <option value="deductPoints">خصم رصيد</option>
           <option value="edit">تعديل البيانات</option>
           <option value="delete">حذف</option>
-          <option value="qr">عرض QR</option>
           <option value="transfer">نقل لفصل آخر</option>
-          <option value="absent">تسجيل غياب</option>
           <option value="note">إضافة ملاحظة</option>
         </select>
-        <input type="number" id="pointsValue" value="1" min="1" style="max-width:100px;">
+        <input type="number" id="pointsValue" value="1" min="1" style="max-width:100px;" placeholder="النقاط">
       </div>
       <div class="children-grid" id="childrenGrid"></div>
     </div>
@@ -466,10 +466,11 @@ a{color:inherit;text-decoration:none;}
             <option value="attendance">تسجيل حضور</option>
             <option value="addPoints">إضافة رصيد</option>
             <option value="deductPoints">خصم رصيد</option>
-            <option value="quickActions">عرض الملف الشخصي</option>
+            <option value="info">عرض معلومات الطفل</option>
           </select>
-          <input type="number" id="scannerPoints" value="1" min="1" style="max-width:100px;">
+          <input type="number" id="scannerPoints" min="1" style="max-width:100px;" placeholder="النقاط">
         </div>
+        <p style="font-size:11px;color:var(--text-light);margin-top:6px;"><i class="fas fa-info-circle"></i> عدد النقاط من خانة الأرقام، والافتراضي من الإعدادات (<span id="scannerDefaultHint">1</span>)</p>
       </div>
       <div class="scanner-container">
         <div id="qr-reader"></div>
@@ -634,17 +635,17 @@ a{color:inherit;text-decoration:none;}
 
 <script>
 /* ============================================================
-   ⚡ SUNDAY SCHOOL APP v3.1 - FIXED EDITION
+   ⚡ SUNDAY SCHOOL APP v3.2 - MINIMAL CARDS EDITION
    ============================================================
-   التعديلات الرئيسية:
-   1. توحيد النقاط والرصيد في حقل واحد: balance
-   2. حساب balance/attendance_count ديناميكياً من السجلات (single source of truth)
-   3. منع تكرار ID
-   4. إصلاح أيقونة واتساب
-   5. إصلاح regex في openBirthdays
-   6. تنظيم استدعاءات state.user.id
-   7. إصلاح child_notes/notifications/events realtime
-   8. منع رسم الشارتس على canvas غير ظاهر
+   التعديلات v3.2:
+   1. مؤشر "مباشر" + حالة الاتصال جنب الشعار (لا فلوتنج)
+   2. الماسح: عدد النقاط من خانة الأرقام، والديفولت من الإعدادات
+   3. خيار "عرض معلومات الطفل" في الماسح بعد المسح + أزرار خصم/إضافة/حضور
+   4. زر اليوم التالي/السابق يقفز على أيام الخدمة فقط
+   5. حذف "تسجيل غياب" و"عرض QR" من قائمة الإجراءات
+   6. أزرار "إلغاء الحضور" و "مسح النقاط المضافة"
+   7. كروت الأطفال minimal + قابلة للتوسع بالنقر
+   8. حذف badge النشط/الموقوف من البطاقات
    ============================================================ */
 
 const SUPABASE_URL = 'https://cjxlwfrqfqwjhugpjdxz.supabase.co';
@@ -767,17 +768,31 @@ function onDateChange(){
   state.selectedDate = $('operationDate').value;
   renderDateSelector();
   renderHome();
+  if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
   toast('تم تحديث تاريخ العمليات','info');
 }
-function shiftDate(days){
+// Navigate to the next/previous SERVICE DAY only (skip non-service days)
+function shiftDate(direction){
+  const days = (state.settings.service_days && state.settings.service_days.length) ? state.settings.service_days.slice().sort() : [0,5];
   const d = new Date(state.selectedDate + 'T00:00:00');
-  d.setDate(d.getDate() + days);
-  state.selectedDate = d.toISOString().split('T')[0];
-  renderDateSelector(); renderHome();
+  const step = direction > 0 ? 1 : -1;
+  for(let i=0;i<14;i++){
+    d.setDate(d.getDate() + step);
+    if(days.includes(d.getDay())){
+      state.selectedDate = d.toISOString().split('T')[0];
+      renderDateSelector(); renderHome();
+      if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
+      const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+      toast(`${direction>0?'اليوم التالي للخدمة':'اليوم السابق للخدمة'}: ${arDays[d.getDay()]}`,'info');
+      return;
+    }
+  }
+  toast('لم يتم العثور على يوم خدمة قريب. راجع إعدادات أيام الخدمة','warning');
 }
 function setToday(){
   state.selectedDate = today();
   renderDateSelector(); renderHome();
+  if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
   toast('عاد للتاريخ الحالي','success');
 }
 
@@ -912,6 +927,13 @@ function applySettings(){
     $('headerLogo').innerHTML = `<i class="fas fa-church"></i>`;
     $('loginLogo').innerHTML = `<i class="fas fa-church"></i>`;
   }
+  // Sync scanner and points-value defaults with settings
+  const sp = $('scannerPoints');
+  if(sp && !sp.value) sp.value = state.settings.points_default || 1;
+  const hint = $('scannerDefaultHint');
+  if(hint) hint.textContent = state.settings.points_default || 1;
+  const pv = $('pointsValue');
+  if(pv && (!pv.value || pv.value==='1')) pv.value = state.settings.points_default || 1;
 }
 
 // ========= AUTH =========
@@ -1134,45 +1156,81 @@ function renderChildren(){
 function renderChildCard(c){
   const img = c.photo_url ? `<img src="${c.photo_url}">` : initials(c.name);
   const bg = c.photo_url ? '' : `style="background:${avatarColor(c.name)}"`;
+  const d = getOpDate();
+  const att = state.attendance.find(a=>a.child_id===c.id && a.date===d);
+  const attClass = att ? (att.status==='present'?'present':'absent') : 'none';
+  const attIcon = att ? (att.status==='present'?'fa-check':'fa-times') : 'fa-minus';
+  const attTitle = att ? (att.status==='present'?'حاضر في '+d:'غائب في '+d) : 'لم يسجل في '+d;
+  const f = $('actionFunction') ? $('actionFunction').value : 'attendance';
+  const actionMeta = getActionMeta(f);
   return `
-    <div class="child-card" data-id="${c.id}">
-      <div class="child-head" onclick="openProfile('${c.id}')" style="cursor:pointer;">
+    <div class="child-card" data-id="${c.id}" onclick="toggleChildCard(event,'${c.id}')">
+      <div class="child-mini">
         <div class="child-avatar" ${bg}>${img}</div>
         <div class="child-info">
           <div class="child-name">${c.name}</div>
           <div class="child-class"><i class="fas fa-layer-group"></i> ${getClassName(c.class_id)}</div>
-          ${c.phone?`<div class="child-class"><i class="fas fa-phone"></i> ${c.phone}</div>`:''}
-          <div class="child-id-badge">${c.id}</div>
         </div>
-        <span class="badge badge-${(c.status||'active')==='active'?'success':'danger'}">${(c.status||'active')==='active'?'نشط':'موقوف'}</span>
+        <span class="child-balance-pill" title="الرصيد"><i class="fas fa-star"></i> ${c._balance}</span>
+        <span class="child-att-icon ${attClass}" title="${attTitle}"><i class="fas ${attIcon}"></i></span>
+        <button class="child-action-mini ${actionMeta.cls}" onclick="event.stopPropagation();execAction('${c.id}')" title="${actionMeta.label}"><i class="${actionMeta.icon}"></i></button>
       </div>
-      <div class="child-stats">
-        <div class="child-stat"><div class="child-stat-val">${c._balance}</div><div class="child-stat-lbl">الرصيد</div></div>
-        <div class="child-stat"><div class="child-stat-val">${c._attCount}</div><div class="child-stat-lbl">حضور</div></div>
-        <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c._lastAtt||'-').toString().slice(5)}</div><div class="child-stat-lbl">آخر حضور</div></div>
-      </div>
-      <div class="child-actions">
-        <button class="btn btn-primary btn-sm" onclick="execAction('${c.id}')"><i class="fas fa-bolt"></i> <span class="action-label">تسجيل حضور</span></button>
-        <button class="btn btn-info btn-sm" onclick="showQR('${c.id}')"><i class="fas fa-qrcode"></i> QR</button>
+      <div class="child-expanded" style="display:none;">
+        ${c.phone?`<p style="font-size:12px;color:var(--text-light);margin-bottom:6px;"><i class="fas fa-phone"></i> ${c.phone}</p>`:''}
+        <div class="child-id-badge">${c.id}</div>
+        <div class="child-stats">
+          <div class="child-stat"><div class="child-stat-val">${c._balance}</div><div class="child-stat-lbl">الرصيد</div></div>
+          <div class="child-stat"><div class="child-stat-val">${c._attCount}</div><div class="child-stat-lbl">حضور</div></div>
+          <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c._lastAtt||'-').toString().slice(5)}</div><div class="child-stat-lbl">آخر حضور</div></div>
+        </div>
+        <div class="child-actions">
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openProfile('${c.id}')"><i class="fas fa-id-card"></i> الملف الشخصي</button>
+          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>
+        </div>
       </div>
     </div>`;
 }
 
+function toggleChildCard(e, id){
+  const card = e.currentTarget;
+  if(!card) return;
+  card.classList.toggle('expanded');
+  const exp = card.querySelector('.child-expanded');
+  if(exp) exp.style.display = card.classList.contains('expanded') ? 'block' : 'none';
+}
+
+function getActionMeta(f){
+  const meta = {
+    attendance:{label:'تسجيل حضور',icon:'fas fa-check',cls:'success'},
+    cancelAttendance:{label:'إلغاء الحضور',icon:'fas fa-undo',cls:'danger'},
+    clearPoints:{label:'مسح النقاط المضافة',icon:'fas fa-eraser',cls:'danger'},
+    contact:{label:'اتصال',icon:'fas fa-phone',cls:'info'},
+    whatsapp:{label:'واتساب',icon:'fab fa-whatsapp',cls:'success'},
+    sms:{label:'SMS',icon:'fas fa-sms',cls:'info'},
+    addPoints:{label:'+ رصيد',icon:'fas fa-plus',cls:'success'},
+    deductPoints:{label:'- رصيد',icon:'fas fa-minus',cls:'danger'},
+    edit:{label:'تعديل',icon:'fas fa-edit',cls:''},
+    delete:{label:'حذف',icon:'fas fa-trash',cls:'danger'},
+    transfer:{label:'نقل',icon:'fas fa-exchange-alt',cls:'info'},
+    note:{label:'ملاحظة',icon:'fas fa-sticky-note',cls:''}
+  };
+  return meta[f] || meta.attendance;
+}
+
 function updateActionLabels(){
-  const f = $('actionFunction').value;
-  const labels = {attendance:'تسجيل حضور',contact:'اتصال',whatsapp:'واتساب',sms:'SMS',addPoints:'+ رصيد',deductPoints:'- رصيد',edit:'تعديل',delete:'حذف',qr:'QR',transfer:'نقل',absent:'غياب',note:'ملاحظة'};
-  const icons = {attendance:'fas fa-bolt',contact:'fas fa-phone',whatsapp:'fab fa-whatsapp',sms:'fas fa-sms',addPoints:'fas fa-plus-circle',deductPoints:'fas fa-minus-circle',edit:'fas fa-edit',delete:'fas fa-trash',qr:'fas fa-qrcode',transfer:'fas fa-exchange-alt',absent:'fas fa-times',note:'fas fa-sticky-note'};
-  document.querySelectorAll('.action-label').forEach(el=>el.textContent = labels[f]||'تنفيذ');
-  document.querySelectorAll('.child-actions .btn-primary i').forEach(i=>{ i.className = icons[f]||'fas fa-bolt'; });
+  // Re-render the children grid so each card picks up the new action icon/style
+  if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
 }
 
 async function execAction(id){
   const c = state.children.find(x=>x.id===id);
   if(!c) return;
   const f = $('actionFunction').value;
-  const pts = parseInt($('pointsValue').value)||1;
+  const pts = parseInt($('pointsValue').value) || (state.settings.points_default||1);
   switch(f){
-    case 'attendance': await registerAttendance(c); break;
+    case 'attendance': await registerAttendance(c, 'present', pts); break;
+    case 'cancelAttendance': await cancelAttendance(c); break;
+    case 'clearPoints': await clearAddedPoints(c); break;
     case 'contact':
       if(!c.phone){ toast('لا يوجد رقم هاتف','warning'); return; }
       window.open('tel:'+c.phone); await logCall(c.id,'phone'); break;
@@ -1188,35 +1246,64 @@ async function execAction(id){
     case 'deductPoints': await addPoints(c, -pts); break;
     case 'edit': openEditChild(c); break;
     case 'delete': await deleteChild(c); break;
-    case 'qr': showQR(id); break;
     case 'transfer': transferChild(c); break;
-    case 'absent': await registerAttendance(c,'absent'); break;
     case 'note': addNote(c); break;
   }
 }
 
-// ========= OPERATIONS (use selectedDate) =========
-async function registerAttendance(c, status='present'){
+// Cancel attendance for the selected date (delete row + revert attendance points)
+async function cancelAttendance(c){
   const d = getOpDate();
+  const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
+  if(!existing){ toast(`لا يوجد تسجيل حضور لـ ${c.name} في ${d}`,'warning'); return; }
+  if(!confirm(`إلغاء حضور ${c.name} بتاريخ ${d}؟ (سيتم خصم نقاط الحضور المرتبطة)`)) return;
+  try{
+    showLoader(true);
+    await DB.remove('attendance', existing.id);
+    const attPts = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
+    for(const p of attPts){ try{ await DB.remove('points_history', p.id); }catch(e){} }
+    toast(`✓ تم إلغاء حضور ${c.name}`,'success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); }
+}
+
+// Clear (delete) all manual/scanner added points for selected date
+async function clearAddedPoints(c){
+  const d = getOpDate();
+  const added = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type!=='attendance');
+  if(!added.length){ toast(`لا توجد نقاط مضافة لـ ${c.name} في ${d}`,'warning'); return; }
+  const sum = added.reduce((s,p)=>s+(Number(p.points)||0),0);
+  if(!confirm(`مسح ${added.length} عملية نقاط (إجمالي ${sum}) لـ ${c.name} بتاريخ ${d}؟`)) return;
+  try{
+    showLoader(true);
+    for(const p of added){ try{ await DB.remove('points_history', p.id); }catch(e){} }
+    toast(`✓ تم مسح ${added.length} عملية`,'success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); }
+}
+
+// ========= OPERATIONS (use selectedDate) =========
+async function registerAttendance(c, status='present', customPts){
+  const d = getOpDate();
+  const pts = (customPts !== undefined && customPts !== null && !isNaN(customPts))
+    ? Number(customPts)
+    : (state.settings.points_default || 1);
   const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
   if(existing){
     if(existing.status === status){
       toast(`تم تسجيل ${status==='present'?'الحضور':'الغياب'} مسبقاً لـ ${c.name} في ${d}`,'warning');
       return;
     }
-    // Status changed (e.g., absent → present): update existing row + adjust points
     try{
       showLoader(true);
       await DB.update('attendance', existing.id, { status, method: 'manual' });
       if(status==='present'){
-        // give points for attendance
         await DB.insert('points_history', {
-          child_id: c.id, points: state.settings.points_default || 1,
+          child_id: c.id, points: pts,
           reason: 'حضور '+d, type: 'attendance', date: d,
           awarded_by: currentUserId()
         });
       } else {
-        // status changed back to absent → revert points awarded for this date
         const toRevert = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
         for(const pr of toRevert){ try{ await DB.remove('points_history', pr.id); }catch(e){} }
       }
@@ -1233,13 +1320,13 @@ async function registerAttendance(c, status='present'){
     });
     if(status==='present'){
       await DB.insert('points_history', {
-        child_id: c.id, points: state.settings.points_default || 1,
+        child_id: c.id, points: pts,
         reason: 'حضور '+d, type: 'attendance', date: d,
         awarded_by: currentUserId()
       });
     }
     vibrate(100); playBeep();
-    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name} - ${d}`,'success');
+    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name} - ${d}${status==='present'?` (+${pts})`:''}`,'success');
     bumpStat('todayAttendance');
   }catch(e){ toast('فشل: '+e.message,'error'); }
   finally{ showLoader(false); }
@@ -1640,17 +1727,73 @@ async function onScanSuccess(text){
   const c = state.children.find(x=>x.qr_id===text || x.id===text);
   if(!c){ toast('QR غير معروف','error'); playBeep(300); return; }
   const f = $('scannerFunction').value;
-  const pts = parseInt($('scannerPoints').value)||1;
-  if(f==='attendance') await registerAttendance(c);
-  else if(f==='addPoints') await addPoints(c,pts);
-  else if(f==='deductPoints') await addPoints(c,-pts);
-  else if(f==='quickActions'){ await stopScanner(); openProfile(c.id); }
+  // Points come from the number input; default falls back to settings.points_default
+  const ptsRaw = $('scannerPoints').value;
+  const pts = (ptsRaw && !isNaN(parseInt(ptsRaw))) ? parseInt(ptsRaw) : (state.settings.points_default || 1);
+  vibrate(80); playBeep();
+  if(f==='attendance') await registerAttendance(c, 'present', pts);
+  else if(f==='addPoints') await addPoints(c, pts);
+  else if(f==='deductPoints') await addPoints(c, -pts);
+  else if(f==='info'){ await stopScanner(); showScanResult(c); return; }
   const h = $('scanHistory');
-  const item = document.createElement('div');
-  item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;';
-  item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> ${c.name} - ${new Date().toLocaleTimeString('ar-EG')}`;
-  h.prepend(item);
-  while(h.children.length>10) h.lastChild.remove();
+  if(h){
+    const item = document.createElement('div');
+    item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;display:flex;align-items:center;gap:8px;';
+    const actLbl = f==='attendance'?`حضور (+${pts})`:f==='addPoints'?`+${pts} رصيد`:f==='deductPoints'?`-${pts} رصيد`:'عرض معلومات';
+    item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> <strong>${c.name}</strong> - ${actLbl} <span style="margin-right:auto;color:var(--text-light);font-size:11px;">${new Date().toLocaleTimeString('ar-EG')}</span>`;
+    h.prepend(item);
+    while(h.children.length>10) h.lastChild.remove();
+  }
+}
+
+// Show child info card after scan (for the "info" scanner mode)
+function showScanResult(c){
+  const img = c.photo_url ? `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;">` : initials(c.name);
+  const bg = c.photo_url ? '' : `style="background:${avatarColor(c.name)}"`;
+  const bal = getBalance(c.id);
+  const att = getAttendanceCount(c.id);
+  const d = getOpDate();
+  const todayAtt = state.attendance.find(a=>a.child_id===c.id && a.date===d);
+  const todayStatus = todayAtt ? (todayAtt.status==='present'?'<span class="badge badge-success">حاضر اليوم</span>':'<span class="badge badge-danger">غائب اليوم</span>') : '<span class="badge badge-warning">لم يسجل اليوم</span>';
+  $('scanResultBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:18px;">
+      <div class="child-avatar" ${bg} style="width:90px;height:90px;font-size:32px;margin:0 auto 10px;">${img}</div>
+      <h2 style="margin-bottom:4px;">${c.name}</h2>
+      <p style="color:var(--text-light);font-size:13px;">${getClassName(c.class_id)}</p>
+      <div class="child-id-badge" style="margin-top:6px;">${c.id}</div>
+      <div style="margin-top:8px;">${todayStatus}</div>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-warning)"><i class="fas fa-star"></i></div><div class="stat-value" id="scanBalance">${bal}</div><div class="stat-label">الرصيد</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-success)"><i class="fas fa-check"></i></div><div class="stat-value">${att}</div><div class="stat-label">عدد الحضور</div></div>
+    </div>
+    <div style="background:var(--bg);padding:14px;border-radius:14px;margin-top:14px;">
+      <label class="form-label"><i class="fas fa-coins"></i> عدد النقاط</label>
+      <input type="number" class="form-input" id="scanResultPts" value="${state.settings.points_default||1}" min="1" style="margin-bottom:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn btn-success" onclick="scanResultPoints('${c.id}',1)"><i class="fas fa-plus-circle"></i> إضافة رصيد</button>
+        <button class="btn btn-danger" onclick="scanResultPoints('${c.id}',-1)"><i class="fas fa-minus-circle"></i> خصم رصيد</button>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="scanResultAttendance('${c.id}')"><i class="fas fa-check"></i> تسجيل حضور بالنقاط المحددة</button>
+      <button class="btn btn-secondary btn-block" style="margin-top:8px;" onclick="closeModal('scanResultModal');setTimeout(startScanner,200);"><i class="fas fa-camera"></i> مسح آخر</button>
+    </div>
+  `;
+  openModal('scanResultModal');
+}
+
+async function scanResultPoints(childId, sign){
+  const c = state.children.find(x=>x.id===childId);
+  if(!c) return;
+  const pts = parseInt($('scanResultPts').value) || (state.settings.points_default||1);
+  await addPoints(c, sign * Math.abs(pts));
+  const el = $('scanBalance'); if(el) el.textContent = getBalance(childId);
+}
+async function scanResultAttendance(childId){
+  const c = state.children.find(x=>x.id===childId);
+  if(!c) return;
+  const pts = parseInt($('scanResultPts').value) || (state.settings.points_default||1);
+  await registerAttendance(c, 'present', pts);
+  const el = $('scanBalance'); if(el) el.textContent = getBalance(childId);
 }
 
 // ========= STATISTICS =========
@@ -2128,7 +2271,7 @@ function showAbout(){
     <div class="login-logo">${state.settings.service_logo?`<img src="${state.settings.service_logo}">`:'<i class="fas fa-church"></i>'}</div>
     <h2 style="margin-top:15px;">${state.settings.service_name}</h2>
     <p style="color:var(--text-light);margin:10px 0;">نظام متكامل متزامن لحظياً</p>
-    <p>الإصدار 3.1.0 - Fixed Edition</p>
+    <p>الإصدار 3.2.0 - Minimal Cards Edition</p>
     <p style="margin-top:15px;color:#4caf50;"><i class="fas fa-bolt"></i> ${state.rtChannels.length} قنوات مباشرة</p>
     <p style="margin-top:20px;">صُنع بمحبة ❤️</p>
   </div>`;
@@ -2158,7 +2301,7 @@ function updateConnectionStatus(){
   if(!el) return;
   if(navigator.onLine){
     el.className = 'connection-status online';
-    el.innerHTML = '<i class="fas fa-wifi"></i> متصل';
+    el.innerHTML = '<i class="fas fa-wifi"></i> <span>متصل</span>';
     state.isOnline = true;
     if(state.user && sb && state.rtChannels.length===0){
       RT.start();
@@ -2166,7 +2309,7 @@ function updateConnectionStatus(){
     }
   } else {
     el.className = 'connection-status offline';
-    el.innerHTML = '<i class="fas fa-wifi"></i> غير متصل';
+    el.innerHTML = '<i class="fas fa-wifi"></i> <span>غير متصل</span>';
     state.isOnline = false; setLive(false);
   }
 }
@@ -2195,6 +2338,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   updateConnectionStatus();
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
