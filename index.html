@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#a8c5ff">
+<meta name="theme-color" content="#6366f1">
 <title>خدمة مدارس الأحد</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -14,262 +14,402 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+/* =========================================================
+   🎨 DESIGN TOKENS — Modern Minimal Theme v4.0
+   ========================================================= */
 :root{
-  --primary:#a8c5ff;--primary-dark:#7da3f0;--secondary:#c5b3ff;
-  --success:#b3e5c7;--warning:#ffd3a5;--danger:#ffb3b3;--info:#b3e0ff;
-  --bg:#f5f7fb;--card:#ffffff;--text:#2c3e50;--text-light:#7f8c9b;--border:#e8ecf3;
-  --shadow:0 4px 20px rgba(168,197,255,0.15);--shadow-lg:0 10px 40px rgba(168,197,255,0.25);
-  --radius:20px;--radius-sm:12px;
-  --gradient:linear-gradient(135deg,#a8c5ff 0%,#c5b3ff 100%);
-  --gradient-success:linear-gradient(135deg,#b3e5c7 0%,#a8d8b9 100%);
-  --gradient-warning:linear-gradient(135deg,#ffd3a5 0%,#ffb88c 100%);
-  --gradient-danger:linear-gradient(135deg,#ffb3b3 0%,#ff9999 100%);
-  --gradient-info:linear-gradient(135deg,#b3e0ff 0%,#8cc8ff 100%);
+  --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#a5b4fc;
+  --secondary:#8b5cf6;--accent:#ec4899;
+  --success:#10b981;--success-light:#d1fae5;
+  --warning:#f59e0b;--warning-light:#fef3c7;
+  --danger:#ef4444;--danger-light:#fee2e2;
+  --info:#3b82f6;--info-light:#dbeafe;
+  --bg:#f8fafc;--card:#ffffff;--surface:#f1f5f9;
+  --text:#0f172a;--text-light:#64748b;--text-muted:#94a3b8;
+  --border:#e2e8f0;--border-strong:#cbd5e1;
+  --shadow-sm:0 1px 2px rgba(15,23,42,0.04);
+  --shadow:0 4px 16px rgba(15,23,42,0.06);
+  --shadow-md:0 8px 24px rgba(15,23,42,0.08);
+  --shadow-lg:0 16px 40px rgba(15,23,42,0.12);
+  --radius-sm:10px;--radius:16px;--radius-lg:22px;--radius-xl:28px;
+  --gradient:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+  --gradient-success:linear-gradient(135deg,#10b981 0%,#059669 100%);
+  --gradient-warning:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);
+  --gradient-danger:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);
+  --gradient-info:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);
+  --transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
 }
-[data-theme="dark"]{--bg:#1a1d29;--card:#252836;--text:#e8ecf3;--text-light:#a0a8b8;--border:#353948;--shadow:0 4px 20px rgba(0,0,0,0.3);}
+[data-theme="dark"]{
+  --bg:#0b0f1a;--card:#151b2c;--surface:#1e2538;
+  --text:#f1f5f9;--text-light:#94a3b8;--text-muted:#64748b;
+  --border:#252d44;--border-strong:#334155;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
+  --shadow:0 4px 16px rgba(0,0,0,0.35);
+  --shadow-md:0 8px 24px rgba(0,0,0,0.4);
+  --shadow-lg:0 16px 40px rgba(0,0,0,0.5);
+}
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{font-family:'Cairo','Tajawal',sans-serif;background:var(--bg);color:var(--text);direction:rtl;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
-body{min-height:100vh;padding-bottom:90px;}
+html,body{font-family:'Cairo','Tajawal',sans-serif;background:var(--bg);color:var(--text);direction:rtl;overflow-x:hidden;transition:background 0.3s,color 0.3s;-webkit-font-smoothing:antialiased;}
+body{min-height:100vh;padding-bottom:100px;}
 button{font-family:inherit;cursor:pointer;border:none;outline:none;}
 input,select,textarea{font-family:inherit;outline:none;}
 a{color:inherit;text-decoration:none;}
 ::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-thumb{background:var(--primary);border-radius:10px;}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px;}
 ::-webkit-scrollbar-track{background:transparent;}
 
-.login-page{position:fixed;inset:0;background:linear-gradient(135deg,#a8c5ff 0%,#c5b3ff 50%,#ffb3d9 100%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;overflow:hidden;}
-.login-page::before{content:'';position:absolute;width:300px;height:300px;background:rgba(255,255,255,0.2);border-radius:50%;top:-100px;right:-100px;animation:float 6s ease-in-out infinite;}
-.login-page::after{content:'';position:absolute;width:400px;height:400px;background:rgba(255,255,255,0.15);border-radius:50%;bottom:-150px;left:-150px;animation:float 8s ease-in-out infinite reverse;}
-@keyframes float{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,-20px) scale(1.05);}}
-.login-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-radius:30px;padding:40px 30px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.15);position:relative;z-index:1;animation:slideUp 0.6s ease;}
+/* =========================================================
+   🔐 LOGIN PAGE
+   ========================================================= */
+.login-page{position:fixed;inset:0;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;overflow:hidden;}
+.login-page::before{content:'';position:absolute;width:400px;height:400px;background:rgba(255,255,255,0.1);border-radius:50%;top:-150px;right:-150px;animation:float 8s ease-in-out infinite;}
+.login-page::after{content:'';position:absolute;width:500px;height:500px;background:rgba(255,255,255,0.08);border-radius:50%;bottom:-200px;left:-200px;animation:float 10s ease-in-out infinite reverse;}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-30px) scale(1.08);}}
+.login-card{background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border-radius:var(--radius-xl);padding:44px 32px;width:100%;max-width:420px;box-shadow:0 30px 80px rgba(0,0,0,0.2);position:relative;z-index:1;animation:slideUp 0.6s ease;}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
-.login-logo{width:90px;height:90px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;color:#fff;box-shadow:0 10px 30px rgba(168,197,255,0.5);overflow:hidden;}
-.login-logo img{width:100%;height:100%;object-fit:cover;}
-.login-title{text-align:center;font-size:24px;font-weight:800;color:var(--text);margin-bottom:8px;}
-.login-subtitle{text-align:center;color:var(--text-light);font-size:14px;margin-bottom:30px;}
+.login-logo{width:90px;height:90px;background:var(--gradient);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:40px;color:#fff;box-shadow:0 12px 28px rgba(99,102,241,0.4);overflow:hidden;}
+.login-logo img{width:100%;height:100%;object-fit:cover;border-radius:24px;}
+.login-title{text-align:center;font-size:24px;font-weight:800;color:#0f172a;margin-bottom:6px;}
+.login-subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:30px;}
 
-.form-group{margin-bottom:18px;}
-.form-label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--text);}
-.form-input{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:15px;font-size:15px;background:var(--card);color:var(--text);transition:all 0.3s;}
-.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(168,197,255,0.15);}
+/* =========================================================
+   📝 FORMS
+   ========================================================= */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:var(--text);}
+.form-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--card);color:var(--text);transition:var(--transition);}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.12);}
 .input-icon{position:relative;}
-.input-icon i{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--text-light);}
-.input-icon input{padding-right:46px;}
+.input-icon i{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;}
+.input-icon input{padding-right:42px;}
 
-.btn{padding:14px 24px;border-radius:15px;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all 0.3s;cursor:pointer;border:none;}
-.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 6px 20px rgba(168,197,255,0.4);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(168,197,255,0.5);}
-.btn-success{background:var(--gradient-success);color:#2c3e50;}
-.btn-warning{background:var(--gradient-warning);color:#2c3e50;}
-.btn-danger{background:var(--gradient-danger);color:#fff;}
-.btn-info{background:var(--gradient-info);color:#2c3e50;}
-.btn-secondary{background:var(--border);color:var(--text);}
-.btn-block{width:100%;}
-.btn-sm{padding:8px 14px;font-size:13px;border-radius:10px;}
+/* =========================================================
+   🔘 BUTTONS — Unified Style
+   ========================================================= */
+.btn{padding:12px 20px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:var(--transition);cursor:pointer;border:none;font-family:inherit;}
 .btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.4);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-success:hover{background:#059669;}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-warning:hover{background:#d97706;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{background:#dc2626;}
+.btn-info{background:var(--info);color:#fff;}
+.btn-info:hover{background:#2563eb;}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--border);}
+.btn-ghost{background:transparent;color:var(--text);}
+.btn-ghost:hover{background:var(--surface);}
+.btn-block{width:100%;}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:9px;gap:6px;}
+.btn-lg{padding:15px 24px;font-size:15px;}
+
 .checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
 .checkbox-row input{width:18px;height:18px;accent-color:var(--primary);}
-.spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;}
+.spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* =========================================================
+   🏠 APP LAYOUT
+   ========================================================= */
 .app{display:none;min-height:100vh;}
 .app.active{display:block;}
-.header{position:sticky;top:0;background:var(--card);box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;z-index:50;backdrop-filter:blur(10px);}
-.header-brand{display:flex;align-items:center;gap:10px;}
-.header-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;overflow:hidden;}
+
+/* HEADER — non-floating, integrated status indicator */
+.header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;z-index:50;backdrop-filter:blur(10px);}
+.header-brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
+.header-logo{width:44px;height:44px;background:var(--gradient);border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 10px rgba(99,102,241,0.25);}
 .header-logo img{width:100%;height:100%;object-fit:cover;}
-.header-title{font-weight:800;font-size:16px;}
+.header-text{min-width:0;display:flex;flex-direction:column;gap:3px;}
+.header-title{font-weight:800;font-size:15px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.header-status-row{display:flex;align-items:center;gap:6px;}
+.live-indicator{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:rgba(16,185,129,0.12);border-radius:20px;font-size:10px;font-weight:700;color:var(--success);transition:var(--transition);}
+.live-dot{width:7px;height:7px;background:var(--success);border-radius:50%;position:relative;animation:pulseLive 2s infinite;}
+.live-dot::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--success);opacity:0.35;animation:pulseRing 2s infinite;}
+@keyframes pulseLive{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+@keyframes pulseRing{0%{transform:scale(1);opacity:0.4;}100%{transform:scale(2);opacity:0;}}
+.live-indicator.offline{background:rgba(239,68,68,0.12);color:var(--danger);}
+.live-indicator.offline .live-dot{background:var(--danger);animation:none;}
+.live-indicator.offline .live-dot::before{display:none;}
+
 .header-actions{display:flex;align-items:center;gap:8px;}
-.icon-btn{width:42px;height:42px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--text);position:relative;transition:all 0.3s;}
+.icon-btn{width:42px;height:42px;border-radius:13px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text);position:relative;transition:var(--transition);}
 .icon-btn:hover{background:var(--primary);color:#fff;}
-.notif-badge{position:absolute;top:6px;left:6px;width:8px;height:8px;background:#ff6b6b;border-radius:50%;}
+.notif-badge{position:absolute;top:8px;left:8px;width:8px;height:8px;background:var(--danger);border-radius:50%;border:2px solid var(--card);}
 
-.live-indicator{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:rgba(76,175,80,0.12);border-radius:20px;font-size:10px;font-weight:700;color:#4caf50;margin-top:2px;}
-.live-dot{width:7px;height:7px;background:#4caf50;border-radius:50%;animation:pulseLive 1.8s infinite;transition:all 0.3s;}
-.live-indicator.offline{background:rgba(244,67,54,0.12);color:#f44336;}
-.live-indicator.offline .live-dot{background:#f44336;animation:none;}
-@keyframes pulseLive{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(76,175,80,0.6);}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(76,175,80,0);}}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-40px);}}
-
-.side-menu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:var(--card);box-shadow:-10px 0 30px rgba(0,0,0,0.1);z-index:200;transition:right 0.3s;overflow-y:auto;}
+/* =========================================================
+   📋 SIDE MENU
+   ========================================================= */
+.side-menu{position:fixed;top:0;right:-300px;width:285px;height:100vh;background:var(--card);box-shadow:-10px 0 30px rgba(0,0,0,0.1);z-index:200;transition:right 0.3s;overflow-y:auto;}
 .side-menu.open{right:0;}
-.side-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:199;opacity:0;visibility:hidden;transition:all 0.3s;}
+.side-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199;opacity:0;visibility:hidden;transition:all 0.3s;backdrop-filter:blur(2px);}
 .side-overlay.open{opacity:1;visibility:visible;}
 .side-header{background:var(--gradient);padding:30px 20px;color:#fff;text-align:center;}
-.side-avatar{width:70px;height:70px;background:rgba(255,255,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 10px;border:3px solid #fff;}
-.side-name{font-weight:700;font-size:18px;}
-.side-role{font-size:13px;opacity:0.9;}
-.side-list{padding:10px;}
-.side-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;color:var(--text);transition:all 0.3s;cursor:pointer;}
-.side-item:hover{background:var(--bg);}
-.side-item i{width:24px;color:var(--primary);}
-.side-item.danger i,.side-item.danger{color:#ff6b6b;}
+.side-avatar{width:72px;height:72px;background:rgba(255,255,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 12px;border:3px solid rgba(255,255,255,0.4);}
+.side-name{font-weight:700;font-size:17px;}
+.side-role{font-size:12px;opacity:0.9;margin-top:2px;}
+.side-list{padding:12px;}
+.side-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;color:var(--text);transition:var(--transition);cursor:pointer;font-size:14px;font-weight:500;}
+.side-item:hover{background:var(--surface);}
+.side-item i{width:22px;color:var(--primary);font-size:15px;}
+.side-item.danger,.side-item.danger i{color:var(--danger);}
 
-.main{padding:16px;max-width:980px;margin:0 auto;}
-.page{display:none;animation:fadeIn 0.4s;}
+/* =========================================================
+   📄 MAIN CONTENT
+   ========================================================= */
+.main{padding:18px;max-width:1000px;margin:0 auto;}
+.page{display:none;animation:fadeIn 0.35s;}
 .page.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-.bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--card);border-radius:25px;padding:8px;display:flex;gap:4px;box-shadow:var(--shadow-lg);z-index:90;width:calc(100% - 24px);max-width:520px;justify-content:space-around;}
-.nav-item{flex:1;padding:10px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-light);transition:all 0.3s;cursor:pointer;font-size:11px;font-weight:600;background:transparent;}
-.nav-item.active{background:var(--gradient);color:#fff;box-shadow:0 6px 18px rgba(168,197,255,0.5);transform:translateY(-4px);}
-.nav-item i{font-size:18px;}
+/* =========================================================
+   🧭 BOTTOM NAV
+   ========================================================= */
+.bottom-nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--card);border-radius:24px;padding:8px;display:flex;gap:4px;box-shadow:var(--shadow-lg);z-index:90;width:calc(100% - 28px);max-width:520px;justify-content:space-around;border:1px solid var(--border);}
+.nav-item{flex:1;padding:10px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-light);transition:var(--transition);cursor:pointer;font-size:11px;font-weight:600;background:transparent;}
+.nav-item.active{background:var(--gradient);color:#fff;box-shadow:0 6px 14px rgba(99,102,241,0.35);transform:translateY(-3px);}
+.nav-item i{font-size:17px;}
 
-.welcome-card{background:var(--gradient);color:#fff;padding:24px;border-radius:var(--radius);margin-bottom:20px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
-.welcome-card::before{content:'';position:absolute;top:-50px;left:-50px;width:200px;height:200px;background:rgba(255,255,255,0.15);border-radius:50%;}
-.welcome-card::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:rgba(255,255,255,0.1);border-radius:50%;}
-.welcome-card h2{font-size:24px;font-weight:800;margin-bottom:6px;position:relative;}
-.welcome-card p{opacity:0.95;position:relative;font-size:14px;}
+/* =========================================================
+   👋 WELCOME / DATE
+   ========================================================= */
+.welcome-card{background:var(--gradient);color:#fff;padding:24px;border-radius:var(--radius-lg);margin-bottom:18px;box-shadow:0 12px 28px rgba(99,102,241,0.25);position:relative;overflow:hidden;}
+.welcome-card::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:rgba(255,255,255,0.12);border-radius:50%;}
+.welcome-card::after{content:'';position:absolute;bottom:-70px;right:-70px;width:180px;height:180px;background:rgba(255,255,255,0.08);border-radius:50%;}
+.welcome-card h2{font-size:22px;font-weight:800;margin-bottom:6px;position:relative;}
+.welcome-card p{opacity:0.95;position:relative;font-size:13px;}
 
-.date-selector{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:20px;position:relative;overflow:hidden;}
-.date-selector::before{content:'';position:absolute;top:0;right:0;width:100%;height:4px;background:var(--gradient);}
+.date-selector{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);margin-bottom:18px;border:1px solid var(--border);}
 .date-selector-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.date-selector-title{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--text);}
-.date-selector-title i{color:var(--primary);font-size:18px;}
+.date-selector-title{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--text);font-size:14px;}
+.date-selector-title i{color:var(--primary);font-size:17px;}
 .date-nav-btns{display:flex;gap:6px;}
-.date-nav-btn{width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--text);transition:all 0.3s;cursor:pointer;}
-.date-nav-btn:hover{background:var(--gradient);color:#fff;}
-.date-display{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;background:linear-gradient(135deg,rgba(168,197,255,0.1),rgba(197,179,255,0.1));border-radius:15px;}
-.date-day-circle{width:60px;height:60px;background:var(--gradient);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px rgba(168,197,255,0.4);}
+.date-nav-btn{width:38px;height:38px;border-radius:11px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text);transition:var(--transition);cursor:pointer;}
+.date-nav-btn:hover{background:var(--primary);color:#fff;}
+.date-display{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;background:linear-gradient(135deg,rgba(99,102,241,0.07),rgba(139,92,246,0.07));border-radius:var(--radius);}
+.date-day-circle{width:62px;height:62px;background:var(--gradient);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.35);}
 .date-day-num{font-size:22px;font-weight:800;line-height:1;}
 .date-day-month{font-size:10px;opacity:0.95;margin-top:2px;}
-.date-info{flex:1;}
-.date-day-name{font-size:18px;font-weight:700;color:var(--text);}
-.date-full{font-size:12px;color:var(--text-light);margin-top:2px;}
+.date-info{flex:1;min-width:0;}
+.date-day-name{font-size:17px;font-weight:700;color:var(--text);}
+.date-full{font-size:11px;color:var(--text-light);margin-top:2px;}
 .date-input-wrap{position:relative;}
-.date-input-wrap input{padding:10px 12px;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-size:13px;width:140px;cursor:pointer;}
+.date-input-wrap input{padding:10px 12px;border:1.5px solid var(--border);border-radius:11px;background:var(--card);color:var(--text);font-size:12px;width:140px;cursor:pointer;}
 .date-input-wrap input:focus{border-color:var(--primary);}
-.today-btn{background:var(--gradient-success);color:#1d6b3a;padding:8px 14px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;}
+.today-btn{background:var(--success);color:#fff;padding:8px 14px;border-radius:10px;font-weight:600;font-size:11px;cursor:pointer;border:none;}
 
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
-.stat-card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);text-align:center;transition:all 0.3s;cursor:pointer;}
-.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
-.stat-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 10px;color:#fff;}
-.stat-value{font-size:24px;font-weight:800;color:var(--text);transition:all 0.3s;}
+/* =========================================================
+   📊 STATS GRID
+   ========================================================= */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);text-align:center;transition:var(--transition);cursor:pointer;border:1px solid var(--border);}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.stat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 10px;color:#fff;}
+.stat-value{font-size:24px;font-weight:800;color:var(--text);transition:var(--transition);}
 .stat-value.bump{animation:bump 0.5s;}
-@keyframes bump{50%{transform:scale(1.3);color:#4caf50;}}
-.stat-label{font-size:12px;color:var(--text-light);margin-top:4px;}
+@keyframes bump{50%{transform:scale(1.3);color:var(--success);}}
+.stat-label{font-size:11px;color:var(--text-light);margin-top:4px;font-weight:500;}
 
-.section{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:20px;}
-.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-weight:700;font-size:16px;}
+/* =========================================================
+   🧱 SECTIONS
+   ========================================================= */
+.section{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-sm);margin-bottom:18px;border:1px solid var(--border);}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-weight:700;font-size:15px;}
 .section-title i{color:var(--primary);}
 
-.search-bar{background:var(--card);border-radius:15px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);margin-bottom:14px;}
+.search-bar{background:var(--card);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid var(--border);}
 .search-bar input{flex:1;border:none;background:transparent;color:var(--text);font-size:14px;}
-.search-bar i{color:var(--text-light);}
+.search-bar i{color:var(--text-muted);}
 
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.controls select,.controls input{padding:10px 14px;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--text);font-size:13px;flex:1;min-width:120px;}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.controls select,.controls input{padding:10px 14px;border-radius:11px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:13px;flex:1;min-width:120px;transition:var(--transition);}
+.controls select:focus,.controls input:focus{border-color:var(--primary);}
 
-.children-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.child-card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);transition:all 0.3s;position:relative;overflow:hidden;}
-.child-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:var(--gradient);opacity:0.1;border-radius:0 0 0 80px;}
-.child-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
-.child-card.live-update{box-shadow:0 0 25px rgba(76,175,80,0.6);transform:scale(1.02);}
-.child-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;position:relative;}
-.child-avatar{width:60px;height:60px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px;overflow:hidden;flex-shrink:0;}
+/* =========================================================
+   👶 CHILDREN CARDS — Minimal & Expandable
+   ========================================================= */
+.children-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
+.child-card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);transition:var(--transition);overflow:hidden;border:1px solid var(--border);cursor:pointer;}
+.child-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--primary-light);}
+.child-card.expanded{box-shadow:var(--shadow-md);border-color:var(--primary-light);}
+.child-card.live-update{box-shadow:0 0 0 3px var(--success);}
+
+.child-mini{padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;}
+.child-avatar{width:52px;height:52px;border-radius:16px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;overflow:hidden;flex-shrink:0;}
 .child-avatar img{width:100%;height:100%;object-fit:cover;}
-.child-info{flex:1;min-width:0;}
-.child-name{font-weight:700;font-size:15px;margin-bottom:4px;}
-.child-class{font-size:12px;color:var(--text-light);}
-.child-id-badge{font-size:10px;color:var(--text-light);background:var(--bg);padding:2px 6px;border-radius:6px;display:inline-block;margin-top:3px;font-family:monospace;}
+.child-info{min-width:0;}
+.child-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.child-meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.child-balance-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:var(--warning-light);color:var(--warning);}
+.child-att-icon{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.child-att-icon.present{background:var(--success-light);color:var(--success);}
+.child-att-icon.absent{background:var(--danger-light);color:var(--danger);}
+.child-att-icon.none{background:var(--surface);color:var(--text-muted);}
+.child-action-mini{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;border:none;cursor:pointer;transition:var(--transition);flex-shrink:0;background:var(--gradient);}
+.child-action-mini:hover{transform:scale(1.08);}
+.child-action-mini.success{background:var(--success);}
+.child-action-mini.danger{background:var(--danger);}
+.child-action-mini.info{background:var(--info);}
+.child-action-mini.warning{background:var(--warning);}
+
+.child-expanded{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);}
+.child-card.expanded .child-expanded{max-height:600px;}
+.child-expanded-inner{padding:0 14px 14px;border-top:1px dashed var(--border);}
+.child-id-badge{font-size:10px;color:var(--text-muted);background:var(--surface);padding:3px 8px;border-radius:6px;display:inline-block;font-family:monospace;margin:10px 0;}
 .child-stats{display:flex;justify-content:space-around;padding:10px 0;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);margin-bottom:12px;}
 .child-stat{text-align:center;}
-.child-stat-val{font-weight:800;font-size:16px;color:var(--primary-dark);}
-.child-stat-lbl{font-size:11px;color:var(--text-light);}
+.child-stat-val{font-weight:800;font-size:15px;color:var(--primary);}
+.child-stat-lbl{font-size:10px;color:var(--text-light);margin-top:2px;}
 .child-actions{display:flex;gap:6px;flex-wrap:wrap;}
-.child-actions .btn{flex:1;padding:8px 10px;font-size:12px;min-width:80px;}
+.child-actions .btn{flex:1;padding:8px 10px;font-size:11px;min-width:0;}
 
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+/* =========================================================
+   🪟 MODAL
+   ========================================================= */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:300;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);}
 .modal.open{display:flex;animation:fadeIn 0.3s;}
-.modal-content{background:var(--card);border-radius:25px 25px 0 0;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;animation:slideUpModal 0.3s;}
+.modal-content{background:var(--card);border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;animation:slideUpModal 0.3s;}
 @keyframes slideUpModal{from{transform:translateY(100%);}to{transform:translateY(0);}}
-@media(min-width:600px){.modal{align-items:center;}.modal-content{border-radius:25px;}}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1;border-radius:25px 25px 0 0;}
-.modal-title{font-weight:800;font-size:18px;}
-.modal-close{width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);}
+@media(min-width:600px){.modal{align-items:center;}.modal-content{border-radius:var(--radius-xl);}}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1;border-radius:var(--radius-xl) var(--radius-xl) 0 0;}
+.modal-title{font-weight:800;font-size:17px;}
+.modal-close{width:36px;height:36px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);transition:var(--transition);}
+.modal-close:hover{background:var(--danger);color:#fff;}
 .modal-body{padding:20px;}
 
-.logo-uploader{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px;background:var(--bg);border-radius:15px;margin-bottom:14px;}
+/* =========================================================
+   🖼️ LOGO UPLOAD
+   ========================================================= */
+.logo-uploader{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px;background:var(--surface);border-radius:var(--radius);margin-bottom:14px;}
 .logo-preview{width:100px;height:100px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;overflow:hidden;border:4px solid var(--card);box-shadow:var(--shadow);}
 .logo-preview img{width:100%;height:100%;object-fit:cover;}
 
-.bulk-area{background:var(--bg);border-radius:15px;padding:14px;margin-bottom:14px;}
-.bulk-textarea{width:100%;min-height:180px;padding:12px;border:2px dashed var(--border);border-radius:12px;background:var(--card);color:var(--text);font-family:monospace;font-size:13px;resize:vertical;}
+/* =========================================================
+   📋 BULK TABLE
+   ========================================================= */
+.bulk-area{background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:14px;}
+.bulk-textarea{width:100%;min-height:180px;padding:12px;border:2px dashed var(--border-strong);border-radius:12px;background:var(--card);color:var(--text);font-family:monospace;font-size:13px;resize:vertical;}
 .bulk-table{width:100%;border-collapse:collapse;font-size:12px;}
 .bulk-table th{background:var(--gradient);color:#fff;padding:8px 6px;font-weight:700;}
 .bulk-table td{padding:6px;border-bottom:1px solid var(--border);}
-.bulk-table tr.invalid td{background:rgba(255,179,179,0.15);}
-.bulk-table tr.valid td{background:rgba(179,229,199,0.1);}
+.bulk-table tr.invalid td{background:rgba(239,68,68,0.08);}
+.bulk-table tr.valid td{background:rgba(16,185,129,0.05);}
 
-.scanner-container{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;}
+/* =========================================================
+   📷 SCANNER
+   ========================================================= */
+.scanner-container{background:var(--card);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid var(--border);}
 #qr-reader{width:100%;}
-#qr-reader video{border-radius:var(--radius);}
+#qr-reader video{border-radius:var(--radius-lg);}
 .scanner-controls{padding:16px;display:flex;flex-direction:column;gap:10px;}
 
+.scanner-input-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;background:var(--surface);padding:14px;border-radius:var(--radius);margin-bottom:14px;}
+.scanner-input-row .form-group{margin-bottom:0;}
+.points-input{font-size:18px;font-weight:700;text-align:center;width:100px;padding:12px 8px;border:2px solid var(--primary);border-radius:12px;background:var(--card);color:var(--text);}
+
+/* =========================================================
+   🔔 TOAST
+   ========================================================= */
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:90%;}
-.toast{background:var(--card);padding:14px 20px;border-radius:15px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;min-width:280px;animation:slideDown 0.3s;border-right:4px solid var(--primary);}
-.toast.success{border-right-color:#4caf50;}
-.toast.error{border-right-color:#f44336;}
-.toast.warning{border-right-color:#ff9800;}
-.toast.live{border-right-color:#9c27b0;background:linear-gradient(90deg,rgba(156,39,176,0.05),var(--card));}
+.toast{background:var(--card);padding:14px 20px;border-radius:14px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;min-width:280px;animation:slideDown 0.3s;border-right:4px solid var(--primary);font-size:13px;font-weight:500;}
+.toast.success{border-right-color:var(--success);}
+.toast.error{border-right-color:var(--danger);}
+.toast.warning{border-right-color:var(--warning);}
+.toast.live{border-right-color:var(--secondary);background:linear-gradient(90deg,rgba(139,92,246,0.05),var(--card));}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
 
-.loader-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.7);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+/* =========================================================
+   ⏳ LOADER
+   ========================================================= */
+.loader-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.4);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .loader-overlay.show{display:flex;}
-.loader{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
+.loader{width:54px;height:54px;border:4px solid var(--surface);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
 
-.empty-state{text-align:center;padding:60px 20px;color:var(--text-light);}
-.empty-state i{font-size:60px;margin-bottom:16px;opacity:0.4;}
-.empty-state p{font-size:15px;}
+/* =========================================================
+   🪧 EMPTY STATE
+   ========================================================= */
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-light);}
+.empty-state i{font-size:55px;margin-bottom:14px;opacity:0.35;}
+.empty-state p{font-size:14px;}
 
-.chart-container{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:16px;}
+/* =========================================================
+   📊 CHARTS
+   ========================================================= */
+.chart-container{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid var(--border);}
 .chart-container canvas{max-height:300px;}
 
-.tabs{display:flex;gap:6px;background:var(--card);border-radius:15px;padding:6px;margin-bottom:14px;box-shadow:var(--shadow);overflow-x:auto;}
-.tab{padding:10px 16px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.3s;color:var(--text-light);white-space:nowrap;}
+.tabs{display:flex;gap:6px;background:var(--card);border-radius:14px;padding:6px;margin-bottom:14px;box-shadow:var(--shadow-sm);overflow-x:auto;border:1px solid var(--border);}
+.tab{padding:10px 16px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition);color:var(--text-light);white-space:nowrap;}
 .tab.active{background:var(--gradient);color:#fff;}
 
 .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.badge-success{background:var(--success);color:#1d6b3a;}
-.badge-warning{background:var(--warning);color:#7a4a14;}
-.badge-danger{background:var(--danger);color:#7a1d1d;}
-.badge-info{background:var(--info);color:#0a4f7a;}
+.badge-success{background:var(--success-light);color:var(--success);}
+.badge-warning{background:var(--warning-light);color:var(--warning);}
+.badge-danger{background:var(--danger-light);color:var(--danger);}
+.badge-info{background:var(--info-light);color:var(--info);}
 
-.settings-list{display:flex;flex-direction:column;gap:10px;}
-.settings-item{background:var(--bg);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.3s;}
+/* =========================================================
+   ⚙️ SETTINGS LIST
+   ========================================================= */
+.settings-list{display:flex;flex-direction:column;gap:8px;}
+.settings-item{background:var(--surface);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:var(--transition);}
 .settings-item:hover{background:var(--border);}
-.settings-item i{width:40px;height:40px;background:var(--card);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--primary);}
-.settings-item-text{flex:1;}
-.settings-item-title{font-weight:600;font-size:14px;}
-.settings-item-desc{font-size:12px;color:var(--text-light);}
+.settings-item i.lead{width:40px;height:40px;background:var(--card);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:15px;}
+.settings-item-text{flex:1;min-width:0;}
+.settings-item-title{font-weight:600;font-size:14px;color:var(--text);}
+.settings-item-desc{font-size:12px;color:var(--text-light);margin-top:2px;}
 
+/* =========================================================
+   📱 QR
+   ========================================================= */
 .qr-display{text-align:center;padding:20px;}
 .qr-display #qrcode{display:inline-block;padding:16px;background:#fff;border-radius:15px;}
 
-.connection-status{position:fixed;bottom:90px;right:20px;background:var(--card);padding:8px 14px;border-radius:20px;box-shadow:var(--shadow);font-size:11px;font-weight:700;z-index:85;display:flex;align-items:center;gap:6px;transition:all 0.3s;}
-.connection-status.online{color:#4caf50;}
-.connection-status.offline{color:#f44336;}
+/* =========================================================
+   ⚡ QUICK ACTIONS
+   ========================================================= */
+.quick-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;}
+.quick-action-btn{background:var(--surface);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:var(--transition);border:1.5px solid transparent;}
+.quick-action-btn:hover{border-color:var(--primary);transform:translateY(-3px);background:var(--card);}
+.quick-action-btn i{font-size:22px;color:var(--primary);margin-bottom:8px;display:block;}
+.quick-action-btn span{font-size:12px;font-weight:600;color:var(--text);}
 
-.quick-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
-.quick-action-btn{background:var(--bg);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:all 0.3s;border:2px solid transparent;}
-.quick-action-btn:hover{border-color:var(--primary);transform:translateY(-3px);}
-.quick-action-btn i{font-size:24px;color:var(--primary);margin-bottom:8px;display:block;}
-.quick-action-btn span{font-size:12px;font-weight:600;}
+/* =========================================================
+   📅 SERVICE DAYS CHECKBOX
+   ========================================================= */
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:14px;}
+.day-chip{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface);border-radius:12px;cursor:pointer;border:2px solid transparent;transition:var(--transition);font-size:13px;font-weight:600;}
+.day-chip:hover{background:var(--border);}
+.day-chip.active{background:var(--primary-light);border-color:var(--primary);color:var(--primary-dark);}
+.day-chip input{display:none;}
+.day-chip i{font-size:14px;}
 
+/* =========================================================
+   📱 RESPONSIVE
+   ========================================================= */
 @media(max-width:480px){
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .children-grid{grid-template-columns:1fr;}
-  .header-title{font-size:14px;}
+  .header-title{font-size:14px;max-width:140px;}
   .date-display{grid-template-columns:auto 1fr;}
   .date-input-wrap{grid-column:1/-1;margin-top:8px;}
   .date-input-wrap input{width:100%;}
+  .main{padding:14px;}
+}
+@media(max-width:380px){
+  .header-title{max-width:110px;font-size:13px;}
+  .icon-btn{width:38px;height:38px;}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- =========================================================
+     🔐 LOGIN PAGE
+     ========================================================= -->
 <div class="login-page" id="loginPage">
   <div class="login-card">
     <div class="login-logo" id="loginLogo"><i class="fas fa-church"></i></div>
@@ -285,28 +425,33 @@ a{color:inherit;text-decoration:none;}
         <div class="input-icon"><i class="fas fa-lock"></i><input type="password" class="form-input" id="loginPass" required value="admin123"></div>
       </div>
       <div class="checkbox-row"><input type="checkbox" id="rememberMe" checked><label for="rememberMe">تذكرني</label></div>
-      <button type="submit" class="btn btn-primary btn-block" id="loginBtn"><i class="fas fa-sign-in-alt"></i><span>دخول</span></button>
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn"><i class="fas fa-sign-in-alt"></i><span>دخول</span></button>
     </form>
-    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--text-light);"><i class="fas fa-info-circle"></i> admin / admin123</p>
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:#64748b;"><i class="fas fa-info-circle"></i> admin / admin123</p>
   </div>
 </div>
 
-<!-- APP -->
+<!-- =========================================================
+     🏠 APP
+     ========================================================= -->
 <div class="app" id="app">
   <header class="header">
     <div class="header-brand">
       <div class="header-logo" id="headerLogo"><i class="fas fa-church"></i></div>
-      <div>
+      <div class="header-text">
         <div class="header-title" id="appName">خدمة مدارس الأحد</div>
-        <div class="live-indicator" id="liveIndicator">
-          <span class="live-dot" id="liveDot"></span>
-          <span id="liveText">مباشر</span>
+        <!-- Status indicator placed INLINE next to brand (no floating, no fixed) -->
+        <div class="header-status-row">
+          <div class="live-indicator" id="liveIndicator">
+            <span class="live-dot" id="liveDot"></span>
+            <span id="liveText">مباشر</span>
+          </div>
         </div>
       </div>
     </div>
     <div class="header-actions">
-      <button class="icon-btn" onclick="openNotifications()"><i class="fas fa-bell"></i><span class="notif-badge" id="notifBadge" style="display:none;"></span></button>
-      <button class="icon-btn" onclick="toggleSideMenu()"><i class="fas fa-bars"></i></button>
+      <button class="icon-btn" onclick="openNotifications()" aria-label="إشعارات"><i class="fas fa-bell"></i><span class="notif-badge" id="notifBadge" style="display:none;"></span></button>
+      <button class="icon-btn" onclick="toggleSideMenu()" aria-label="القائمة"><i class="fas fa-bars"></i></button>
     </div>
   </header>
 
@@ -335,19 +480,22 @@ a{color:inherit;text-decoration:none;}
 
   <main class="main">
 
-    <!-- HOME -->
+    <!-- =========================================================
+         🏠 HOME PAGE
+         ========================================================= -->
     <div class="page active" id="page-home">
       <div class="welcome-card">
         <h2>أهلاً وسهلاً 👋</h2>
         <p id="currentBlessing">نسأل الله أن يبارك خدمتك اليوم</p>
       </div>
 
+      <!-- Date Selector with service-day cycling -->
       <div class="date-selector">
         <div class="date-selector-header">
           <div class="date-selector-title"><i class="fas fa-calendar-day"></i><span>تاريخ العمليات</span></div>
           <div class="date-nav-btns">
-            <button class="date-nav-btn" onclick="shiftDate(-1)" title="اليوم السابق"><i class="fas fa-chevron-right"></i></button>
-            <button class="date-nav-btn" onclick="shiftDate(1)" title="اليوم التالي"><i class="fas fa-chevron-left"></i></button>
+            <button class="date-nav-btn" onclick="shiftDate(-1)" title="يوم الخدمة السابق"><i class="fas fa-chevron-right"></i></button>
+            <button class="date-nav-btn" onclick="shiftDate(1)" title="يوم الخدمة التالي"><i class="fas fa-chevron-left"></i></button>
           </div>
         </div>
         <div class="date-display">
@@ -424,7 +572,9 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
-    <!-- CHILDREN -->
+    <!-- =========================================================
+         👶 CHILDREN PAGE
+         ========================================================= -->
     <div class="page" id="page-children">
       <div class="search-bar">
         <i class="fas fa-search"></i>
@@ -457,26 +607,37 @@ a{color:inherit;text-decoration:none;}
       <div class="children-grid" id="childrenGrid"></div>
     </div>
 
-    <!-- SCANNER -->
+    <!-- =========================================================
+         📷 SCANNER PAGE
+         ========================================================= -->
     <div class="page" id="page-scanner">
       <div class="section">
         <div class="section-title"><span><i class="fas fa-qrcode"></i> ماسح QR</span></div>
-        <div class="controls">
-          <select id="scannerFunction">
-            <option value="attendance">تسجيل حضور</option>
-            <option value="addPoints">إضافة رصيد</option>
-            <option value="deductPoints">خصم رصيد</option>
-            <option value="info">عرض معلومات الطفل</option>
-          </select>
-          <input type="number" id="scannerPoints" min="1" style="max-width:100px;" placeholder="النقاط">
+        <div class="scanner-input-row">
+          <div>
+            <label class="form-label">الوظيفة</label>
+            <select class="form-input" id="scannerFunction">
+              <option value="attendance">تسجيل حضور</option>
+              <option value="addPoints">إضافة رصيد</option>
+              <option value="deductPoints">خصم رصيد</option>
+              <option value="info">عرض بطاقة الطفل بعد المسح</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">النقاط</label>
+            <input type="number" class="points-input" id="scannerPoints" min="1" value="1">
+          </div>
         </div>
-        <p style="font-size:11px;color:var(--text-light);margin-top:6px;"><i class="fas fa-info-circle"></i> عدد النقاط من خانة الأرقام، والافتراضي من الإعدادات (<span id="scannerDefaultHint">1</span>)</p>
+        <p style="font-size:11px;color:var(--text-light);"><i class="fas fa-info-circle"></i> الافتراضي من الإعدادات (<span id="scannerDefaultHint">1</span>) — قابل للتعديل قبل كل مسح.</p>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="toggleCameraFacing()"><i class="fas fa-sync-alt"></i> تبديل الكاميرا</button>
+        </div>
       </div>
       <div class="scanner-container">
         <div id="qr-reader"></div>
         <div class="scanner-controls">
-          <button class="btn btn-primary" id="startScanBtn" onclick="startScanner()"><i class="fas fa-camera"></i> بدء المسح</button>
-          <button class="btn btn-danger" id="stopScanBtn" onclick="stopScanner()" style="display:none;"><i class="fas fa-stop"></i> إيقاف</button>
+          <button class="btn btn-primary btn-lg" id="startScanBtn" onclick="startScanner()"><i class="fas fa-camera"></i> بدء المسح</button>
+          <button class="btn btn-danger btn-lg" id="stopScanBtn" onclick="stopScanner()" style="display:none;"><i class="fas fa-stop"></i> إيقاف</button>
         </div>
       </div>
       <div class="section">
@@ -485,7 +646,9 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
-    <!-- STATISTICS -->
+    <!-- =========================================================
+         📊 STATISTICS PAGE
+         ========================================================= -->
     <div class="page" id="page-statistics">
       <div class="tabs">
         <div class="tab active" onclick="switchStatsTab('attendance',event)">الحضور</div>
@@ -511,7 +674,9 @@ a{color:inherit;text-decoration:none;}
       <div class="chart-container"><div class="section-title"><span><i class="fas fa-chart-line"></i> نمو الخدمة</span></div><canvas id="growthChart"></canvas></div>
     </div>
 
-    <!-- EVENTS -->
+    <!-- =========================================================
+         📅 EVENTS PAGE
+         ========================================================= -->
     <div class="page" id="page-events">
       <div class="section">
         <div class="section-title">
@@ -522,27 +687,32 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- =========================================================
+         ⚙️ SETTINGS PAGE
+         ========================================================= -->
     <div class="page" id="page-settings">
       <div class="section">
         <div class="section-title"><span><i class="fas fa-cog"></i> إعدادات الخدمة</span></div>
         <div class="settings-list">
-          <div class="settings-item" onclick="openServiceConfigModal()"><i class="fas fa-church"></i><div class="settings-item-text"><div class="settings-item-title">اسم الخدمة والشعار</div><div class="settings-item-desc">تعديل الاسم، الاختصار، رفع الشعار</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="openServantsModal()"><i class="fas fa-users"></i><div class="settings-item-text"><div class="settings-item-title">إدارة الخدام</div><div class="settings-item-desc">إضافة وصلاحيات</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="openClassesModal()"><i class="fas fa-layer-group"></i><div class="settings-item-text"><div class="settings-item-title">الفصول والمراحل</div><div class="settings-item-desc">إدارة فصول الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="openAddChildModal()"><i class="fas fa-user-plus"></i><div class="settings-item-text"><div class="settings-item-title">إضافة طفل جديد</div><div class="settings-item-desc">تسجيل طفل في الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="openBulkAddModal()"><i class="fas fa-paste"></i><div class="settings-item-text"><div class="settings-item-title">إضافة جماعية (Bulk)</div><div class="settings-item-desc">لصق بيانات لمعاينة وإضافة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="openServiceDaysModal()"><i class="fas fa-calendar"></i><div class="settings-item-text"><div class="settings-item-title">أيام الخدمة</div><div class="settings-item-desc">تحديد أيام الاجتماع</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="openTemplatesModal()"><i class="fas fa-comment-dots"></i><div class="settings-item-text"><div class="settings-item-title">قوالب الرسائل</div><div class="settings-item-desc">واتساب و SMS</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="backupData()"><i class="fas fa-cloud"></i><div class="settings-item-text"><div class="settings-item-title">النسخ الاحتياطي</div><div class="settings-item-desc">حفظ واستعادة</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="importData()"><i class="fas fa-file-import"></i><div class="settings-item-text"><div class="settings-item-title">استيراد Excel</div><div class="settings-item-desc">إضافة بيانات من ملف</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
-          <div class="settings-item" onclick="toggleTheme()"><i class="fas fa-moon"></i><div class="settings-item-text"><div class="settings-item-title">المظهر</div><div class="settings-item-desc">فاتح/داكن</div></div><i class="fas fa-chevron-left" style="color:var(--text-light)"></i></div>
+          <div class="settings-item" onclick="openServiceConfigModal()"><i class="fas fa-church lead"></i><div class="settings-item-text"><div class="settings-item-title">اسم الخدمة والشعار</div><div class="settings-item-desc">الاسم، الاختصار، الشعار، نقاط الحضور الافتراضية</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openServantsModal()"><i class="fas fa-users lead"></i><div class="settings-item-text"><div class="settings-item-title">إدارة الخدام</div><div class="settings-item-desc">إضافة وصلاحيات</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openClassesModal()"><i class="fas fa-layer-group lead"></i><div class="settings-item-text"><div class="settings-item-title">الفصول والمراحل</div><div class="settings-item-desc">إدارة فصول الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openAddChildModal()"><i class="fas fa-user-plus lead"></i><div class="settings-item-text"><div class="settings-item-title">إضافة طفل جديد</div><div class="settings-item-desc">تسجيل طفل في الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openBulkAddModal()"><i class="fas fa-paste lead"></i><div class="settings-item-text"><div class="settings-item-title">إضافة جماعية (Bulk)</div><div class="settings-item-desc">لصق بيانات لمعاينة وإضافة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openServiceDaysModal()"><i class="fas fa-calendar lead"></i><div class="settings-item-text"><div class="settings-item-title">أيام الخدمة</div><div class="settings-item-desc">تحديد أيام الاجتماع لتنقل اليوم التالي/السابق</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openTemplatesModal()"><i class="fas fa-comment-dots lead"></i><div class="settings-item-text"><div class="settings-item-title">قوالب الرسائل</div><div class="settings-item-desc">واتساب و SMS</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="backupData()"><i class="fas fa-cloud lead"></i><div class="settings-item-text"><div class="settings-item-title">النسخ الاحتياطي</div><div class="settings-item-desc">حفظ واستعادة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="importData()"><i class="fas fa-file-import lead"></i><div class="settings-item-text"><div class="settings-item-title">استيراد Excel</div><div class="settings-item-desc">إضافة بيانات من ملف</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="toggleTheme()"><i class="fas fa-moon lead"></i><div class="settings-item-text"><div class="settings-item-title">المظهر</div><div class="settings-item-desc">فاتح/داكن</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
         </div>
       </div>
     </div>
 
   </main>
 
+  <!-- =========================================================
+       🧭 BOTTOM NAVIGATION
+       ========================================================= -->
   <nav class="bottom-nav">
     <div class="nav-item active" data-page="home" onclick="showPage('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
     <div class="nav-item" data-page="children" onclick="showPage('children')"><i class="fas fa-child"></i><span>الأطفال</span></div>
@@ -552,14 +722,16 @@ a{color:inherit;text-decoration:none;}
   </nav>
 </div>
 
-<!-- CHILD MODAL -->
+<!-- =========================================================
+     📋 MODALS
+     ========================================================= -->
 <div class="modal" id="childModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title" id="childModalTitle">إضافة طفل</div><div class="modal-close" onclick="closeModal('childModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
       <form id="childForm">
         <input type="hidden" id="childId">
-        <div class="form-group" id="childIdDisplay" style="display:none;"><label class="form-label">المعرف (ID)</label><input type="text" class="form-input" id="cIdView" readonly style="font-family:monospace;background:var(--bg);"></div>
+        <div class="form-group" id="childIdDisplay" style="display:none;"><label class="form-label">المعرف (ID)</label><input type="text" class="form-input" id="cIdView" readonly style="font-family:monospace;background:var(--surface);"></div>
         <div class="form-group"><label class="form-label">الاسم الكامل *</label><input type="text" class="form-input" id="cName" required></div>
         <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-input" id="cPhone"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -568,20 +740,19 @@ a{color:inherit;text-decoration:none;}
         </div>
         <div class="form-group"><label class="form-label">العنوان</label><input type="text" class="form-input" id="cAddress"></div>
         <div class="form-group"><label class="form-label">الفصل</label><select class="form-input" id="cClass"></select></div>
-        <div class="form-group"><label class="form-label">الصورة (Base64 أو URL)</label>
+        <div class="form-group"><label class="form-label">الصورة</label>
           <input type="file" accept="image/*" id="cPhotoFile" onchange="handlePhotoUpload(event)" class="form-input">
           <input type="hidden" id="cPhoto">
           <div id="photoPreview" style="margin-top:10px;text-align:center;"></div>
         </div>
         <div class="form-group"><label class="form-label">ملاحظات</label><textarea class="form-input" id="cNotes" rows="3"></textarea></div>
         <div class="form-group"><label class="form-label">الرصيد الأولي (نقاط)</label><input type="number" class="form-input" id="cBalance" value="0" min="0" step="1"></div>
-        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> حفظ ومزامنة</button>
+        <button type="submit" class="btn btn-primary btn-block btn-lg"><i class="fas fa-save"></i> حفظ ومزامنة</button>
       </form>
     </div>
   </div>
 </div>
 
-<!-- BULK ADD MODAL -->
 <div class="modal" id="bulkModal">
   <div class="modal-content" style="max-width:900px;">
     <div class="modal-header"><div class="modal-title"><i class="fas fa-paste"></i> إضافة جماعية للأطفال</div><div class="modal-close" onclick="closeModal('bulkModal')"><i class="fas fa-times"></i></div></div>
@@ -589,8 +760,8 @@ a{color:inherit;text-decoration:none;}
       <div class="bulk-area">
         <p style="margin-bottom:10px;font-size:13px;"><i class="fas fa-info-circle" style="color:var(--primary)"></i> الصق البيانات من Excel (كل سطر = طفل). الأعمدة بالترتيب:</p>
         <p style="margin-bottom:10px;font-size:12px;font-family:monospace;background:var(--card);padding:8px;border-radius:8px;direction:ltr;text-align:left;">الكود | الاسم رباعي | رقم التليفون | تاريخ الميلاد | العنوان | ملاحظات | صورة | الرصيد</p>
-        <p style="margin-bottom:10px;font-size:12px;color:var(--text-light);">يمكن استخدام Tab (نسخ مباشر من Excel) أو , أو | كفاصل. تاريخ الميلاد يقبل M/D/YYYY أو YYYY-MM-DD. اترك الكود فارغاً ليُولَّد تلقائياً.</p>
-        <textarea class="bulk-textarea" id="bulkInput" placeholder="StMary1708701492802	ابرام بيتر وجيه	01282062301	5/28/2019	المنشاه العماري			70&#10;StMary1715354731376	ارميا كيرلس روماني	01206153761	10/15/2021				55"></textarea>
+        <p style="margin-bottom:10px;font-size:12px;color:var(--text-light);">يمكن استخدام Tab أو , أو | كفاصل. تاريخ الميلاد يقبل M/D/YYYY أو YYYY-MM-DD.</p>
+        <textarea class="bulk-textarea" id="bulkInput" placeholder="StMary1708701492802&#9;ابرام بيتر وجيه&#9;01282062301&#9;5/28/2019&#9;المنشاه العماري&#9;&#9;&#9;70"></textarea>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
           <div class="form-group"><label class="form-label">الفصل الافتراضي</label><select class="form-input" id="bulkDefaultClass"></select></div>
           <div class="form-group"><label class="form-label">السطر الأول</label><select class="form-input" id="bulkHasHeader"><option value="0">بيانات</option><option value="1">عناوين (تجاهل)</option></select></div>
@@ -602,7 +773,6 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<!-- QR MODAL -->
 <div class="modal" id="qrModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title">رمز QR</div><div class="modal-close" onclick="closeModal('qrModal')"><i class="fas fa-times"></i></div></div>
@@ -613,7 +783,6 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<!-- PROFILE MODAL -->
 <div class="modal" id="profileModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title">ملف الطفل</div><div class="modal-close" onclick="closeModal('profileModal')"><i class="fas fa-times"></i></div></div>
@@ -621,7 +790,14 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<!-- GENERIC MODAL -->
+<!-- After-Scan Result Card Modal -->
+<div class="modal" id="scanResultModal">
+  <div class="modal-content">
+    <div class="modal-header"><div class="modal-title"><i class="fas fa-id-card"></i> بيانات الطفل</div><div class="modal-close" onclick="closeModal('scanResultModal')"><i class="fas fa-times"></i></div></div>
+    <div class="modal-body" id="scanResultBody"></div>
+  </div>
+</div>
+
 <div class="modal" id="genericModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title" id="genericTitle"></div><div class="modal-close" onclick="closeModal('genericModal')"><i class="fas fa-times"></i></div></div>
@@ -631,51 +807,52 @@ a{color:inherit;text-decoration:none;}
 
 <div class="toast-container" id="toastContainer"></div>
 <div class="loader-overlay" id="loaderOverlay"><div class="loader"></div></div>
-<div class="connection-status online" id="connectionStatus"><i class="fas fa-wifi"></i> <span>متصل</span></div>
 
 <script>
 /* ============================================================
-   ⚡ SUNDAY SCHOOL APP v3.2 - MINIMAL CARDS EDITION
+   ⚡ SUNDAY SCHOOL APP v4.0 — Production Edition
    ============================================================
-   التعديلات v3.2:
-   1. مؤشر "مباشر" + حالة الاتصال جنب الشعار (لا فلوتنج)
-   2. الماسح: عدد النقاط من خانة الأرقام، والديفولت من الإعدادات
-   3. خيار "عرض معلومات الطفل" في الماسح بعد المسح + أزرار خصم/إضافة/حضور
-   4. زر اليوم التالي/السابق يقفز على أيام الخدمة فقط
-   5. حذف "تسجيل غياب" و"عرض QR" من قائمة الإجراءات
-   6. أزرار "إلغاء الحضور" و "مسح النقاط المضافة"
-   7. كروت الأطفال minimal + قابلة للتوسع بالنقر
-   8. حذف badge النشط/الموقوف من البطاقات
+   FEATURES:
+   • Status indicator integrated next to brand (no floating)
+   • Scanner with numeric points input (default from settings)
+   • Post-scan child card with Add/Deduct/Mark/Cancel buttons
+   • Service-day-only date navigation
+   • Multi-select service days settings
+   • Auto-select nearest service day on startup
+   • Minimal child cards that expand on click
+   • Duplicate-scan prevention, proper camera cleanup
+   • Robust attendance & points logic
    ============================================================ */
 
+/* ----- Supabase Setup ----- */
 const SUPABASE_URL = 'https://cjxlwfrqfqwjhugpjdxz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ';
-
 let sb = null;
-try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { realtime: { params: { eventsPerSecond: 20 } } }); }
+try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { realtime:{ params:{ eventsPerSecond:20 } } }); }
 catch(e) { console.error('Supabase init failed:', e); }
 
+/* ----- App State ----- */
 const state = {
-  user: null, children: [], classes: [], attendance: [], pointsHistory: [],
-  callHistory: [], servants: [], notifications: [], events: [], childNotes: [],
-  settings: { service_name:'خدمة مدارس الأحد', service_abbreviation:'StMary', service_logo:null, points_default:1 },
-  charts: {}, rtChannels: [], isOnline: navigator.onLine,
-  selectedDate: new Date().toISOString().split('T')[0],
-  bulkParsed: []
+  user:null, children:[], classes:[], attendance:[], pointsHistory:[],
+  callHistory:[], servants:[], notifications:[], events:[], childNotes:[],
+  settings:{
+    service_name:'خدمة مدارس الأحد',
+    service_abbreviation:'StMary',
+    service_logo:null,
+    points_default:1,
+    service_days:[0,5] // Sunday & Friday by default
+  },
+  charts:{}, rtChannels:[], isOnline:navigator.onLine,
+  selectedDate:new Date().toISOString().split('T')[0],
+  bulkParsed:[], cameraFacing:'environment'
 };
 
+/* ----- Helpers ----- */
 const $ = id => document.getElementById(id);
 const today = () => new Date().toISOString().split('T')[0];
 const getOpDate = () => state.selectedDate;
-
-// helper: returns a valid UUID for user FK columns, or null otherwise.
-// All FK *_by columns are UUID — so we must reject any non-UUID id
-// (like 'admin-local', 'admin-001', or any custom text id).
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const currentUserId = () => {
-  const id = state.user && state.user.id;
-  return (id && UUID_RE.test(id)) ? id : null;
-};
+const currentUserId = () => { const id = state.user && state.user.id; return (id && UUID_RE.test(id)) ? id : null; };
 
 function showLoader(s=true){ $('loaderOverlay').classList.toggle('show', s); }
 
@@ -683,69 +860,54 @@ function toast(msg, type='success'){
   const t = document.createElement('div');
   t.className = 'toast ' + type;
   const icons = {success:'check-circle',error:'times-circle',warning:'exclamation-circle',info:'info-circle',live:'broadcast-tower'};
-  const colors = {success:'#4caf50',error:'#f44336',warning:'#ff9800',info:'#2196f3',live:'#9c27b0'};
-  t.innerHTML = `<i class="fas fa-${icons[type]||'info-circle'}" style="color:${colors[type]||'#2196f3'}"></i><span>${msg}</span>`;
+  const colors = {success:'#10b981',error:'#ef4444',warning:'#f59e0b',info:'#3b82f6',live:'#8b5cf6'};
+  t.innerHTML = `<i class="fas fa-${icons[type]||'info-circle'}" style="color:${colors[type]||'#3b82f6'};font-size:16px;"></i><span>${msg}</span>`;
   $('toastContainer').appendChild(t);
   setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>t.remove(),300);}, 3000);
 }
 
 function vibrate(ms=100){ if(navigator.vibrate) navigator.vibrate(ms); }
+
+/* ----- Audio (debounced) ----- */
+let _lastBeep = 0;
 function playBeep(freq=800){
+  if(Date.now() - _lastBeep < 300) return; // prevent duplicate sounds
+  _lastBeep = Date.now();
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
     const osc = ctx.createOscillator(); const gain = ctx.createGain();
     osc.connect(gain); gain.connect(ctx.destination);
     osc.frequency.value = freq; gain.gain.value = 0.08;
-    osc.start(); setTimeout(()=>osc.stop(),150);
+    osc.start(); setTimeout(()=>{ osc.stop(); ctx.close && ctx.close(); }, 150);
   }catch(e){}
 }
 
 function avatarColor(name){
-  const colors = ['#a8c5ff','#c5b3ff','#ffb3d9','#b3e5c7','#ffd3a5','#b3e0ff'];
+  const colors = ['#6366f1','#8b5cf6','#ec4899','#10b981','#f59e0b','#3b82f6'];
   let h = 0; for(let i=0;i<(name||'').length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
   return colors[Math.abs(h)%colors.length];
 }
-
 function initials(name){
   if(!name) return '؟';
   const parts = name.trim().split(/\s+/);
   return (parts[0][0] + (parts[1]?parts[1][0]:'')).toUpperCase();
 }
-
 function getClassName(id){ const c = state.classes.find(x=>x.id===id); return c?c.name:'غير محدد'; }
+function bumpStat(id){ const el = $(id); if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 
-function bumpStat(id){
-  const el = $(id);
-  if(!el) return;
-  el.classList.remove('bump');
-  void el.offsetWidth;
-  el.classList.add('bump');
-}
-
-// ========= 💰 UNIFIED BALANCE (single source of truth) =========
-// balance = sum of all points_history.points for this child
+/* ----- Balance / Attendance helpers (single source of truth) ----- */
 function getBalance(childId){
-  return state.pointsHistory
-    .filter(p => p.child_id === childId)
-    .reduce((s,p) => s + (Number(p.points)||0), 0);
+  return state.pointsHistory.filter(p => p.child_id === childId).reduce((s,p) => s + (Number(p.points)||0), 0);
 }
-
-// attendance_count = number of present-status attendance rows
 function getAttendanceCount(childId){
-  return state.attendance
-    .filter(a => a.child_id === childId && a.status === 'present')
-    .length;
+  return state.attendance.filter(a => a.child_id === childId && a.status === 'present').length;
 }
-
 function getLastAttendance(childId){
-  const rows = state.attendance
-    .filter(a => a.child_id === childId && a.status === 'present')
-    .map(a => a.date)
-    .sort();
+  const rows = state.attendance.filter(a => a.child_id === childId && a.status === 'present').map(a => a.date).sort();
   return rows.length ? rows[rows.length-1] : null;
 }
 
-// ========= 🆔 ID GENERATOR =========
+/* ----- ID Generator ----- */
 let _lastIdCounter = 0;
 function generateChildId(){
   const abbr = state.settings.service_abbreviation || 'StMary';
@@ -753,7 +915,9 @@ function generateChildId(){
   return abbr + Date.now() + String(_lastIdCounter).padStart(3,'0');
 }
 
-// ========= 📅 DATE SELECTOR =========
+/* =========================================================
+   📅 DATE SELECTOR & SERVICE-DAY NAVIGATION
+   ========================================================= */
 function renderDateSelector(){
   const d = new Date(state.selectedDate + 'T00:00:00');
   const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -768,12 +932,14 @@ function onDateChange(){
   state.selectedDate = $('operationDate').value;
   renderDateSelector();
   renderHome();
-  if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
+  if($('page-children').classList.contains('active')) renderChildren();
   toast('تم تحديث تاريخ العمليات','info');
 }
-// Navigate to the next/previous SERVICE DAY only (skip non-service days)
+// Cycle ONLY through service days defined in settings
 function shiftDate(direction){
-  const days = (state.settings.service_days && state.settings.service_days.length) ? state.settings.service_days.slice().sort() : [0,5];
+  const days = (state.settings.service_days && state.settings.service_days.length)
+    ? [...state.settings.service_days].sort((a,b)=>a-b)
+    : [0,5];
   const d = new Date(state.selectedDate + 'T00:00:00');
   const step = direction > 0 ? 1 : -1;
   for(let i=0;i<14;i++){
@@ -781,9 +947,9 @@ function shiftDate(direction){
     if(days.includes(d.getDay())){
       state.selectedDate = d.toISOString().split('T')[0];
       renderDateSelector(); renderHome();
-      if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
+      if($('page-children').classList.contains('active')) renderChildren();
       const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-      toast(`${direction>0?'اليوم التالي للخدمة':'اليوم السابق للخدمة'}: ${arDays[d.getDay()]}`,'info');
+      toast(`${direction>0?'يوم الخدمة التالي':'يوم الخدمة السابق'}: ${arDays[d.getDay()]}`,'info');
       return;
     }
   }
@@ -792,11 +958,25 @@ function shiftDate(direction){
 function setToday(){
   state.selectedDate = today();
   renderDateSelector(); renderHome();
-  if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
+  if($('page-children').classList.contains('active')) renderChildren();
   toast('عاد للتاريخ الحالي','success');
 }
+// Find the nearest valid service day at/after today (or today if it matches)
+function findNearestServiceDay(){
+  const days = (state.settings.service_days && state.settings.service_days.length)
+    ? [...state.settings.service_days].sort((a,b)=>a-b)
+    : [0,5];
+  const d = new Date();
+  for(let i=0;i<14;i++){
+    if(days.includes(d.getDay())) return d.toISOString().split('T')[0];
+    d.setDate(d.getDate() + 1);
+  }
+  return today();
+}
 
-// ========= DATABASE LAYER =========
+/* =========================================================
+   💾 DATABASE LAYER
+   ========================================================= */
 const DB = {
   async insert(table, data){
     if(!sb) throw new Error('Supabase غير متصل');
@@ -820,10 +1000,7 @@ const DB = {
     const defaults = { settings:'updated_at', classes:'order_index', attendance:'date' };
     const orderCol = orderBy || defaults[table] || 'created_at';
     const { data, error } = await sb.from(table).select('*').order(orderCol, {ascending:false});
-    if(error){
-      const { data:d2 } = await sb.from(table).select('*');
-      return d2 || [];
-    }
+    if(error){ const { data:d2 } = await sb.from(table).select('*'); return d2 || []; }
     return data || [];
   },
   async exists(table, id){
@@ -833,40 +1010,27 @@ const DB = {
   }
 };
 
-// ========= REALTIME =========
+/* =========================================================
+   📡 REALTIME
+   ========================================================= */
 const RT = {
   start(){
     if(!sb) return;
     this.stop();
-    ['children','attendance','points_history','call_history','classes','users','notifications','settings','child_notes','events'].forEach(t=>{
-      this.subscribe(t);
-    });
+    ['children','attendance','points_history','call_history','classes','users','notifications','settings','child_notes','events'].forEach(t=>this.subscribe(t));
     setLive(true);
   },
   subscribe(table){
     const ch = sb.channel(`rt-${table}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`)
-      .on('postgres_changes',{event:'*',schema:'public',table}, p => {
-        this.handle(table, p);
-        flashLiveIndicator();
-      })
+      .on('postgres_changes',{event:'*',schema:'public',table}, p => { this.handle(table, p); flashLiveIndicator(); })
       .subscribe();
     state.rtChannels.push(ch);
   },
   handle(table, p){
     const { eventType, new:N, old:O } = p;
-    const stateKey = {
-      children:'children', attendance:'attendance', points_history:'pointsHistory',
-      call_history:'callHistory', classes:'classes', users:'servants',
-      notifications:'notifications', events:'events', child_notes:'childNotes'
-    }[table];
-
-    if(table==='settings'){
-      if(N){ Object.assign(state.settings, N); applySettings(); }
-      return;
-    }
-
+    const stateKey = { children:'children', attendance:'attendance', points_history:'pointsHistory', call_history:'callHistory', classes:'classes', users:'servants', notifications:'notifications', events:'events', child_notes:'childNotes' }[table];
+    if(table==='settings'){ if(N){ Object.assign(state.settings, N); applySettings(); } return; }
     if(!stateKey) return;
-
     if(eventType==='INSERT'){
       if(!state[stateKey].find(x=>x.id===N.id)){
         state[stateKey].unshift(N);
@@ -882,7 +1046,6 @@ const RT = {
     } else if(eventType==='DELETE'){
       state[stateKey] = state[stateKey].filter(x=>x.id!==O.id);
     }
-
     refreshUI(['home','children','statistics','events']);
     if(table==='classes') populateClassSelects();
   },
@@ -893,16 +1056,14 @@ const RT = {
 };
 
 function setLive(on){
-  const el = $('liveIndicator');
-  if(!el) return;
+  const el = $('liveIndicator'); if(!el) return;
   if(on){ el.classList.remove('offline'); $('liveText').textContent='مباشر'; }
   else { el.classList.add('offline'); $('liveText').textContent='غير متصل'; }
 }
 function flashLiveIndicator(){
-  const dot = $('liveDot');
-  if(!dot) return;
-  dot.style.transform='scale(1.8)'; dot.style.background='#9c27b0';
-  setTimeout(()=>{ dot.style.transform=''; dot.style.background='#4caf50'; },500);
+  const dot = $('liveDot'); if(!dot) return;
+  dot.style.transform='scale(1.6)'; dot.style.background='#8b5cf6';
+  setTimeout(()=>{ dot.style.transform=''; dot.style.background=''; },500);
 }
 
 function refreshUI(pages){
@@ -927,16 +1088,18 @@ function applySettings(){
     $('headerLogo').innerHTML = `<i class="fas fa-church"></i>`;
     $('loginLogo').innerHTML = `<i class="fas fa-church"></i>`;
   }
-  // Sync scanner and points-value defaults with settings
+  // Sync scanner / manual points defaults with settings
   const sp = $('scannerPoints');
-  if(sp && !sp.value) sp.value = state.settings.points_default || 1;
+  if(sp) sp.value = state.settings.points_default || 1;
   const hint = $('scannerDefaultHint');
   if(hint) hint.textContent = state.settings.points_default || 1;
   const pv = $('pointsValue');
   if(pv && (!pv.value || pv.value==='1')) pv.value = state.settings.points_default || 1;
 }
 
-// ========= AUTH =========
+/* =========================================================
+   🔐 AUTH
+   ========================================================= */
 $('loginForm').addEventListener('submit', async e=>{
   e.preventDefault();
   const u = $('loginUser').value.trim();
@@ -974,30 +1137,33 @@ $('loginForm').addEventListener('submit', async e=>{
 
 function logout(){
   if(!confirm('تأكيد تسجيل الخروج؟')) return;
+  stopScanner();
   RT.stop();
   state.user = null;
   sessionStorage.removeItem('user'); localStorage.removeItem('user');
   $('app').classList.remove('active');
   $('loginPage').style.display = 'flex';
   if($('sideMenu').classList.contains('open')) toggleSideMenu();
-  // reset login button
   const btn = $('loginBtn');
   btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>دخول</span>';
   btn.disabled = false;
 }
 
-// ========= APP INIT =========
+/* =========================================================
+   🚀 APP INIT
+   ========================================================= */
 async function initApp(){
   $('loginPage').style.display = 'none';
   $('app').classList.add('active');
   $('userName').textContent = state.user.name || 'مستخدم';
   $('userRole').textContent = state.user.role==='admin'?'مسؤول':state.user.role==='supervisor'?'مشرف':'خادم';
-  state.selectedDate = today();
-  renderDateSelector();
   showLoader(true);
   try{
     if(sb) await loadAllData();
     applySettings();
+    // Auto-select nearest service day at startup
+    state.selectedDate = findNearestServiceDay();
+    renderDateSelector();
     RT.start();
     populateClassSelects();
     renderHome();
@@ -1028,8 +1194,7 @@ async function loadAllData(){
 async function forceSync(){
   showLoader(true);
   try{
-    await loadAllData();
-    applySettings();
+    await loadAllData(); applySettings();
     refreshUI(['home','children','statistics','events']);
     toast('✓ تمت المزامنة','success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
@@ -1049,8 +1214,12 @@ function populateClassSelects(){
   });
 }
 
-// ========= NAVIGATION =========
+/* =========================================================
+   🧭 NAVIGATION
+   ========================================================= */
 function showPage(page){
+  // Stop scanner when leaving scanner page
+  if(page !== 'scanner') stopScanner();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const target = $('page-'+page);
   if(target) target.classList.add('active');
@@ -1061,33 +1230,27 @@ function showPage(page){
   if(page==='events') renderEvents();
   window.scrollTo(0,0);
 }
-function toggleSideMenu(){
-  $('sideMenu').classList.toggle('open');
-  $('sideOverlay').classList.toggle('open');
-}
+function toggleSideMenu(){ $('sideMenu').classList.toggle('open'); $('sideOverlay').classList.toggle('open'); }
 function openModal(id){ $(id).classList.add('open'); }
 function closeModal(id){ $(id).classList.remove('open'); }
 
-// ========= HOME =========
+/* =========================================================
+   🏠 HOME
+   ========================================================= */
 function renderHome(){
   const d = getOpDate();
   $('totalChildren').textContent = state.children.length;
   $('todayAttendance').textContent = state.attendance.filter(a=>a.date===d && a.status==='present').length;
-  // total balance (across all children) – derived from points_history
   const totalBalance = state.children.reduce((s,c)=>s + getBalance(c.id), 0);
   $('totalPoints').textContent = totalBalance;
   const rate = state.children.length ? Math.round((state.attendance.filter(a=>a.date===d && a.status==='present').length/state.children.length)*100) : 0;
   $('attendanceRate').textContent = rate+'%';
 
-  // top children by balance
-  const top = [...state.children]
-    .map(c=>({...c, _balance: getBalance(c.id)}))
-    .sort((a,b)=> b._balance - a._balance)
-    .slice(0,5);
+  const top = [...state.children].map(c=>({...c, _balance:getBalance(c.id)})).sort((a,b)=>b._balance-a._balance).slice(0,5);
   $('topChildren').innerHTML = top.length ? top.map((c,i)=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;">
-      <div style="width:32px;height:32px;border-radius:50%;background:${i<3?'var(--gradient)':'var(--border)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">${i+1}</div>
-      <div style="flex:1;"><strong>${c.name}</strong><br><small style="color:var(--text-light)">${getClassName(c.class_id)}</small></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;">
+      <div style="width:32px;height:32px;border-radius:50%;background:${i<3?'var(--gradient)':'var(--border)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${i+1}</div>
+      <div style="flex:1;min-width:0;"><strong>${c.name}</strong><br><small style="color:var(--text-light)">${getClassName(c.class_id)}</small></div>
       <span class="badge badge-warning"><i class="fas fa-star"></i> ${c._balance}</span>
     </div>`).join('') : '<div class="empty-state"><i class="fas fa-trophy"></i><p>لا توجد بيانات</p></div>';
 
@@ -1098,9 +1261,9 @@ function renderHome(){
 
   $('recentActivities').innerHTML = acts.length ? acts.map(a=>{
     const c = state.children.find(ch=>ch.id===a.child_id);
-    return `<div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;">
+    return `<div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;">
       <i class="fas fa-${a._t==='pts'?'star':'check'}" style="color:var(--primary);"></i>
-      <div style="flex:1;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a._t==='pts'?(a.points>0?'+':'')+a.points+' رصيد':(a.status==='absent'?'تسجيل غياب':'تسجيل حضور')}</small></div>
+      <div style="flex:1;min-width:0;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a._t==='pts'?(a.points>0?'+':'')+a.points+' رصيد':(a.status==='absent'?'تسجيل غياب':'تسجيل حضور')}</small></div>
       <small>${(a.date||'').slice(5)}</small>
     </div>`;
   }).join('') : '<div class="empty-state"><i class="fas fa-history"></i><p>لا توجد أنشطة بعد</p></div>';
@@ -1109,8 +1272,7 @@ function renderHome(){
 }
 
 function drawHomeChart(){
-  const canvas = $('homeChart');
-  if(!canvas) return;
+  const canvas = $('homeChart'); if(!canvas) return;
   const ctx = canvas.getContext('2d');
   if(state.charts.home) state.charts.home.destroy();
   const labels=[], data=[];
@@ -1123,12 +1285,14 @@ function drawHomeChart(){
   }
   state.charts.home = new Chart(ctx,{
     type:'line',
-    data:{labels,datasets:[{label:'الحضور',data,borderColor:'#a8c5ff',backgroundColor:'rgba(168,197,255,0.2)',fill:true,tension:0.4}]},
+    data:{labels,datasets:[{label:'الحضور',data,borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,0.15)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:'#6366f1'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},animation:{duration:400}}
   });
 }
 
-// ========= CHILDREN =========
+/* =========================================================
+   👶 CHILDREN — Minimal Cards with Expand-on-click
+   ========================================================= */
 function renderChildren(){
   const q = ($('childrenSearch').value||'').toLowerCase();
   const cls = $('filterClass').value;
@@ -1136,7 +1300,7 @@ function renderChildren(){
   let list = state.children.filter(c =>
     (!q || (c.name||'').toLowerCase().includes(q) || (c.id||'').toLowerCase().includes(q) || getClassName(c.class_id).toLowerCase().includes(q)) &&
     (!cls || c.class_id===cls)
-  ).map(c => ({...c, _balance: getBalance(c.id), _attCount: getAttendanceCount(c.id), _lastAtt: getLastAttendance(c.id)}));
+  ).map(c => ({...c, _balance:getBalance(c.id), _attCount:getAttendanceCount(c.id), _lastAtt:getLastAttendance(c.id)}));
 
   list.sort((a,b)=>{
     if(sortBy==='balance') return b._balance - a._balance;
@@ -1150,7 +1314,6 @@ function renderChildren(){
     return;
   }
   grid.innerHTML = list.map(renderChildCard).join('');
-  updateActionLabels();
 }
 
 function renderChildCard(c){
@@ -1160,7 +1323,7 @@ function renderChildCard(c){
   const att = state.attendance.find(a=>a.child_id===c.id && a.date===d);
   const attClass = att ? (att.status==='present'?'present':'absent') : 'none';
   const attIcon = att ? (att.status==='present'?'fa-check':'fa-times') : 'fa-minus';
-  const attTitle = att ? (att.status==='present'?'حاضر في '+d:'غائب في '+d) : 'لم يسجل في '+d;
+  const attTitle = att ? (att.status==='present'?'حاضر اليوم':'غائب اليوم') : 'لم يسجل';
   const f = $('actionFunction') ? $('actionFunction').value : 'attendance';
   const actionMeta = getActionMeta(f);
   return `
@@ -1169,23 +1332,31 @@ function renderChildCard(c){
         <div class="child-avatar" ${bg}>${img}</div>
         <div class="child-info">
           <div class="child-name">${c.name}</div>
-          <div class="child-class"><i class="fas fa-layer-group"></i> ${getClassName(c.class_id)}</div>
+          <div class="child-meta">
+            <span class="child-balance-pill" title="الرصيد"><i class="fas fa-star"></i> ${c._balance}</span>
+            <span class="child-att-icon ${attClass}" title="${attTitle}"><i class="fas ${attIcon}"></i></span>
+          </div>
         </div>
-        <span class="child-balance-pill" title="الرصيد"><i class="fas fa-star"></i> ${c._balance}</span>
-        <span class="child-att-icon ${attClass}" title="${attTitle}"><i class="fas ${attIcon}"></i></span>
         <button class="child-action-mini ${actionMeta.cls}" onclick="event.stopPropagation();execAction('${c.id}')" title="${actionMeta.label}"><i class="${actionMeta.icon}"></i></button>
       </div>
-      <div class="child-expanded" style="display:none;">
-        ${c.phone?`<p style="font-size:12px;color:var(--text-light);margin-bottom:6px;"><i class="fas fa-phone"></i> ${c.phone}</p>`:''}
-        <div class="child-id-badge">${c.id}</div>
-        <div class="child-stats">
-          <div class="child-stat"><div class="child-stat-val">${c._balance}</div><div class="child-stat-lbl">الرصيد</div></div>
-          <div class="child-stat"><div class="child-stat-val">${c._attCount}</div><div class="child-stat-lbl">حضور</div></div>
-          <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c._lastAtt||'-').toString().slice(5)}</div><div class="child-stat-lbl">آخر حضور</div></div>
-        </div>
-        <div class="child-actions">
-          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openProfile('${c.id}')"><i class="fas fa-id-card"></i> الملف الشخصي</button>
-          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>
+      <div class="child-expanded">
+        <div class="child-expanded-inner">
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <span class="badge badge-info"><i class="fas fa-layer-group"></i> ${getClassName(c.class_id)}</span>
+            ${c.phone?`<a href="tel:${c.phone}" onclick="event.stopPropagation()" class="badge badge-success"><i class="fas fa-phone"></i> ${c.phone}</a>`:''}
+          </div>
+          <div class="child-id-badge">${c.id}</div>
+          <div class="child-stats">
+            <div class="child-stat"><div class="child-stat-val">${c._balance}</div><div class="child-stat-lbl">الرصيد</div></div>
+            <div class="child-stat"><div class="child-stat-val">${c._attCount}</div><div class="child-stat-lbl">الحضور</div></div>
+            <div class="child-stat"><div class="child-stat-val" style="font-size:11px;">${(c._lastAtt||'-').toString().slice(5)||'-'}</div><div class="child-stat-lbl">آخر حضور</div></div>
+          </div>
+          ${c.notes?`<p style="font-size:12px;color:var(--text-light);margin-bottom:10px;padding:8px;background:var(--surface);border-radius:8px;"><i class="fas fa-sticky-note"></i> ${c.notes}</p>`:''}
+          <div class="child-actions">
+            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openProfile('${c.id}')"><i class="fas fa-id-card"></i> الملف</button>
+            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>
+            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-trash"></i> حذف</button>
+          </div>
         </div>
       </div>
     </div>`;
@@ -1195,15 +1366,13 @@ function toggleChildCard(e, id){
   const card = e.currentTarget;
   if(!card) return;
   card.classList.toggle('expanded');
-  const exp = card.querySelector('.child-expanded');
-  if(exp) exp.style.display = card.classList.contains('expanded') ? 'block' : 'none';
 }
 
 function getActionMeta(f){
   const meta = {
     attendance:{label:'تسجيل حضور',icon:'fas fa-check',cls:'success'},
     cancelAttendance:{label:'إلغاء الحضور',icon:'fas fa-undo',cls:'danger'},
-    clearPoints:{label:'مسح النقاط المضافة',icon:'fas fa-eraser',cls:'danger'},
+    clearPoints:{label:'مسح النقاط المضافة',icon:'fas fa-eraser',cls:'warning'},
     contact:{label:'اتصال',icon:'fas fa-phone',cls:'info'},
     whatsapp:{label:'واتساب',icon:'fab fa-whatsapp',cls:'success'},
     sms:{label:'SMS',icon:'fas fa-sms',cls:'info'},
@@ -1212,14 +1381,13 @@ function getActionMeta(f){
     edit:{label:'تعديل',icon:'fas fa-edit',cls:''},
     delete:{label:'حذف',icon:'fas fa-trash',cls:'danger'},
     transfer:{label:'نقل',icon:'fas fa-exchange-alt',cls:'info'},
-    note:{label:'ملاحظة',icon:'fas fa-sticky-note',cls:''}
+    note:{label:'ملاحظة',icon:'fas fa-sticky-note',cls:'warning'}
   };
   return meta[f] || meta.attendance;
 }
 
 function updateActionLabels(){
-  // Re-render the children grid so each card picks up the new action icon/style
-  if($('page-children') && $('page-children').classList.contains('active')) renderChildren();
+  if($('page-children').classList.contains('active')) renderChildren();
 }
 
 async function execAction(id){
@@ -1251,49 +1419,21 @@ async function execAction(id){
   }
 }
 
-// Cancel attendance for the selected date (delete row + revert attendance points)
-async function cancelAttendance(c){
-  const d = getOpDate();
-  const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
-  if(!existing){ toast(`لا يوجد تسجيل حضور لـ ${c.name} في ${d}`,'warning'); return; }
-  if(!confirm(`إلغاء حضور ${c.name} بتاريخ ${d}؟ (سيتم خصم نقاط الحضور المرتبطة)`)) return;
-  try{
-    showLoader(true);
-    await DB.remove('attendance', existing.id);
-    const attPts = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
-    for(const p of attPts){ try{ await DB.remove('points_history', p.id); }catch(e){} }
-    toast(`✓ تم إلغاء حضور ${c.name}`,'success');
-  }catch(e){ toast('فشل: '+e.message,'error'); }
-  finally{ showLoader(false); }
-}
-
-// Clear (delete) all manual/scanner added points for selected date
-async function clearAddedPoints(c){
-  const d = getOpDate();
-  const added = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type!=='attendance');
-  if(!added.length){ toast(`لا توجد نقاط مضافة لـ ${c.name} في ${d}`,'warning'); return; }
-  const sum = added.reduce((s,p)=>s+(Number(p.points)||0),0);
-  if(!confirm(`مسح ${added.length} عملية نقاط (إجمالي ${sum}) لـ ${c.name} بتاريخ ${d}؟`)) return;
-  try{
-    showLoader(true);
-    for(const p of added){ try{ await DB.remove('points_history', p.id); }catch(e){} }
-    toast(`✓ تم مسح ${added.length} عملية`,'success');
-  }catch(e){ toast('فشل: '+e.message,'error'); }
-  finally{ showLoader(false); }
-}
-
-// ========= OPERATIONS (use selectedDate) =========
+/* =========================================================
+   ✅ ATTENDANCE & POINTS OPERATIONS
+   ========================================================= */
 async function registerAttendance(c, status='present', customPts){
   const d = getOpDate();
   const pts = (customPts !== undefined && customPts !== null && !isNaN(customPts))
     ? Number(customPts)
     : (state.settings.points_default || 1);
   const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
+  // Prevent duplicate attendance for the same day
+  if(existing && existing.status === status){
+    toast(`تم تسجيل ${status==='present'?'الحضور':'الغياب'} مسبقاً لـ ${c.name} في ${d}`,'warning');
+    return;
+  }
   if(existing){
-    if(existing.status === status){
-      toast(`تم تسجيل ${status==='present'?'الحضور':'الغياب'} مسبقاً لـ ${c.name} في ${d}`,'warning');
-      return;
-    }
     try{
       showLoader(true);
       await DB.update('attendance', existing.id, { status, method: 'manual' });
@@ -1303,9 +1443,6 @@ async function registerAttendance(c, status='present', customPts){
           reason: 'حضور '+d, type: 'attendance', date: d,
           awarded_by: currentUserId()
         });
-      } else {
-        const toRevert = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
-        for(const pr of toRevert){ try{ await DB.remove('points_history', pr.id); }catch(e){} }
       }
       toast(`تم تحديث الحالة إلى ${status==='present'?'حاضر':'غائب'} لـ ${c.name}`,'success');
     }catch(e){ toast('فشل: '+e.message,'error'); }
@@ -1326,8 +1463,40 @@ async function registerAttendance(c, status='present', customPts){
       });
     }
     vibrate(100); playBeep();
-    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name} - ${d}${status==='present'?` (+${pts})`:''}`,'success');
+    toast(`✓ تم تسجيل ${status==='present'?'حضور':'غياب'} ${c.name} (+${pts})`,'success');
     bumpStat('todayAttendance');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); }
+}
+
+// Cancel attendance: removes today's attendance row + ONLY the points added from attendance
+async function cancelAttendance(c){
+  const d = getOpDate();
+  const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
+  if(!existing){ toast(`لا يوجد تسجيل حضور لـ ${c.name} في ${d}`,'warning'); return; }
+  if(!confirm(`إلغاء حضور ${c.name} بتاريخ ${d}؟\n(سيتم خصم نقاط الحضور فقط — النقاط اليدوية تبقى)`)) return;
+  try{
+    showLoader(true);
+    await DB.remove('attendance', existing.id);
+    // Remove ONLY attendance-type points for this date — preserve manual points
+    const attPts = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
+    for(const p of attPts){ try{ await DB.remove('points_history', p.id); }catch(e){} }
+    toast(`✓ تم إلغاء حضور ${c.name}`,'success');
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); }
+}
+
+// Clear manually added points for the selected date
+async function clearAddedPoints(c){
+  const d = getOpDate();
+  const added = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type!=='attendance');
+  if(!added.length){ toast(`لا توجد نقاط مضافة لـ ${c.name} في ${d}`,'warning'); return; }
+  const sum = added.reduce((s,p)=>s+(Number(p.points)||0),0);
+  if(!confirm(`مسح ${added.length} عملية نقاط (إجمالي ${sum}) لـ ${c.name} بتاريخ ${d}؟`)) return;
+  try{
+    showLoader(true);
+    for(const p of added){ try{ await DB.remove('points_history', p.id); }catch(e){} }
+    toast(`✓ تم مسح ${added.length} عملية`,'success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
   finally{ showLoader(false); }
 }
@@ -1345,16 +1514,12 @@ async function addPoints(c, amount){
 }
 
 async function logCall(childId, type){
-  try{
-    await DB.insert('call_history', {
-      child_id: childId, type,
-      called_by: currentUserId()
-    });
-  }catch(e){ console.error(e); }
+  try{ await DB.insert('call_history', { child_id: childId, type, called_by: currentUserId() }); }
+  catch(e){ console.error(e); }
 }
 
 async function deleteChild(c){
-  if(!confirm(`حذف الطفل ${c.name}؟ سيتم حذف كل سجلاته (حضور، رصيد، إلخ).`)) return;
+  if(!confirm(`حذف الطفل ${c.name}؟ سيتم حذف كل سجلاته.`)) return;
   try{ await DB.remove('children', c.id); toast('تم الحذف','success'); }
   catch(e){ toast('فشل: '+e.message,'error'); }
 }
@@ -1383,13 +1548,14 @@ async function saveNote(id){
   const txt = $('noteText').value.trim();
   if(!txt){ toast('اكتب الملاحظة','warning'); return; }
   try{
-    await DB.insert('child_notes', { child_id: id, note: txt, type: 'general',
-      created_by: currentUserId() });
+    await DB.insert('child_notes', { child_id: id, note: txt, type: 'general', created_by: currentUserId() });
     closeModal('genericModal'); toast('تم الحفظ','success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
-// ========= CHILD CRUD =========
+/* =========================================================
+   👶 CHILD CRUD
+   ========================================================= */
 function openAddChildModal(){
   $('childModalTitle').textContent = 'إضافة طفل جديد';
   $('childId').value = '';
@@ -1411,8 +1577,6 @@ function openEditChild(c){
   $('cPhone').value = c.phone||'';
   $('cAddress').value = c.address||'';
   $('cNotes').value = c.notes||'';
-  // Show CURRENT balance (computed from history). When user changes it,
-  // we'll create an adjustment record on save.
   $('cBalance').value = getBalance(c.id);
   $('cPhoto').value = c.photo_url||'';
   $('photoPreview').innerHTML = c.photo_url ? `<img src="${c.photo_url}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : '';
@@ -1449,9 +1613,7 @@ $('childForm').addEventListener('submit', async e=>{
   try{
     showLoader(true);
     if(id){
-      // Update child info
       await DB.update('children', id, data);
-      // If balance changed, create an adjustment record
       const curBalance = getBalance(id);
       const diff = newBalance - curBalance;
       if(diff !== 0){
@@ -1463,11 +1625,9 @@ $('childForm').addEventListener('submit', async e=>{
       }
       toast('تم التحديث','success');
     } else {
-      // Generate unique ID (retry if collision)
       let newId, attempts = 0;
       do {
-        newId = generateChildId();
-        attempts++;
+        newId = generateChildId(); attempts++;
         if(attempts>5) break;
       } while(await DB.exists('children', newId));
       data.id = newId;
@@ -1475,7 +1635,6 @@ $('childForm').addEventListener('submit', async e=>{
       data.status = 'active';
       if(currentUserId()) data.created_by = currentUserId();
       await DB.insert('children', data);
-      // Initial balance via points_history
       if(newBalance > 0){
         await DB.insert('points_history', {
           child_id: newId, points: newBalance, date: getOpDate(),
@@ -1490,7 +1649,9 @@ $('childForm').addEventListener('submit', async e=>{
   finally{ showLoader(false); }
 });
 
-// ========= QR =========
+/* =========================================================
+   📱 QR CODE
+   ========================================================= */
 function showQR(id){
   const c = state.children.find(x=>x.id===id);
   if(!c) return;
@@ -1501,7 +1662,6 @@ function showQR(id){
   new QRCode($('qrcode'),{text: c.qr_id||c.id, width:220, height:220});
   openModal('qrModal');
 }
-
 function printQR(){
   const w = window.open('','_blank');
   w.document.write('<html dir="rtl"><head><title>طباعة QR</title></head><body style="text-align:center;font-family:Arial">'+$('qrcode').innerHTML+'<h2>'+$('qrChildName').textContent+'</h2><p>'+$('qrChildClass').textContent+'</p><p style="font-family:monospace;font-size:11px">'+$('qrChildId').textContent+'</p></body></html>');
@@ -1518,7 +1678,7 @@ function openProfile(id){
   const presentCount = atts.filter(a=>a.status==='present').length;
   $('profileBody').innerHTML = `
     <div style="text-align:center;margin-bottom:20px;">
-      <div class="child-avatar" style="width:90px;height:90px;font-size:32px;margin:0 auto 12px;${c.photo_url?'':`background:${avatarColor(c.name)}`}">${c.photo_url?`<img src="${c.photo_url}">`:initials(c.name)}</div>
+      <div class="child-avatar" style="width:90px;height:90px;font-size:30px;margin:0 auto 12px;border-radius:24px;${c.photo_url?'':`background:${avatarColor(c.name)}`}">${c.photo_url?`<img src="${c.photo_url}">`:initials(c.name)}</div>
       <h2>${c.name}</h2>
       <p style="color:var(--text-light)">${getClassName(c.class_id)}</p>
       <div class="child-id-badge" style="margin-top:6px;">${c.id}</div>
@@ -1529,26 +1689,28 @@ function openProfile(id){
       <div class="stat-card"><div class="stat-value">${notes.length}</div><div class="stat-label">الملاحظات</div></div>
     </div>
     <div class="section">
-      <h4><i class="fas fa-user"></i> البيانات</h4>
-      <p>تاريخ الميلاد: ${c.birth_date||'-'}</p>
-      <p>الهاتف: ${c.phone||'-'}</p>
-      <p>العنوان: ${c.address||'-'}</p>
-      <p>ملاحظات: ${c.notes||'-'}</p>
+      <h4 style="margin-bottom:10px;"><i class="fas fa-user"></i> البيانات</h4>
+      <p style="font-size:13px;line-height:1.8;">تاريخ الميلاد: ${c.birth_date||'-'}</p>
+      <p style="font-size:13px;line-height:1.8;">الهاتف: ${c.phone||'-'}</p>
+      <p style="font-size:13px;line-height:1.8;">العنوان: ${c.address||'-'}</p>
+      <p style="font-size:13px;line-height:1.8;">ملاحظات: ${c.notes||'-'}</p>
     </div>
     <div class="section">
-      <h4><i class="fas fa-calendar"></i> سجل الحضور (${atts.length})</h4>
-      ${atts.slice(0,10).map(a=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${a.date} - ${a.status==='present'?'✓ حاضر':'✗ غائب'}</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
+      <h4 style="margin-bottom:10px;"><i class="fas fa-calendar"></i> سجل الحضور (${atts.length})</h4>
+      ${atts.slice(0,10).map(a=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:13px;">${a.date} - ${a.status==='present'?'✓ حاضر':'✗ غائب'}</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
     </div>
     <div class="section">
-      <h4><i class="fas fa-star"></i> سجل الرصيد (${points.length})</h4>
-      ${points.slice(0,10).map(p=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);">${p.date||(p.created_at||'').slice(0,10)}: ${p.points>0?'+':''}${p.points} (${p.reason||''})</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
+      <h4 style="margin-bottom:10px;"><i class="fas fa-star"></i> سجل الرصيد (${points.length})</h4>
+      ${points.slice(0,10).map(p=>`<div style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:13px;">${p.date||(p.created_at||'').slice(0,10)}: ${p.points>0?'+':''}${p.points} (${p.reason||''})</div>`).join('')||'<p style="color:var(--text-light)">لا يوجد</p>'}
     </div>
-    ${notes.length?`<div class="section"><h4><i class="fas fa-sticky-note"></i> الملاحظات</h4>${notes.map(n=>`<div style="padding:8px;background:var(--bg);border-radius:8px;margin-bottom:6px;"><div>${n.note}</div><small style="color:var(--text-light)">${(n.created_at||'').slice(0,10)}</small></div>`).join('')}</div>`:''}
+    ${notes.length?`<div class="section"><h4 style="margin-bottom:10px;"><i class="fas fa-sticky-note"></i> الملاحظات</h4>${notes.map(n=>`<div style="padding:8px;background:var(--surface);border-radius:8px;margin-bottom:6px;"><div>${n.note}</div><small style="color:var(--text-light)">${(n.created_at||'').slice(0,10)}</small></div>`).join('')}</div>`:''}
     <button class="btn btn-primary btn-block" onclick="closeModal('profileModal');openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>`;
   openModal('profileModal');
 }
 
-// ========= 📋 BULK ADD =========
+/* =========================================================
+   📋 BULK ADD
+   ========================================================= */
 function openBulkAddModal(){
   $('bulkInput').value = '';
   $('bulkPreview').innerHTML = '';
@@ -1581,27 +1743,22 @@ function parseBulkData(){
   let lines = text.split(/\r?\n/).filter(l=>l.trim());
   if($('bulkHasHeader').value === '1') lines = lines.slice(1);
   const defaultClass = $('bulkDefaultClass').value;
-  const detectSep = line => {
-    if(line.includes('\t')) return '\t';
-    if(line.includes('|'))  return '|';
-    return ',';
-  };
+  const detectSep = line => line.includes('\t')?'\t':line.includes('|')?'|':',';
   const seen = new Set();
   state.bulkParsed = lines.map((line, idx)=>{
     const sep = detectSep(line);
     const parts = line.split(sep).map(p=>p.trim());
-    const code    = parts[0]||'';
-    const name    = parts[1]||'';
-    const phone   = parts[2]||'';
-    const birth   = normalizeDate(parts[3]||'');
+    const code = parts[0]||'';
+    const name = parts[1]||'';
+    const phone = parts[2]||'';
+    const birth = normalizeDate(parts[3]||'');
     const address = parts[4]||'';
-    const notes   = parts[5]||'';
-    const photo   = parts[6]||'';
+    const notes = parts[5]||'';
+    const photo = parts[6]||'';
     const balance = parseInt((parts[7]||'0').replace(/[^\d\-]/g,''))||0;
-    let valid     = name.length >= 2;
-    let reason    = '';
+    let valid = name.length >= 2;
+    let reason = '';
     if(!valid) reason = 'اسم غير صالح';
-    // duplicate code check
     if(valid && code){
       if(seen.has(code)){ valid=false; reason='كود مكرر في القائمة'; }
       else if(state.children.find(c=>c.id===code)){ valid=false; reason='كود موجود مسبقاً'; }
@@ -1616,7 +1773,7 @@ function renderBulkPreview(){
   const validCount = state.bulkParsed.filter(r=>r.valid).length;
   const invalidCount = state.bulkParsed.length - validCount;
   $('bulkPreview').innerHTML = `
-    <div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <div style="margin-top:14px;padding:12px;background:var(--surface);border-radius:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <span class="badge badge-success">${validCount} صحيحة</span>
       ${invalidCount?`<span class="badge badge-danger">${invalidCount} غير صحيحة</span>`:''}
       <span style="color:var(--text-light);font-size:12px;">الإجمالي: ${state.bulkParsed.length}</span>
@@ -1629,13 +1786,13 @@ function renderBulkPreview(){
             <tr class="${r.valid?'valid':'invalid'}">
               <td>${r.idx}</td>
               <td style="font-family:monospace;font-size:10px;">${r.code||'<span style="color:#999">سيُولَّد</span>'}</td>
-              <td>${r.name||'<span style="color:#f44336">فارغ</span>'}</td>
+              <td>${r.name||'<span style="color:#ef4444">فارغ</span>'}</td>
               <td>${r.phone||'-'}</td>
               <td>${r.birth||'-'}</td>
               <td>${r.address||'-'}</td>
               <td>${r.notes||'-'}</td>
               <td>${r.balance}</td>
-              <td>${r.valid?'<i class="fas fa-check" style="color:#4caf50"></i>':`<span style="color:#f44336;font-size:10px">${r.reason||'خطأ'}</span>`}</td>
+              <td>${r.valid?'<i class="fas fa-check" style="color:#10b981"></i>':`<span style="color:#ef4444;font-size:10px">${r.reason||'خطأ'}</span>`}</td>
             </tr>`).join('')}
         </tbody>
       </table>
@@ -1663,17 +1820,10 @@ async function commitBulkAdd(){
       }
       await DB.insert('children',{
         id: childId, qr_id: childId,
-        name: r.name,
-        phone: r.phone || null,
-        birth_date: r.birth || null,
-        address: r.address || null,
-        notes: r.notes || null,
-        photo_url: r.photo || null,
-        class_id: r.class_id || null,
-        status:'active',
-        created_by: currentUserId()
+        name: r.name, phone: r.phone||null, birth_date: r.birth||null,
+        address: r.address||null, notes: r.notes||null, photo_url: r.photo||null,
+        class_id: r.class_id||null, status:'active', created_by: currentUserId()
       });
-      // Initial balance via points_history (single source of truth)
       if(r.balance && r.balance !== 0){
         await DB.insert('points_history', {
           child_id: childId, points: r.balance, date: getOpDate(),
@@ -1698,84 +1848,142 @@ async function commitBulkAdd(){
   }
 }
 
-// ========= SCANNER =========
+/* =========================================================
+   📷 QR SCANNER — Improved
+   ========================================================= */
 let scannerInstance = null;
+let scannerActive = false;
+let lastScan = {};
+let scanInProgress = false;
+
 async function startScanner(){
+  if(scannerActive) return;
   $('startScanBtn').style.display='none';
   $('stopScanBtn').style.display='flex';
   try{
     scannerInstance = new Html5Qrcode("qr-reader");
-    await scannerInstance.start({facingMode:"environment"},{fps:10,qrbox:250}, onScanSuccess, ()=>{});
+    await scannerInstance.start(
+      { facingMode: state.cameraFacing },
+      { fps: 15, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+      onScanSuccess,
+      () => {} // silent errors
+    );
+    scannerActive = true;
+    toast('📷 الكاميرا تعمل','info');
   }catch(e){
     toast('تعذر تشغيل الكاميرا: '+e.message,'error');
     $('startScanBtn').style.display='flex';
     $('stopScanBtn').style.display='none';
-  }
-}
-async function stopScanner(){
-  if(scannerInstance){
-    try{ await scannerInstance.stop(); scannerInstance.clear(); }catch(e){}
-    scannerInstance = null;
-  }
-  $('startScanBtn').style.display='flex';
-  $('stopScanBtn').style.display='none';
-}
-let lastScan = {};
-async function onScanSuccess(text){
-  if(lastScan[text] && Date.now()-lastScan[text]<2500) return;
-  lastScan[text] = Date.now();
-  const c = state.children.find(x=>x.qr_id===text || x.id===text);
-  if(!c){ toast('QR غير معروف','error'); playBeep(300); return; }
-  const f = $('scannerFunction').value;
-  // Points come from the number input; default falls back to settings.points_default
-  const ptsRaw = $('scannerPoints').value;
-  const pts = (ptsRaw && !isNaN(parseInt(ptsRaw))) ? parseInt(ptsRaw) : (state.settings.points_default || 1);
-  vibrate(80); playBeep();
-  if(f==='attendance') await registerAttendance(c, 'present', pts);
-  else if(f==='addPoints') await addPoints(c, pts);
-  else if(f==='deductPoints') await addPoints(c, -pts);
-  else if(f==='info'){ await stopScanner(); showScanResult(c); return; }
-  const h = $('scanHistory');
-  if(h){
-    const item = document.createElement('div');
-    item.style.cssText='padding:10px;background:var(--bg);border-radius:12px;margin-bottom:6px;display:flex;align-items:center;gap:8px;';
-    const actLbl = f==='attendance'?`حضور (+${pts})`:f==='addPoints'?`+${pts} رصيد`:f==='deductPoints'?`-${pts} رصيد`:'عرض معلومات';
-    item.innerHTML = `<i class="fas fa-check" style="color:#4caf50"></i> <strong>${c.name}</strong> - ${actLbl} <span style="margin-right:auto;color:var(--text-light);font-size:11px;">${new Date().toLocaleTimeString('ar-EG')}</span>`;
-    h.prepend(item);
-    while(h.children.length>10) h.lastChild.remove();
+    scannerActive = false;
   }
 }
 
-// Show child info card after scan (for the "info" scanner mode)
+async function stopScanner(){
+  if(!scannerInstance) return;
+  try{
+    if(scannerActive){
+      await scannerInstance.stop();
+    }
+    scannerInstance.clear();
+  }catch(e){ console.warn('Scanner stop:', e); }
+  finally{
+    scannerInstance = null;
+    scannerActive = false;
+    const sb = $('startScanBtn'); if(sb) sb.style.display='flex';
+    const stb = $('stopScanBtn'); if(stb) stb.style.display='none';
+  }
+}
+
+async function toggleCameraFacing(){
+  state.cameraFacing = state.cameraFacing === 'environment' ? 'user' : 'environment';
+  if(scannerActive){
+    await stopScanner();
+    setTimeout(()=>startScanner(), 250);
+  }
+  toast('تم تبديل الكاميرا: '+(state.cameraFacing==='environment'?'الخلفية':'الأمامية'),'info');
+}
+
+async function onScanSuccess(text){
+  // Prevent rapid duplicate scans (same QR within 3s)
+  if(scanInProgress) return;
+  if(lastScan[text] && Date.now()-lastScan[text]<3000) return;
+  lastScan[text] = Date.now();
+  scanInProgress = true;
+  try{
+    const c = state.children.find(x=>x.qr_id===text || x.id===text);
+    if(!c){ toast('QR غير معروف','error'); playBeep(300); return; }
+    const f = $('scannerFunction').value;
+    const ptsRaw = $('scannerPoints').value;
+    const pts = (ptsRaw && !isNaN(parseInt(ptsRaw))) ? parseInt(ptsRaw) : (state.settings.points_default || 1);
+    vibrate(80); playBeep();
+
+    // For "info" mode: stop camera and show child card with action buttons
+    if(f === 'info'){
+      await stopScanner();
+      showScanResult(c);
+      addScanHistoryEntry(c, 'عرض البطاقة');
+      return;
+    }
+
+    // For other modes: directly perform action
+    if(f==='attendance') await registerAttendance(c, 'present', pts);
+    else if(f==='addPoints') await addPoints(c, pts);
+    else if(f==='deductPoints') await addPoints(c, -pts);
+
+    addScanHistoryEntry(c, f==='attendance'?`حضور (+${pts})`:f==='addPoints'?`+${pts} رصيد`:`-${pts} رصيد`);
+  } finally {
+    setTimeout(()=>{ scanInProgress = false; }, 500);
+  }
+}
+
+function addScanHistoryEntry(c, label){
+  const h = $('scanHistory');
+  if(!h) return;
+  const item = document.createElement('div');
+  item.style.cssText='padding:10px 12px;background:var(--surface);border-radius:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;animation:slideDown 0.3s;';
+  item.innerHTML = `<i class="fas fa-check-circle" style="color:#10b981;font-size:16px;"></i> <strong style="font-size:13px;">${c.name}</strong> <span style="color:var(--text-light);font-size:11px;">${label}</span> <span style="margin-right:auto;color:var(--text-muted);font-size:10px;">${new Date().toLocaleTimeString('ar-EG')}</span>`;
+  h.prepend(item);
+  while(h.children.length>10) h.lastChild.remove();
+}
+
+// Show child card after scan with all action buttons
 function showScanResult(c){
-  const img = c.photo_url ? `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;">` : initials(c.name);
+  const img = c.photo_url ? `<img src="${c.photo_url}">` : initials(c.name);
   const bg = c.photo_url ? '' : `style="background:${avatarColor(c.name)}"`;
   const bal = getBalance(c.id);
-  const att = getAttendanceCount(c.id);
+  const attCount = getAttendanceCount(c.id);
+  const lastAtt = getLastAttendance(c.id);
   const d = getOpDate();
   const todayAtt = state.attendance.find(a=>a.child_id===c.id && a.date===d);
-  const todayStatus = todayAtt ? (todayAtt.status==='present'?'<span class="badge badge-success">حاضر اليوم</span>':'<span class="badge badge-danger">غائب اليوم</span>') : '<span class="badge badge-warning">لم يسجل اليوم</span>';
+  const todayStatus = todayAtt
+    ? (todayAtt.status==='present'?'<span class="badge badge-success"><i class="fas fa-check"></i> حاضر اليوم</span>':'<span class="badge badge-danger"><i class="fas fa-times"></i> غائب اليوم</span>')
+    : '<span class="badge badge-warning"><i class="fas fa-minus"></i> لم يسجل اليوم</span>';
+
   $('scanResultBody').innerHTML = `
     <div style="text-align:center;margin-bottom:18px;">
-      <div class="child-avatar" ${bg} style="width:90px;height:90px;font-size:32px;margin:0 auto 10px;">${img}</div>
-      <h2 style="margin-bottom:4px;">${c.name}</h2>
-      <p style="color:var(--text-light);font-size:13px;">${getClassName(c.class_id)}</p>
+      <div class="child-avatar" ${bg} style="width:90px;height:90px;font-size:32px;margin:0 auto 12px;border-radius:24px;">${img}</div>
+      <h2 style="margin-bottom:6px;font-size:20px;">${c.name}</h2>
+      <p style="color:var(--text-light);font-size:13px;"><i class="fas fa-layer-group"></i> ${getClassName(c.class_id)}</p>
       <div class="child-id-badge" style="margin-top:6px;">${c.id}</div>
-      <div style="margin-top:8px;">${todayStatus}</div>
+      <div style="margin-top:10px;">${todayStatus}</div>
     </div>
-    <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+    <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;">
       <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-warning)"><i class="fas fa-star"></i></div><div class="stat-value" id="scanBalance">${bal}</div><div class="stat-label">الرصيد</div></div>
-      <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-success)"><i class="fas fa-check"></i></div><div class="stat-value">${att}</div><div class="stat-label">عدد الحضور</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-success)"><i class="fas fa-check"></i></div><div class="stat-value">${attCount}</div><div class="stat-label">حضور</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:var(--gradient-info)"><i class="fas fa-calendar"></i></div><div class="stat-value" style="font-size:13px;">${lastAtt||'-'}</div><div class="stat-label">آخر حضور</div></div>
     </div>
-    <div style="background:var(--bg);padding:14px;border-radius:14px;margin-top:14px;">
+    <div style="background:var(--surface);padding:14px;border-radius:var(--radius);margin-top:14px;">
       <label class="form-label"><i class="fas fa-coins"></i> عدد النقاط</label>
-      <input type="number" class="form-input" id="scanResultPts" value="${state.settings.points_default||1}" min="1" style="margin-bottom:10px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="btn btn-success" onclick="scanResultPoints('${c.id}',1)"><i class="fas fa-plus-circle"></i> إضافة رصيد</button>
-        <button class="btn btn-danger" onclick="scanResultPoints('${c.id}',-1)"><i class="fas fa-minus-circle"></i> خصم رصيد</button>
+      <input type="number" class="points-input" id="scanResultPts" value="${state.settings.points_default||1}" min="1" style="width:100%;margin-bottom:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <button class="btn btn-success" onclick="scanResultPoints('${c.id}',1)"><i class="fas fa-plus-circle"></i> إضافة نقاط</button>
+        <button class="btn btn-danger" onclick="scanResultPoints('${c.id}',-1)"><i class="fas fa-minus-circle"></i> خصم نقاط</button>
       </div>
-      <button class="btn btn-primary btn-block" style="margin-top:10px;" onclick="scanResultAttendance('${c.id}')"><i class="fas fa-check"></i> تسجيل حضور بالنقاط المحددة</button>
-      <button class="btn btn-secondary btn-block" style="margin-top:8px;" onclick="closeModal('scanResultModal');setTimeout(startScanner,200);"><i class="fas fa-camera"></i> مسح آخر</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn btn-primary" onclick="scanResultAttendance('${c.id}')"><i class="fas fa-check"></i> تسجيل حضور</button>
+        <button class="btn btn-warning" onclick="scanResultCancelAttendance('${c.id}')"><i class="fas fa-undo"></i> إلغاء الحضور</button>
+      </div>
+      <button class="btn btn-secondary btn-block" style="margin-top:10px;" onclick="closeModal('scanResultModal');setTimeout(startScanner,200);"><i class="fas fa-camera"></i> مسح آخر</button>
     </div>
   `;
   openModal('scanResultModal');
@@ -1795,8 +2003,16 @@ async function scanResultAttendance(childId){
   await registerAttendance(c, 'present', pts);
   const el = $('scanBalance'); if(el) el.textContent = getBalance(childId);
 }
+async function scanResultCancelAttendance(childId){
+  const c = state.children.find(x=>x.id===childId);
+  if(!c) return;
+  await cancelAttendance(c);
+  const el = $('scanBalance'); if(el) el.textContent = getBalance(childId);
+}
 
-// ========= STATISTICS =========
+/* =========================================================
+   📊 STATISTICS
+   ========================================================= */
 let _currentStatsTab = 'attendance';
 function renderStats(){
   const presentRows = state.attendance.filter(a=>a.status==='present');
@@ -1810,10 +2026,8 @@ function renderStats(){
 }
 
 function drawStatsCharts(){
-  // Only draw if statistics page is currently visible
   const pg = $('page-statistics');
   if(!pg || !pg.classList.contains('active')) return;
-
   const wkCanvas = $('weeklyChart');
   if(wkCanvas){
     const labels=[], data=[];
@@ -1824,16 +2038,14 @@ function drawStatsCharts(){
       data.push(state.attendance.filter(a=>a.date===ds && a.status==='present').length);
     }
     if(state.charts.weekly) state.charts.weekly.destroy();
-    state.charts.weekly = new Chart(wkCanvas,{type:'bar',data:{labels,datasets:[{label:'حضور',data,backgroundColor:'#a8c5ff',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+    state.charts.weekly = new Chart(wkCanvas,{type:'bar',data:{labels,datasets:[{label:'حضور',data,backgroundColor:'#6366f1',borderRadius:10}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
   }
-
   const clsCanvas = $('classChart');
   if(clsCanvas){
     const clsData = state.classes.map(cl=>state.children.filter(c=>c.class_id===cl.id).length);
     if(state.charts.cls) state.charts.cls.destroy();
-    state.charts.cls = new Chart(clsCanvas,{type:'doughnut',data:{labels:state.classes.map(c=>c.name),datasets:[{data:clsData,backgroundColor:['#a8c5ff','#c5b3ff','#b3e5c7','#ffd3a5','#ffb3b3','#b3e0ff','#ffb3d9']}]},options:{responsive:true,maintainAspectRatio:false}});
+    state.charts.cls = new Chart(clsCanvas,{type:'doughnut',data:{labels:state.classes.map(c=>c.name),datasets:[{data:clsData,backgroundColor:['#6366f1','#8b5cf6','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899']}]},options:{responsive:true,maintainAspectRatio:false}});
   }
-
   const grCanvas = $('growthChart');
   if(grCanvas){
     if(state.charts.growth) state.charts.growth.destroy();
@@ -1843,7 +2055,7 @@ function drawStatsCharts(){
       g_labels.push(d.toLocaleDateString('ar-EG',{month:'short'}));
       g_data.push(state.children.filter(c=>new Date(c.created_at)<=d).length);
     }
-    state.charts.growth = new Chart(grCanvas,{type:'line',data:{labels:g_labels,datasets:[{label:'الأطفال',data:g_data,borderColor:'#c5b3ff',backgroundColor:'rgba(197,179,255,0.2)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}});
+    state.charts.growth = new Chart(grCanvas,{type:'line',data:{labels:g_labels,datasets:[{label:'الأطفال',data:g_data,borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,0.15)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}});
   }
 }
 
@@ -1863,7 +2075,6 @@ function exportStatsExcel(){
     الرصيد:getBalance(c.id), الحضور:getAttendanceCount(c.id)
   })));
   XLSX.utils.book_append_sheet(wb,ws1,'الأطفال');
-  // Attendance sheet
   const ws2 = XLSX.utils.json_to_sheet(state.attendance.map(a=>{
     const c = state.children.find(x=>x.id===a.child_id);
     return { التاريخ:a.date, الاسم:c?c.name:a.child_id, الحالة:a.status==='present'?'حاضر':'غائب' };
@@ -1883,11 +2094,13 @@ function exportStatsPDF(){
   toast('تم تصدير PDF','success');
 }
 
-// ========= EVENTS =========
+/* =========================================================
+   📅 EVENTS
+   ========================================================= */
 function renderEvents(){
   const list = [...state.events].sort((a,b)=>new Date(b.event_date)-new Date(a.event_date));
   $('eventsList').innerHTML = list.length ? list.map(e=>`
-    <div style="padding:14px;background:var(--bg);border-radius:14px;margin-bottom:10px;border-right:4px solid var(--primary);">
+    <div style="padding:14px;background:var(--surface);border-radius:14px;margin-bottom:10px;border-right:4px solid var(--primary);">
       <h4>${e.title}</h4>
       <p style="color:var(--text-light);font-size:13px;margin-top:4px;"><i class="fas fa-calendar"></i> ${e.event_date} ${e.event_time||''}</p>
       ${e.location?`<p style="color:var(--text-light);font-size:13px;"><i class="fas fa-map-marker-alt"></i> ${e.location}</p>`:''}
@@ -1923,7 +2136,9 @@ async function delEvent(id){
   try{ await DB.remove('events',id); }catch(e){ toast(e.message,'error'); }
 }
 
-// ========= SETTINGS MODALS =========
+/* =========================================================
+   ⚙️ SETTINGS MODALS
+   ========================================================= */
 function openServiceConfigModal(){
   $('genericTitle').textContent = 'إعدادات الخدمة';
   $('genericBody').innerHTML = `
@@ -1938,8 +2153,12 @@ function openServiceConfigModal(){
       <input class="form-input" id="svcAbbr" value="${state.settings.service_abbreviation||'StMary'}" placeholder="StMary, StGeorge, etc">
       <small style="color:var(--text-light);font-size:11px;">سيتم استخدامه في ID الأطفال (مثال: StMary1708701492802)</small>
     </div>
-    <div class="form-group"><label class="form-label">نقاط الحضور الافتراضية</label><input type="number" class="form-input" id="svcPts" value="${state.settings.points_default||1}" min="1"></div>
-    <button class="btn btn-primary btn-block" onclick="saveServiceConfig()"><i class="fas fa-save"></i> حفظ ومزامنة</button>`;
+    <div class="form-group">
+      <label class="form-label"><i class="fas fa-coins"></i> نقاط الحضور الافتراضية</label>
+      <input type="number" class="form-input" id="svcPts" value="${state.settings.points_default||1}" min="1">
+      <small style="color:var(--text-light);font-size:11px;">يتم استخدامها كقيمة افتراضية في الماسح والإجراءات السريعة</small>
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="saveServiceConfig()"><i class="fas fa-save"></i> حفظ ومزامنة</button>`;
   openModal('genericModal');
 }
 
@@ -1983,14 +2202,14 @@ async function saveServiceConfig(){
 function openServantsModal(){
   $('genericTitle').textContent='إدارة الخدام';
   const list = state.servants.map(s=>`
-    <div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+    <div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
       <div class="child-avatar" style="width:40px;height:40px;font-size:14px;background:${avatarColor(s.full_name||s.username)}">${initials(s.full_name||s.username)}</div>
-      <div style="flex:1;"><strong>${s.full_name||s.username}</strong><br><small>${s.username} - ${s.role}</small></div>
+      <div style="flex:1;min-width:0;"><strong>${s.full_name||s.username}</strong><br><small>${s.username} - ${s.role}</small></div>
       <button class="btn btn-danger btn-sm" onclick="delServant('${s.id}')"><i class="fas fa-trash"></i></button>
     </div>`).join('') || '<p style="color:var(--text-light);text-align:center;">لا يوجد خدام</p>';
   $('genericBody').innerHTML = `${list}
     <hr style="margin:15px 0;border:none;border-top:1px dashed var(--border)">
-    <h4>إضافة خادم</h4>
+    <h4 style="margin-bottom:10px;">إضافة خادم</h4>
     <div class="form-group"><input class="form-input" id="sName" placeholder="الاسم"></div>
     <div class="form-group"><input class="form-input" id="sUser" placeholder="اسم المستخدم"></div>
     <div class="form-group"><input type="password" class="form-input" id="sPass" placeholder="كلمة المرور"></div>
@@ -2015,7 +2234,7 @@ async function delServant(id){
 function openClassesModal(){
   $('genericTitle').textContent='الفصول';
   const list = state.classes.map(c=>`
-    <div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+    <div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
       <i class="fas fa-layer-group" style="color:var(--primary)"></i>
       <span style="flex:1;">${c.name}</span>
       <button class="btn btn-danger btn-sm" onclick="delClass('${c.id}')"><i class="fas fa-trash"></i></button>
@@ -2039,21 +2258,35 @@ async function delClass(id){
   try{ await DB.remove('classes',id); openClassesModal(); }catch(e){ toast(e.message,'error'); }
 }
 
+// Service Days — multi-select chips
 function openServiceDaysModal(){
   $('genericTitle').textContent='أيام الخدمة';
   const sd = state.settings.service_days || [0,5];
-  $('genericBody').innerHTML = `<p>اختر الأيام:</p>${['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'].map((d,i)=>`<label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:6px;"><input type="checkbox" ${sd.includes(i)?'checked':''} data-day="${i}">${d}</label>`).join('')}<button class="btn btn-primary btn-block" onclick="saveServiceDays()" style="margin-top:10px;"><i class="fas fa-save"></i> حفظ</button>`;
+  const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  $('genericBody').innerHTML = `
+    <p style="margin-bottom:10px;font-size:13px;color:var(--text-light);"><i class="fas fa-info-circle"></i> حدد أيام الاجتماع. سيتنقل زر اليوم التالي/السابق بين هذه الأيام فقط.</p>
+    <div class="day-grid">
+      ${days.map((d,i)=>`
+        <label class="day-chip ${sd.includes(i)?'active':''}" onclick="this.classList.toggle('active');this.querySelector('input').checked=!this.querySelector('input').checked;">
+          <input type="checkbox" ${sd.includes(i)?'checked':''} data-day="${i}">
+          <i class="fas fa-calendar-day"></i> ${d}
+        </label>
+      `).join('')}
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="saveServiceDays()"><i class="fas fa-save"></i> حفظ</button>`;
   openModal('genericModal');
 }
 async function saveServiceDays(){
   const days = [...document.querySelectorAll('#genericBody input[data-day]:checked')].map(i=>parseInt(i.dataset.day));
+  if(!days.length){ toast('اختر يوماً واحداً على الأقل','warning'); return; }
   try{
     const settings = await DB.fetchAll('settings','updated_at');
     const payload = {service_days: days, updated_at: new Date().toISOString()};
     if(settings[0]) await DB.update('settings', settings[0].id, payload);
     else await DB.insert('settings', payload);
     state.settings.service_days = days;
-    closeModal('genericModal'); toast('تم الحفظ','success');
+    closeModal('genericModal');
+    toast('تم الحفظ','success');
   }catch(e){ toast(e.message,'error'); }
 }
 
@@ -2077,7 +2310,9 @@ async function saveTpl(){
   }catch(e){ toast(e.message,'error'); }
 }
 
-// ========= QUICK ACTIONS =========
+/* =========================================================
+   ⚡ QUICK ACTIONS
+   ========================================================= */
 async function markAllPresent(){
   if(!confirm(`تسجيل حضور جماعي لجميع الأطفال في ${state.selectedDate}؟`)) return;
   showLoader(true);
@@ -2135,25 +2370,26 @@ function openBirthdays(){
   $('genericBody').innerHTML = list.length ? list.map(c=>{
     const d = new Date(c.birth_date);
     const phoneClean = (c.phone||'').replace(/\D/g,'');
-    return `<div style="padding:10px;background:var(--bg);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
-      <i class="fas fa-birthday-cake" style="color:#ff9800;font-size:20px;"></i>
-      <div style="flex:1;"><strong>${c.name}</strong><br><small>${d.getDate()}/${d.getMonth()+1}</small></div>
+    return `<div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+      <i class="fas fa-birthday-cake" style="color:#f59e0b;font-size:20px;"></i>
+      <div style="flex:1;min-width:0;"><strong>${c.name}</strong><br><small>${d.getDate()}/${d.getMonth()+1}</small></div>
       ${c.phone?`<button class="btn btn-success btn-sm" onclick="window.open('https://wa.me/${phoneClean}?text=${encodeURIComponent('كل سنة وأنت طيب يا '+c.name+' 🎂')}')"><i class="fab fa-whatsapp"></i></button>`:''}
     </div>`;
   }).join('') : '<div class="empty-state"><i class="fas fa-birthday-cake"></i><p>لا توجد أعياد ميلاد هذا الشهر</p></div>';
   openModal('genericModal');
 }
 
-// ========= BACKUP / IMPORT =========
+/* =========================================================
+   💾 BACKUP / IMPORT
+   ========================================================= */
 function backupData(){
   const cleanData = {
-    version:'3.1', exported_at:new Date().toISOString(),
+    version:'4.0', exported_at:new Date().toISOString(),
     exported_by:state.user?.name||'Unknown',
     children:state.children.map(c=>({...c, _balance:getBalance(c.id), _attendance_count:getAttendanceCount(c.id)})),
-    classes:state.classes,
-    attendance:state.attendance, pointsHistory:state.pointsHistory,
-    callHistory:state.callHistory, servants:state.servants,
-    events:state.events, childNotes:state.childNotes,
+    classes:state.classes, attendance:state.attendance, pointsHistory:state.pointsHistory,
+    callHistory:state.callHistory, servants:state.servants, events:state.events,
+    childNotes:state.childNotes,
     settings:{
       service_name:state.settings.service_name, service_abbreviation:state.settings.service_abbreviation,
       service_logo:state.settings.service_logo, service_days:state.settings.service_days,
@@ -2188,14 +2424,7 @@ function importData(){
           const wb = XLSX.read(ev.target.result,{type:'array',cellDates:true});
           rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{raw:false,defval:''});
         }
-        const pick = (row, ...keys)=>{
-          for(const k of keys){
-            for(const rk of Object.keys(row)){
-              if(rk.trim() === k) return row[rk];
-            }
-          }
-          return '';
-        };
+        const pick = (row, ...keys)=>{ for(const k of keys){ for(const rk of Object.keys(row)){ if(rk.trim()===k) return row[rk]; } } return ''; };
         let ok=0, fail=0;
         const errors = [];
         const defaultClass = state.classes[0]?.id || null;
@@ -2203,15 +2432,15 @@ function importData(){
           const row = rows[i];
           try{
             const codeRaw = pick(row,'الكود','code','ID','id','Code');
-            const name    = (pick(row,'الاسم رباعي','الاسم','name','Name')||'').toString().trim();
+            const name = (pick(row,'الاسم رباعي','الاسم','name','Name')||'').toString().trim();
             if(!name || name.length<2){ fail++; errors.push(`صف ${i+1}: اسم غير صالح`); continue; }
-            const phone   = (pick(row,'رقم التليفون','الهاتف','phone','Phone','الموبايل')||'').toString().trim();
-            const birthR  = pick(row,'تاريخ الميلاد','birth_date','Birth','الميلاد');
-            const birth   = normalizeDate(birthR instanceof Date ? birthR.toISOString().slice(0,10) : birthR);
+            const phone = (pick(row,'رقم التليفون','الهاتف','phone','Phone','الموبايل')||'').toString().trim();
+            const birthR = pick(row,'تاريخ الميلاد','birth_date','Birth','الميلاد');
+            const birth = normalizeDate(birthR instanceof Date ? birthR.toISOString().slice(0,10) : birthR);
             const address = (pick(row,'العنوان','address','Address')||'').toString().trim();
-            const notes   = (pick(row,'ملاحظات','notes','Notes')||'').toString().trim();
-            const photo   = (pick(row,'صورة','photo','photo_url','Photo')||'').toString().trim();
-            const balRaw  = pick(row,'الرصيد','balance','Balance','النقاط','points');
+            const notes = (pick(row,'ملاحظات','notes','Notes')||'').toString().trim();
+            const photo = (pick(row,'صورة','photo','photo_url','Photo')||'').toString().trim();
+            const balRaw = pick(row,'الرصيد','balance','Balance','النقاط','points');
             const balance = parseInt(String(balRaw).replace(/[^\d\-]/g,''))||0;
             await new Promise(res=>setTimeout(res,5));
             let id = codeRaw && String(codeRaw).trim() ? String(codeRaw).trim() : null;
@@ -2219,25 +2448,18 @@ function importData(){
               let attempts=0;
               do { id = generateChildId(); attempts++; if(attempts>5) break; }
               while(await DB.exists('children', id));
-            } else {
-              if(await DB.exists('children', id)){
-                errors.push(`صف ${i+1}: الكود ${id} موجود مسبقاً`); fail++; continue;
-              }
+            } else if(await DB.exists('children', id)){
+              errors.push(`صف ${i+1}: الكود ${id} موجود مسبقاً`); fail++; continue;
             }
             await DB.insert('children',{
-              id, qr_id:id,
-              name, phone: phone||null, birth_date: birth||null,
-              address: address||null, notes: notes||null,
-              photo_url: photo||null,
-              status:'active',
-              class_id: defaultClass,
-              created_by: currentUserId()
+              id, qr_id:id, name, phone:phone||null, birth_date:birth||null,
+              address:address||null, notes:notes||null, photo_url:photo||null,
+              status:'active', class_id:defaultClass, created_by:currentUserId()
             });
             if(balance !== 0){
               await DB.insert('points_history', {
                 child_id: id, points: balance, date: getOpDate(),
-                reason: 'رصيد افتتاحي (استيراد)', type: 'initial',
-                awarded_by: currentUserId()
+                reason: 'رصيد افتتاحي (استيراد)', type: 'initial', awarded_by: currentUserId()
               });
             }
             ok++;
@@ -2268,11 +2490,11 @@ function toggleTheme(){
 function showAbout(){
   $('genericTitle').textContent='عن التطبيق';
   $('genericBody').innerHTML = `<div style="text-align:center;padding:20px;">
-    <div class="login-logo">${state.settings.service_logo?`<img src="${state.settings.service_logo}">`:'<i class="fas fa-church"></i>'}</div>
-    <h2 style="margin-top:15px;">${state.settings.service_name}</h2>
-    <p style="color:var(--text-light);margin:10px 0;">نظام متكامل متزامن لحظياً</p>
-    <p>الإصدار 3.2.0 - Minimal Cards Edition</p>
-    <p style="margin-top:15px;color:#4caf50;"><i class="fas fa-bolt"></i> ${state.rtChannels.length} قنوات مباشرة</p>
+    <div class="login-logo" style="margin:0 auto 15px;">${state.settings.service_logo?`<img src="${state.settings.service_logo}">`:'<i class="fas fa-church"></i>'}</div>
+    <h2 style="margin-bottom:6px;">${state.settings.service_name}</h2>
+    <p style="color:var(--text-light);margin:8px 0;">نظام متكامل متزامن لحظياً</p>
+    <p>الإصدار 4.0.0 — Production Edition</p>
+    <p style="margin-top:15px;color:#10b981;"><i class="fas fa-bolt"></i> ${state.rtChannels.length} قنوات مباشرة</p>
     <p style="margin-top:20px;">صُنع بمحبة ❤️</p>
   </div>`;
   openModal('genericModal');
@@ -2289,34 +2511,38 @@ function openNotifications(){
     return b.getMonth()===n.getMonth() && b.getDate()===n.getDate();
   });
   $('genericBody').innerHTML = `
-    <div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:#4caf50"></i> ${todayAtt} طفل حضر في ${d}</div>
-    ${birthdays.map(c=>`<div style="padding:12px;background:var(--bg);border-radius:12px;margin-bottom:8px;"><i class="fas fa-birthday-cake" style="color:#ff9800"></i> عيد ميلاد ${c.name} 🎉</div>`).join('')||''}
+    <div style="padding:12px;background:var(--surface);border-radius:12px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:#10b981"></i> ${todayAtt} طفل حضر في ${d}</div>
+    ${birthdays.map(c=>`<div style="padding:12px;background:var(--surface);border-radius:12px;margin-bottom:8px;"><i class="fas fa-birthday-cake" style="color:#f59e0b"></i> عيد ميلاد ${c.name} 🎉</div>`).join('')||''}
     ${birthdays.length===0?'<p style="color:var(--text-light);text-align:center;">لا توجد إشعارات أخرى</p>':''}`;
   openModal('genericModal');
 }
 
-// ========= CONNECTION =========
+/* =========================================================
+   🌐 CONNECTION
+   ========================================================= */
 function updateConnectionStatus(){
-  const el = $('connectionStatus');
-  if(!el) return;
   if(navigator.onLine){
-    el.className = 'connection-status online';
-    el.innerHTML = '<i class="fas fa-wifi"></i> <span>متصل</span>';
     state.isOnline = true;
+    setLive(true);
     if(state.user && sb && state.rtChannels.length===0){
       RT.start();
       loadAllData().then(()=>refreshUI(['home','children','statistics','events']));
     }
   } else {
-    el.className = 'connection-status offline';
-    el.innerHTML = '<i class="fas fa-wifi"></i> <span>غير متصل</span>';
-    state.isOnline = false; setLive(false);
+    state.isOnline = false;
+    setLive(false);
   }
 }
 window.addEventListener('online', updateConnectionStatus);
 window.addEventListener('offline', updateConnectionStatus);
 
-// home search wiring
+// Cleanup camera on unload (prevent memory leaks)
+window.addEventListener('beforeunload', ()=>{
+  stopScanner();
+  RT.stop();
+});
+
+// Home search wiring
 document.addEventListener('DOMContentLoaded', ()=>{
   const hs = $('homeSearch');
   if(hs) hs.addEventListener('input', e=>{
@@ -2329,7 +2555,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
-// ========= STARTUP =========
+/* =========================================================
+   🚀 STARTUP
+   ========================================================= */
 (async function(){
   const savedTheme = localStorage.getItem('theme');
   if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
@@ -2338,7 +2566,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
   updateConnectionStatus();
 })();
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
