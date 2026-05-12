@@ -14,9 +14,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-/* =========================================================
-   🎨 DESIGN TOKENS — Modern Minimal Theme v4.0
-   ========================================================= */
 :root{
   --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#a5b4fc;
   --secondary:#8b5cf6;--accent:#ec4899;
@@ -59,9 +56,6 @@ a{color:inherit;text-decoration:none;}
 ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px;}
 ::-webkit-scrollbar-track{background:transparent;}
 
-/* =========================================================
-   🔐 LOGIN PAGE
-   ========================================================= */
 .login-page{position:fixed;inset:0;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;overflow:hidden;}
 .login-page::before{content:'';position:absolute;width:400px;height:400px;background:rgba(255,255,255,0.1);border-radius:50%;top:-150px;right:-150px;animation:float 8s ease-in-out infinite;}
 .login-page::after{content:'';position:absolute;width:500px;height:500px;background:rgba(255,255,255,0.08);border-radius:50%;bottom:-200px;left:-200px;animation:float 10s ease-in-out infinite reverse;}
@@ -73,9 +67,6 @@ a{color:inherit;text-decoration:none;}
 .login-title{text-align:center;font-size:24px;font-weight:800;color:#0f172a;margin-bottom:6px;}
 .login-subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:30px;}
 
-/* =========================================================
-   📝 FORMS
-   ========================================================= */
 .form-group{margin-bottom:16px;}
 .form-label{display:block;margin-bottom:8px;font-size:13px;font-weight:600;color:var(--text);}
 .form-input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--card);color:var(--text);transition:var(--transition);}
@@ -84,9 +75,6 @@ a{color:inherit;text-decoration:none;}
 .input-icon i{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;}
 .input-icon input{padding-right:42px;}
 
-/* =========================================================
-   🔘 BUTTONS — Unified Style
-   ========================================================= */
 .btn{padding:12px 20px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:var(--transition);cursor:pointer;border:none;font-family:inherit;}
 .btn:active{transform:scale(0.97);}
 .btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.3);}
@@ -112,13 +100,9 @@ a{color:inherit;text-decoration:none;}
 .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* =========================================================
-   🏠 APP LAYOUT
-   ========================================================= */
 .app{display:none;min-height:100vh;}
 .app.active{display:block;}
 
-/* HEADER — non-floating, integrated status indicator */
 .header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;z-index:50;backdrop-filter:blur(10px);}
 .header-brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
 .header-logo{width:44px;height:44px;background:var(--gradient);border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 10px rgba(99,102,241,0.25);}
@@ -140,9 +124,6 @@ a{color:inherit;text-decoration:none;}
 .icon-btn:hover{background:var(--primary);color:#fff;}
 .notif-badge{position:absolute;top:8px;left:8px;width:8px;height:8px;background:var(--danger);border-radius:50%;border:2px solid var(--card);}
 
-/* =========================================================
-   📋 SIDE MENU
-   ========================================================= */
 .side-menu{position:fixed;top:0;right:-300px;width:285px;height:100vh;background:var(--card);box-shadow:-10px 0 30px rgba(0,0,0,0.1);z-index:200;transition:right 0.3s;overflow-y:auto;}
 .side-menu.open{right:0;}
 .side-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199;opacity:0;visibility:hidden;transition:all 0.3s;backdrop-filter:blur(2px);}
@@ -157,25 +138,16 @@ a{color:inherit;text-decoration:none;}
 .side-item i{width:22px;color:var(--primary);font-size:15px;}
 .side-item.danger,.side-item.danger i{color:var(--danger);}
 
-/* =========================================================
-   📄 MAIN CONTENT
-   ========================================================= */
 .main{padding:18px;max-width:1000px;margin:0 auto;}
 .page{display:none;animation:fadeIn 0.35s;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-/* =========================================================
-   🧭 BOTTOM NAV
-   ========================================================= */
 .bottom-nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--card);border-radius:24px;padding:8px;display:flex;gap:4px;box-shadow:var(--shadow-lg);z-index:90;width:calc(100% - 28px);max-width:520px;justify-content:space-around;border:1px solid var(--border);}
 .nav-item{flex:1;padding:10px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-light);transition:var(--transition);cursor:pointer;font-size:11px;font-weight:600;background:transparent;}
 .nav-item.active{background:var(--gradient);color:#fff;box-shadow:0 6px 14px rgba(99,102,241,0.35);transform:translateY(-3px);}
 .nav-item i{font-size:17px;}
 
-/* =========================================================
-   👋 WELCOME / DATE
-   ========================================================= */
 .welcome-card{background:var(--gradient);color:#fff;padding:24px;border-radius:var(--radius-lg);margin-bottom:18px;box-shadow:0 12px 28px rgba(99,102,241,0.25);position:relative;overflow:hidden;}
 .welcome-card::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:rgba(255,255,255,0.12);border-radius:50%;}
 .welcome-card::after{content:'';position:absolute;bottom:-70px;right:-70px;width:180px;height:180px;background:rgba(255,255,255,0.08);border-radius:50%;}
@@ -187,7 +159,7 @@ a{color:inherit;text-decoration:none;}
 .date-selector-title{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--text);font-size:14px;}
 .date-selector-title i{color:var(--primary);font-size:17px;}
 .date-nav-btns{display:flex;gap:6px;}
-.date-nav-btn{width:38px;height:38px;border-radius:11px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text);transition:var(--transition);cursor:pointer;}
+.date-nav-btn{width:38px;height:38px;border-radius:11px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text);transition:var(--transition);cursor:pointer;border:none;}
 .date-nav-btn:hover{background:var(--primary);color:#fff;}
 .date-display{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;background:linear-gradient(135deg,rgba(99,102,241,0.07),rgba(139,92,246,0.07));border-radius:var(--radius);}
 .date-day-circle{width:62px;height:62px;background:var(--gradient);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 12px rgba(99,102,241,0.35);}
@@ -201,9 +173,6 @@ a{color:inherit;text-decoration:none;}
 .date-input-wrap input:focus{border-color:var(--primary);}
 .today-btn{background:var(--success);color:#fff;padding:8px 14px;border-radius:10px;font-weight:600;font-size:11px;cursor:pointer;border:none;}
 
-/* =========================================================
-   📊 STATS GRID
-   ========================================================= */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
 .stat-card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);text-align:center;transition:var(--transition);cursor:pointer;border:1px solid var(--border);}
 .stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
@@ -213,9 +182,6 @@ a{color:inherit;text-decoration:none;}
 @keyframes bump{50%{transform:scale(1.3);color:var(--success);}}
 .stat-label{font-size:11px;color:var(--text-light);margin-top:4px;font-weight:500;}
 
-/* =========================================================
-   🧱 SECTIONS
-   ========================================================= */
 .section{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-sm);margin-bottom:18px;border:1px solid var(--border);}
 .section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-weight:700;font-size:15px;}
 .section-title i{color:var(--primary);}
@@ -228,14 +194,10 @@ a{color:inherit;text-decoration:none;}
 .controls select,.controls input{padding:10px 14px;border-radius:11px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:13px;flex:1;min-width:120px;transition:var(--transition);}
 .controls select:focus,.controls input:focus{border-color:var(--primary);}
 
-/* =========================================================
-   👶 CHILDREN CARDS — Minimal & Expandable
-   ========================================================= */
 .children-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
 .child-card{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);transition:var(--transition);overflow:hidden;border:1px solid var(--border);cursor:pointer;}
 .child-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--primary-light);}
 .child-card.expanded{box-shadow:var(--shadow-md);border-color:var(--primary-light);}
-.child-card.live-update{box-shadow:0 0 0 3px var(--success);}
 
 .child-mini{padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;}
 .child-avatar{width:52px;height:52px;border-radius:16px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;overflow:hidden;flex-shrink:0;}
@@ -256,7 +218,7 @@ a{color:inherit;text-decoration:none;}
 .child-action-mini.warning{background:var(--warning);}
 
 .child-expanded{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);}
-.child-card.expanded .child-expanded{max-height:600px;}
+.child-card.expanded .child-expanded{max-height:700px;}
 .child-expanded-inner{padding:0 14px 14px;border-top:1px dashed var(--border);}
 .child-id-badge{font-size:10px;color:var(--text-muted);background:var(--surface);padding:3px 8px;border-radius:6px;display:inline-block;font-family:monospace;margin:10px 0;}
 .child-stats{display:flex;justify-content:space-around;padding:10px 0;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);margin-bottom:12px;}
@@ -266,9 +228,6 @@ a{color:inherit;text-decoration:none;}
 .child-actions{display:flex;gap:6px;flex-wrap:wrap;}
 .child-actions .btn{flex:1;padding:8px 10px;font-size:11px;min-width:0;}
 
-/* =========================================================
-   🪟 MODAL
-   ========================================================= */
 .modal{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:300;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);}
 .modal.open{display:flex;animation:fadeIn 0.3s;}
 .modal-content{background:var(--card);border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;animation:slideUpModal 0.3s;}
@@ -280,16 +239,10 @@ a{color:inherit;text-decoration:none;}
 .modal-close:hover{background:var(--danger);color:#fff;}
 .modal-body{padding:20px;}
 
-/* =========================================================
-   🖼️ LOGO UPLOAD
-   ========================================================= */
 .logo-uploader{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px;background:var(--surface);border-radius:var(--radius);margin-bottom:14px;}
 .logo-preview{width:100px;height:100px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;overflow:hidden;border:4px solid var(--card);box-shadow:var(--shadow);}
 .logo-preview img{width:100%;height:100%;object-fit:cover;}
 
-/* =========================================================
-   📋 BULK TABLE
-   ========================================================= */
 .bulk-area{background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:14px;}
 .bulk-textarea{width:100%;min-height:180px;padding:12px;border:2px dashed var(--border-strong);border-radius:12px;background:var(--card);color:var(--text);font-family:monospace;font-size:13px;resize:vertical;}
 .bulk-table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -298,9 +251,6 @@ a{color:inherit;text-decoration:none;}
 .bulk-table tr.invalid td{background:rgba(239,68,68,0.08);}
 .bulk-table tr.valid td{background:rgba(16,185,129,0.05);}
 
-/* =========================================================
-   📷 SCANNER
-   ========================================================= */
 .scanner-container{background:var(--card);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid var(--border);}
 #qr-reader{width:100%;}
 #qr-reader video{border-radius:var(--radius-lg);}
@@ -310,9 +260,6 @@ a{color:inherit;text-decoration:none;}
 .scanner-input-row .form-group{margin-bottom:0;}
 .points-input{font-size:18px;font-weight:700;text-align:center;width:100px;padding:12px 8px;border:2px solid var(--primary);border-radius:12px;background:var(--card);color:var(--text);}
 
-/* =========================================================
-   🔔 TOAST
-   ========================================================= */
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:90%;}
 .toast{background:var(--card);padding:14px 20px;border-radius:14px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;min-width:280px;animation:slideDown 0.3s;border-right:4px solid var(--primary);font-size:13px;font-weight:500;}
 .toast.success{border-right-color:var(--success);}
@@ -321,23 +268,14 @@ a{color:inherit;text-decoration:none;}
 .toast.live{border-right-color:var(--secondary);background:linear-gradient(90deg,rgba(139,92,246,0.05),var(--card));}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
 
-/* =========================================================
-   ⏳ LOADER
-   ========================================================= */
 .loader-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.4);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .loader-overlay.show{display:flex;}
 .loader{width:54px;height:54px;border:4px solid var(--surface);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
 
-/* =========================================================
-   🪧 EMPTY STATE
-   ========================================================= */
 .empty-state{text-align:center;padding:50px 20px;color:var(--text-light);}
 .empty-state i{font-size:55px;margin-bottom:14px;opacity:0.35;}
 .empty-state p{font-size:14px;}
 
-/* =========================================================
-   📊 CHARTS
-   ========================================================= */
 .chart-container{background:var(--card);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid var(--border);}
 .chart-container canvas{max-height:300px;}
 
@@ -351,9 +289,6 @@ a{color:inherit;text-decoration:none;}
 .badge-danger{background:var(--danger-light);color:var(--danger);}
 .badge-info{background:var(--info-light);color:var(--info);}
 
-/* =========================================================
-   ⚙️ SETTINGS LIST
-   ========================================================= */
 .settings-list{display:flex;flex-direction:column;gap:8px;}
 .settings-item{background:var(--surface);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:var(--transition);}
 .settings-item:hover{background:var(--border);}
@@ -362,15 +297,10 @@ a{color:inherit;text-decoration:none;}
 .settings-item-title{font-weight:600;font-size:14px;color:var(--text);}
 .settings-item-desc{font-size:12px;color:var(--text-light);margin-top:2px;}
 
-/* =========================================================
-   📱 QR
-   ========================================================= */
 .qr-display{text-align:center;padding:20px;}
-.qr-display #qrcode{display:inline-block;padding:16px;background:#fff;border-radius:15px;}
+.qr-display #qrcode{display:inline-block;padding:16px;background:#fff;border-radius:15px;box-shadow:var(--shadow);}
+.qr-display #qrcode img,.qr-display #qrcode canvas{display:block;}
 
-/* =========================================================
-   ⚡ QUICK ACTIONS
-   ========================================================= */
 .quick-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;}
 .quick-action-btn{background:var(--surface);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:var(--transition);border:1.5px solid transparent;}
 .quick-action-btn:hover{border-color:var(--primary);transform:translateY(-3px);background:var(--card);}
@@ -378,18 +308,58 @@ a{color:inherit;text-decoration:none;}
 .quick-action-btn span{font-size:12px;font-weight:600;color:var(--text);}
 
 /* =========================================================
-   📅 SERVICE DAYS CHECKBOX
+   📅 SERVICE DAYS — Fully clickable chips (FIXED)
    ========================================================= */
-.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:14px;}
-.day-chip{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface);border-radius:12px;cursor:pointer;border:2px solid transparent;transition:var(--transition);font-size:13px;font-weight:600;}
+.day-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:10px;
+  margin-bottom:16px;
+}
+.day-chip{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:14px 12px;
+  background:var(--surface);
+  border-radius:14px;
+  cursor:pointer;
+  border:2px solid var(--border);
+  transition:var(--transition);
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  user-select:none;
+  -webkit-user-select:none;
+  position:relative;
+}
 .day-chip:hover{background:var(--border);}
-.day-chip.active{background:var(--primary-light);border-color:var(--primary);color:var(--primary-dark);}
-.day-chip input{display:none;}
-.day-chip i{font-size:14px;}
+.day-chip.active{
+  background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));
+  border-color:var(--primary);
+  color:var(--primary-dark);
+  box-shadow:0 4px 12px rgba(99,102,241,0.2);
+}
+.day-chip.active::after{
+  content:'\f00c';
+  font-family:'Font Awesome 6 Free';
+  font-weight:900;
+  position:absolute;
+  top:6px;
+  left:6px;
+  width:18px;
+  height:18px;
+  background:var(--primary);
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9px;
+}
+.day-chip i{font-size:14px;color:var(--primary);}
 
-/* =========================================================
-   📱 RESPONSIVE
-   ========================================================= */
 @media(max-width:480px){
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .children-grid{grid-template-columns:1fr;}
@@ -407,9 +377,6 @@ a{color:inherit;text-decoration:none;}
 </head>
 <body>
 
-<!-- =========================================================
-     🔐 LOGIN PAGE
-     ========================================================= -->
 <div class="login-page" id="loginPage">
   <div class="login-card">
     <div class="login-logo" id="loginLogo"><i class="fas fa-church"></i></div>
@@ -431,16 +398,12 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<!-- =========================================================
-     🏠 APP
-     ========================================================= -->
 <div class="app" id="app">
   <header class="header">
     <div class="header-brand">
       <div class="header-logo" id="headerLogo"><i class="fas fa-church"></i></div>
       <div class="header-text">
         <div class="header-title" id="appName">خدمة مدارس الأحد</div>
-        <!-- Status indicator placed INLINE next to brand (no floating, no fixed) -->
         <div class="header-status-row">
           <div class="live-indicator" id="liveIndicator">
             <span class="live-dot" id="liveDot"></span>
@@ -480,22 +443,18 @@ a{color:inherit;text-decoration:none;}
 
   <main class="main">
 
-    <!-- =========================================================
-         🏠 HOME PAGE
-         ========================================================= -->
     <div class="page active" id="page-home">
       <div class="welcome-card">
         <h2>أهلاً وسهلاً 👋</h2>
         <p id="currentBlessing">نسأل الله أن يبارك خدمتك اليوم</p>
       </div>
 
-      <!-- Date Selector with service-day cycling -->
       <div class="date-selector">
         <div class="date-selector-header">
           <div class="date-selector-title"><i class="fas fa-calendar-day"></i><span>تاريخ العمليات</span></div>
           <div class="date-nav-btns">
-            <button class="date-nav-btn" onclick="shiftDate(-1)" title="يوم الخدمة السابق"><i class="fas fa-chevron-right"></i></button>
-            <button class="date-nav-btn" onclick="shiftDate(1)" title="يوم الخدمة التالي"><i class="fas fa-chevron-left"></i></button>
+            <button type="button" class="date-nav-btn" onclick="shiftDate(-1)" title="يوم الخدمة السابق"><i class="fas fa-chevron-right"></i></button>
+            <button type="button" class="date-nav-btn" onclick="shiftDate(1)" title="يوم الخدمة التالي"><i class="fas fa-chevron-left"></i></button>
           </div>
         </div>
         <div class="date-display">
@@ -509,7 +468,7 @@ a{color:inherit;text-decoration:none;}
           </div>
           <div class="date-input-wrap">
             <input type="date" id="operationDate" onchange="onDateChange()">
-            <button class="today-btn" onclick="setToday()" style="margin-top:6px;width:100%;"><i class="fas fa-undo"></i> اليوم</button>
+            <button type="button" class="today-btn" onclick="setToday()" style="margin-top:6px;width:100%;"><i class="fas fa-undo"></i> اليوم</button>
           </div>
         </div>
       </div>
@@ -572,9 +531,6 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
-    <!-- =========================================================
-         👶 CHILDREN PAGE
-         ========================================================= -->
     <div class="page" id="page-children">
       <div class="search-bar">
         <i class="fas fa-search"></i>
@@ -597,6 +553,7 @@ a{color:inherit;text-decoration:none;}
           <option value="sms">رسالة SMS</option>
           <option value="addPoints">إضافة رصيد</option>
           <option value="deductPoints">خصم رصيد</option>
+          <option value="showQR">عرض QR</option>
           <option value="edit">تعديل البيانات</option>
           <option value="delete">حذف</option>
           <option value="transfer">نقل لفصل آخر</option>
@@ -607,9 +564,6 @@ a{color:inherit;text-decoration:none;}
       <div class="children-grid" id="childrenGrid"></div>
     </div>
 
-    <!-- =========================================================
-         📷 SCANNER PAGE
-         ========================================================= -->
     <div class="page" id="page-scanner">
       <div class="section">
         <div class="section-title"><span><i class="fas fa-qrcode"></i> ماسح QR</span></div>
@@ -628,7 +582,7 @@ a{color:inherit;text-decoration:none;}
             <input type="number" class="points-input" id="scannerPoints" min="1" value="1">
           </div>
         </div>
-        <p style="font-size:11px;color:var(--text-light);"><i class="fas fa-info-circle"></i> الافتراضي من الإعدادات (<span id="scannerDefaultHint">1</span>) — قابل للتعديل قبل كل مسح.</p>
+        <p style="font-size:11px;color:var(--text-light);"><i class="fas fa-info-circle"></i> الافتراضي من الإعدادات (<span id="scannerDefaultHint">1</span>)</p>
         <div style="display:flex;gap:8px;margin-top:10px;">
           <button class="btn btn-secondary btn-sm" onclick="toggleCameraFacing()"><i class="fas fa-sync-alt"></i> تبديل الكاميرا</button>
         </div>
@@ -646,9 +600,6 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
-    <!-- =========================================================
-         📊 STATISTICS PAGE
-         ========================================================= -->
     <div class="page" id="page-statistics">
       <div class="tabs">
         <div class="tab active" onclick="switchStatsTab('attendance',event)">الحضور</div>
@@ -674,9 +625,6 @@ a{color:inherit;text-decoration:none;}
       <div class="chart-container"><div class="section-title"><span><i class="fas fa-chart-line"></i> نمو الخدمة</span></div><canvas id="growthChart"></canvas></div>
     </div>
 
-    <!-- =========================================================
-         📅 EVENTS PAGE
-         ========================================================= -->
     <div class="page" id="page-events">
       <div class="section">
         <div class="section-title">
@@ -687,9 +635,6 @@ a{color:inherit;text-decoration:none;}
       </div>
     </div>
 
-    <!-- =========================================================
-         ⚙️ SETTINGS PAGE
-         ========================================================= -->
     <div class="page" id="page-settings">
       <div class="section">
         <div class="section-title"><span><i class="fas fa-cog"></i> إعدادات الخدمة</span></div>
@@ -699,7 +644,7 @@ a{color:inherit;text-decoration:none;}
           <div class="settings-item" onclick="openClassesModal()"><i class="fas fa-layer-group lead"></i><div class="settings-item-text"><div class="settings-item-title">الفصول والمراحل</div><div class="settings-item-desc">إدارة فصول الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
           <div class="settings-item" onclick="openAddChildModal()"><i class="fas fa-user-plus lead"></i><div class="settings-item-text"><div class="settings-item-title">إضافة طفل جديد</div><div class="settings-item-desc">تسجيل طفل في الخدمة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
           <div class="settings-item" onclick="openBulkAddModal()"><i class="fas fa-paste lead"></i><div class="settings-item-text"><div class="settings-item-title">إضافة جماعية (Bulk)</div><div class="settings-item-desc">لصق بيانات لمعاينة وإضافة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
-          <div class="settings-item" onclick="openServiceDaysModal()"><i class="fas fa-calendar lead"></i><div class="settings-item-text"><div class="settings-item-title">أيام الخدمة</div><div class="settings-item-desc">تحديد أيام الاجتماع لتنقل اليوم التالي/السابق</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
+          <div class="settings-item" onclick="openServiceDaysModal()"><i class="fas fa-calendar lead"></i><div class="settings-item-text"><div class="settings-item-title">أيام الخدمة</div><div class="settings-item-desc">تحديد أيام الاجتماع</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
           <div class="settings-item" onclick="openTemplatesModal()"><i class="fas fa-comment-dots lead"></i><div class="settings-item-text"><div class="settings-item-title">قوالب الرسائل</div><div class="settings-item-desc">واتساب و SMS</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
           <div class="settings-item" onclick="backupData()"><i class="fas fa-cloud lead"></i><div class="settings-item-text"><div class="settings-item-title">النسخ الاحتياطي</div><div class="settings-item-desc">حفظ واستعادة</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
           <div class="settings-item" onclick="importData()"><i class="fas fa-file-import lead"></i><div class="settings-item-text"><div class="settings-item-title">استيراد Excel</div><div class="settings-item-desc">إضافة بيانات من ملف</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted)"></i></div>
@@ -710,9 +655,6 @@ a{color:inherit;text-decoration:none;}
 
   </main>
 
-  <!-- =========================================================
-       🧭 BOTTOM NAVIGATION
-       ========================================================= -->
   <nav class="bottom-nav">
     <div class="nav-item active" data-page="home" onclick="showPage('home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
     <div class="nav-item" data-page="children" onclick="showPage('children')"><i class="fas fa-child"></i><span>الأطفال</span></div>
@@ -722,9 +664,6 @@ a{color:inherit;text-decoration:none;}
   </nav>
 </div>
 
-<!-- =========================================================
-     📋 MODALS
-     ========================================================= -->
 <div class="modal" id="childModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title" id="childModalTitle">إضافة طفل</div><div class="modal-close" onclick="closeModal('childModal')"><i class="fas fa-times"></i></div></div>
@@ -758,9 +697,8 @@ a{color:inherit;text-decoration:none;}
     <div class="modal-header"><div class="modal-title"><i class="fas fa-paste"></i> إضافة جماعية للأطفال</div><div class="modal-close" onclick="closeModal('bulkModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
       <div class="bulk-area">
-        <p style="margin-bottom:10px;font-size:13px;"><i class="fas fa-info-circle" style="color:var(--primary)"></i> الصق البيانات من Excel (كل سطر = طفل). الأعمدة بالترتيب:</p>
-        <p style="margin-bottom:10px;font-size:12px;font-family:monospace;background:var(--card);padding:8px;border-radius:8px;direction:ltr;text-align:left;">الكود | الاسم رباعي | رقم التليفون | تاريخ الميلاد | العنوان | ملاحظات | صورة | الرصيد</p>
-        <p style="margin-bottom:10px;font-size:12px;color:var(--text-light);">يمكن استخدام Tab أو , أو | كفاصل. تاريخ الميلاد يقبل M/D/YYYY أو YYYY-MM-DD.</p>
+        <p style="margin-bottom:10px;font-size:13px;"><i class="fas fa-info-circle" style="color:var(--primary)"></i> الصق البيانات من Excel (كل سطر = طفل):</p>
+        <p style="margin-bottom:10px;font-size:12px;font-family:monospace;background:var(--card);padding:8px;border-radius:8px;direction:ltr;text-align:left;">الكود | الاسم | الهاتف | الميلاد | العنوان | ملاحظات | صورة | الرصيد</p>
         <textarea class="bulk-textarea" id="bulkInput" placeholder="StMary1708701492802&#9;ابرام بيتر وجيه&#9;01282062301&#9;5/28/2019&#9;المنشاه العماري&#9;&#9;&#9;70"></textarea>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
           <div class="form-group"><label class="form-label">الفصل الافتراضي</label><select class="form-input" id="bulkDefaultClass"></select></div>
@@ -773,12 +711,21 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
+<!-- QR CODE MODAL -->
 <div class="modal" id="qrModal">
   <div class="modal-content">
-    <div class="modal-header"><div class="modal-title">رمز QR</div><div class="modal-close" onclick="closeModal('qrModal')"><i class="fas fa-times"></i></div></div>
+    <div class="modal-header"><div class="modal-title"><i class="fas fa-qrcode"></i> رمز QR</div><div class="modal-close" onclick="closeModal('qrModal')"><i class="fas fa-times"></i></div></div>
     <div class="modal-body">
-      <div class="qr-display"><div id="qrcode"></div><h3 id="qrChildName" style="margin-top:16px;"></h3><p id="qrChildClass" style="color:var(--text-light);"></p><p id="qrChildId" style="font-family:monospace;font-size:11px;color:var(--text-light);margin-top:4px;"></p></div>
-      <button class="btn btn-primary btn-block" onclick="printQR()"><i class="fas fa-print"></i> طباعة</button>
+      <div class="qr-display">
+        <div id="qrcode"></div>
+        <h3 id="qrChildName" style="margin-top:16px;"></h3>
+        <p id="qrChildClass" style="color:var(--text-light);"></p>
+        <p id="qrChildId" style="font-family:monospace;font-size:11px;color:var(--text-light);margin-top:4px;"></p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+        <button class="btn btn-primary" onclick="printQR()"><i class="fas fa-print"></i> طباعة</button>
+        <button class="btn btn-success" onclick="downloadQR()"><i class="fas fa-download"></i> تحميل</button>
+      </div>
     </div>
   </div>
 </div>
@@ -790,7 +737,6 @@ a{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<!-- After-Scan Result Card Modal -->
 <div class="modal" id="scanResultModal">
   <div class="modal-content">
     <div class="modal-header"><div class="modal-title"><i class="fas fa-id-card"></i> بيانات الطفل</div><div class="modal-close" onclick="closeModal('scanResultModal')"><i class="fas fa-times"></i></div></div>
@@ -810,28 +756,21 @@ a{color:inherit;text-decoration:none;}
 
 <script>
 /* ============================================================
-   ⚡ SUNDAY SCHOOL APP v4.0 — Production Edition
+   ⚡ SUNDAY SCHOOL APP v4.1 — Service Days & QR Fixed
    ============================================================
-   FEATURES:
-   • Status indicator integrated next to brand (no floating)
-   • Scanner with numeric points input (default from settings)
-   • Post-scan child card with Add/Deduct/Mark/Cancel buttons
-   • Service-day-only date navigation
-   • Multi-select service days settings
-   • Auto-select nearest service day on startup
-   • Minimal child cards that expand on click
-   • Duplicate-scan prevention, proper camera cleanup
-   • Robust attendance & points logic
+   FIXES IN THIS VERSION:
+   1. Service days chips — fully clickable (rebuilt logic)
+   2. QR display function — added "showQR" action + modal
+   3. Next/Previous day navigation — completely rewritten
+   4. Nearest service day auto-select on startup — fixed
    ============================================================ */
 
-/* ----- Supabase Setup ----- */
 const SUPABASE_URL = 'https://cjxlwfrqfqwjhugpjdxz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeGx3ZnJxZnF3amh1Z3BqZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDM4OTgsImV4cCI6MjA5NDAxOTg5OH0.-U43SSHXr2xw15B4AvNUwFEObzWbkuZpe-2hqgAxrOQ';
 let sb = null;
 try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { realtime:{ params:{ eventsPerSecond:20 } } }); }
 catch(e) { console.error('Supabase init failed:', e); }
 
-/* ----- App State ----- */
 const state = {
   user:null, children:[], classes:[], attendance:[], pointsHistory:[],
   callHistory:[], servants:[], notifications:[], events:[], childNotes:[],
@@ -840,14 +779,13 @@ const state = {
     service_abbreviation:'StMary',
     service_logo:null,
     points_default:1,
-    service_days:[0,5] // Sunday & Friday by default
+    service_days:[0,5]
   },
   charts:{}, rtChannels:[], isOnline:navigator.onLine,
   selectedDate:new Date().toISOString().split('T')[0],
   bulkParsed:[], cameraFacing:'environment'
 };
 
-/* ----- Helpers ----- */
 const $ = id => document.getElementById(id);
 const today = () => new Date().toISOString().split('T')[0];
 const getOpDate = () => state.selectedDate;
@@ -868,10 +806,9 @@ function toast(msg, type='success'){
 
 function vibrate(ms=100){ if(navigator.vibrate) navigator.vibrate(ms); }
 
-/* ----- Audio (debounced) ----- */
 let _lastBeep = 0;
 function playBeep(freq=800){
-  if(Date.now() - _lastBeep < 300) return; // prevent duplicate sounds
+  if(Date.now() - _lastBeep < 300) return;
   _lastBeep = Date.now();
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
@@ -895,7 +832,6 @@ function initials(name){
 function getClassName(id){ const c = state.classes.find(x=>x.id===id); return c?c.name:'غير محدد'; }
 function bumpStat(id){ const el = $(id); if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 
-/* ----- Balance / Attendance helpers (single source of truth) ----- */
 function getBalance(childId){
   return state.pointsHistory.filter(p => p.child_id === childId).reduce((s,p) => s + (Number(p.points)||0), 0);
 }
@@ -907,7 +843,6 @@ function getLastAttendance(childId){
   return rows.length ? rows[rows.length-1] : null;
 }
 
-/* ----- ID Generator ----- */
 let _lastIdCounter = 0;
 function generateChildId(){
   const abbr = state.settings.service_abbreviation || 'StMary';
@@ -916,10 +851,35 @@ function generateChildId(){
 }
 
 /* =========================================================
-   📅 DATE SELECTOR & SERVICE-DAY NAVIGATION
+   📅 DATE HELPERS — FULLY REWRITTEN
    ========================================================= */
+
+// Helper: parse 'YYYY-MM-DD' as a LOCAL date (avoid TZ issues)
+function parseLocalDate(str){
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+// Helper: format a local Date object to 'YYYY-MM-DD'
+function formatLocalDate(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+// Get sorted unique service days from settings (0=Sun..6=Sat)
+function getServiceDays(){
+  let days = state.settings.service_days;
+  if(!Array.isArray(days) || days.length === 0) days = [0,5];
+  // Sanitize: integers only, unique, in 0..6
+  days = [...new Set(days.map(d=>parseInt(d)).filter(d=>d>=0 && d<=6))].sort((a,b)=>a-b);
+  if(!days.length) days = [0,5];
+  return days;
+}
+
 function renderDateSelector(){
-  const d = new Date(state.selectedDate + 'T00:00:00');
+  const d = parseLocalDate(state.selectedDate);
   const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
   const arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   $('dateDayNum').textContent = d.getDate();
@@ -928,6 +888,7 @@ function renderDateSelector(){
   $('dateFull').textContent = d.toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
   $('operationDate').value = state.selectedDate;
 }
+
 function onDateChange(){
   state.selectedDate = $('operationDate').value;
   renderDateSelector();
@@ -935,41 +896,65 @@ function onDateChange(){
   if($('page-children').classList.contains('active')) renderChildren();
   toast('تم تحديث تاريخ العمليات','info');
 }
-// Cycle ONLY through service days defined in settings
+
+/* =========================================================
+   ⭐ FIX: Navigate ONLY through service days
+   - direction: +1 (next) or -1 (previous)
+   - Iterates day-by-day until landing on a service day
+   ========================================================= */
 function shiftDate(direction){
-  const days = (state.settings.service_days && state.settings.service_days.length)
-    ? [...state.settings.service_days].sort((a,b)=>a-b)
-    : [0,5];
-  const d = new Date(state.selectedDate + 'T00:00:00');
+  const serviceDays = getServiceDays();
+  const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+  // Start from current selected date
+  const cur = parseLocalDate(state.selectedDate);
   const step = direction > 0 ? 1 : -1;
-  for(let i=0;i<14;i++){
-    d.setDate(d.getDate() + step);
-    if(days.includes(d.getDay())){
-      state.selectedDate = d.toISOString().split('T')[0];
-      renderDateSelector(); renderHome();
+
+  // Look up to 60 days ahead/back for safety
+  for(let i=1; i<=60; i++){
+    const next = new Date(cur.getTime());
+    next.setDate(cur.getDate() + (step * i));
+    if(serviceDays.includes(next.getDay())){
+      state.selectedDate = formatLocalDate(next);
+      renderDateSelector();
+      renderHome();
       if($('page-children').classList.contains('active')) renderChildren();
-      const arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-      toast(`${direction>0?'يوم الخدمة التالي':'يوم الخدمة السابق'}: ${arDays[d.getDay()]}`,'info');
+      toast(`${direction>0?'يوم الخدمة التالي':'يوم الخدمة السابق'}: ${arDays[next.getDay()]} (${state.selectedDate})`,'info');
       return;
     }
   }
-  toast('لم يتم العثور على يوم خدمة قريب. راجع إعدادات أيام الخدمة','warning');
+  toast('لم يتم العثور على يوم خدمة. راجع إعدادات أيام الخدمة','warning');
 }
+
 function setToday(){
   state.selectedDate = today();
   renderDateSelector(); renderHome();
   if($('page-children').classList.contains('active')) renderChildren();
   toast('عاد للتاريخ الحالي','success');
 }
-// Find the nearest valid service day at/after today (or today if it matches)
+
+/* =========================================================
+   ⭐ FIX: Find nearest service day (today or upcoming, then fallback to past)
+   ========================================================= */
 function findNearestServiceDay(){
-  const days = (state.settings.service_days && state.settings.service_days.length)
-    ? [...state.settings.service_days].sort((a,b)=>a-b)
-    : [0,5];
-  const d = new Date();
-  for(let i=0;i<14;i++){
-    if(days.includes(d.getDay())) return d.toISOString().split('T')[0];
-    d.setDate(d.getDate() + 1);
+  const serviceDays = getServiceDays();
+  const now = new Date();
+  now.setHours(0,0,0,0);
+
+  // If today is already a service day -> use today
+  if(serviceDays.includes(now.getDay())) return formatLocalDate(now);
+
+  // Look forward up to 14 days
+  for(let i=1; i<=14; i++){
+    const d = new Date(now.getTime());
+    d.setDate(now.getDate() + i);
+    if(serviceDays.includes(d.getDay())) return formatLocalDate(d);
+  }
+  // Look backward up to 14 days as fallback
+  for(let i=1; i<=14; i++){
+    const d = new Date(now.getTime());
+    d.setDate(now.getDate() - i);
+    if(serviceDays.includes(d.getDay())) return formatLocalDate(d);
   }
   return today();
 }
@@ -1088,7 +1073,6 @@ function applySettings(){
     $('headerLogo').innerHTML = `<i class="fas fa-church"></i>`;
     $('loginLogo').innerHTML = `<i class="fas fa-church"></i>`;
   }
-  // Sync scanner / manual points defaults with settings
   const sp = $('scannerPoints');
   if(sp) sp.value = state.settings.points_default || 1;
   const hint = $('scannerDefaultHint');
@@ -1161,7 +1145,7 @@ async function initApp(){
   try{
     if(sb) await loadAllData();
     applySettings();
-    // Auto-select nearest service day at startup
+    // ⭐ FIX: Auto-select nearest service day AFTER loading settings
     state.selectedDate = findNearestServiceDay();
     renderDateSelector();
     RT.start();
@@ -1214,11 +1198,7 @@ function populateClassSelects(){
   });
 }
 
-/* =========================================================
-   🧭 NAVIGATION
-   ========================================================= */
 function showPage(page){
-  // Stop scanner when leaving scanner page
   if(page !== 'scanner') stopScanner();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const target = $('page-'+page);
@@ -1276,10 +1256,10 @@ function drawHomeChart(){
   const ctx = canvas.getContext('2d');
   if(state.charts.home) state.charts.home.destroy();
   const labels=[], data=[];
-  const base = new Date(state.selectedDate + 'T00:00:00');
+  const base = parseLocalDate(state.selectedDate);
   for(let i=6;i>=0;i--){
-    const d=new Date(base); d.setDate(d.getDate()-i);
-    const ds=d.toISOString().split('T')[0];
+    const d=new Date(base.getTime()); d.setDate(base.getDate()-i);
+    const ds=formatLocalDate(d);
     labels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
     data.push(state.attendance.filter(a=>a.date===ds && a.status==='present').length);
   }
@@ -1291,7 +1271,7 @@ function drawHomeChart(){
 }
 
 /* =========================================================
-   👶 CHILDREN — Minimal Cards with Expand-on-click
+   👶 CHILDREN
    ========================================================= */
 function renderChildren(){
   const q = ($('childrenSearch').value||'').toLowerCase();
@@ -1354,6 +1334,7 @@ function renderChildCard(c){
           ${c.notes?`<p style="font-size:12px;color:var(--text-light);margin-bottom:10px;padding:8px;background:var(--surface);border-radius:8px;"><i class="fas fa-sticky-note"></i> ${c.notes}</p>`:''}
           <div class="child-actions">
             <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openProfile('${c.id}')"><i class="fas fa-id-card"></i> الملف</button>
+            <button class="btn btn-info btn-sm" onclick="event.stopPropagation();showQR('${c.id}')"><i class="fas fa-qrcode"></i> QR</button>
             <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openEditChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-edit"></i> تعديل</button>
             <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteChild(state.children.find(x=>x.id==='${c.id}'))"><i class="fas fa-trash"></i> حذف</button>
           </div>
@@ -1378,6 +1359,7 @@ function getActionMeta(f){
     sms:{label:'SMS',icon:'fas fa-sms',cls:'info'},
     addPoints:{label:'+ رصيد',icon:'fas fa-plus',cls:'success'},
     deductPoints:{label:'- رصيد',icon:'fas fa-minus',cls:'danger'},
+    showQR:{label:'عرض QR',icon:'fas fa-qrcode',cls:'info'},
     edit:{label:'تعديل',icon:'fas fa-edit',cls:''},
     delete:{label:'حذف',icon:'fas fa-trash',cls:'danger'},
     transfer:{label:'نقل',icon:'fas fa-exchange-alt',cls:'info'},
@@ -1412,6 +1394,7 @@ async function execAction(id){
       await logCall(c.id,'sms'); break;
     case 'addPoints': await addPoints(c, pts); break;
     case 'deductPoints': await addPoints(c, -pts); break;
+    case 'showQR': showQR(c.id); break;
     case 'edit': openEditChild(c); break;
     case 'delete': await deleteChild(c); break;
     case 'transfer': transferChild(c); break;
@@ -1420,7 +1403,7 @@ async function execAction(id){
 }
 
 /* =========================================================
-   ✅ ATTENDANCE & POINTS OPERATIONS
+   ✅ ATTENDANCE & POINTS
    ========================================================= */
 async function registerAttendance(c, status='present', customPts){
   const d = getOpDate();
@@ -1428,7 +1411,6 @@ async function registerAttendance(c, status='present', customPts){
     ? Number(customPts)
     : (state.settings.points_default || 1);
   const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
-  // Prevent duplicate attendance for the same day
   if(existing && existing.status === status){
     toast(`تم تسجيل ${status==='present'?'الحضور':'الغياب'} مسبقاً لـ ${c.name} في ${d}`,'warning');
     return;
@@ -1469,7 +1451,6 @@ async function registerAttendance(c, status='present', customPts){
   finally{ showLoader(false); }
 }
 
-// Cancel attendance: removes today's attendance row + ONLY the points added from attendance
 async function cancelAttendance(c){
   const d = getOpDate();
   const existing = state.attendance.find(a=>a.child_id===c.id && a.date===d);
@@ -1478,7 +1459,6 @@ async function cancelAttendance(c){
   try{
     showLoader(true);
     await DB.remove('attendance', existing.id);
-    // Remove ONLY attendance-type points for this date — preserve manual points
     const attPts = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type==='attendance');
     for(const p of attPts){ try{ await DB.remove('points_history', p.id); }catch(e){} }
     toast(`✓ تم إلغاء حضور ${c.name}`,'success');
@@ -1486,7 +1466,6 @@ async function cancelAttendance(c){
   finally{ showLoader(false); }
 }
 
-// Clear manually added points for the selected date
 async function clearAddedPoints(c){
   const d = getOpDate();
   const added = state.pointsHistory.filter(p=>p.child_id===c.id && p.date===d && p.type!=='attendance');
@@ -1650,22 +1629,68 @@ $('childForm').addEventListener('submit', async e=>{
 });
 
 /* =========================================================
-   📱 QR CODE
+   📱 QR CODE — Show, Print, Download (FIXED)
    ========================================================= */
 function showQR(id){
   const c = state.children.find(x=>x.id===id);
-  if(!c) return;
+  if(!c){ toast('الطفل غير موجود','error'); return; }
   $('qrChildName').textContent = c.name;
   $('qrChildClass').textContent = getClassName(c.class_id);
   $('qrChildId').textContent = c.id;
-  $('qrcode').innerHTML = '';
-  new QRCode($('qrcode'),{text: c.qr_id||c.id, width:220, height:220});
+  const container = $('qrcode');
+  container.innerHTML = '';
+  try{
+    new QRCode(container, {
+      text: c.qr_id || c.id,
+      width: 240,
+      height: 240,
+      colorDark: '#0f172a',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }catch(e){
+    container.innerHTML = '<p style="color:var(--danger)">فشل توليد QR</p>';
+    console.error(e);
+  }
   openModal('qrModal');
 }
+
 function printQR(){
+  const qrHTML = $('qrcode').innerHTML;
+  const name = $('qrChildName').textContent;
+  const cls = $('qrChildClass').textContent;
+  const cid = $('qrChildId').textContent;
   const w = window.open('','_blank');
-  w.document.write('<html dir="rtl"><head><title>طباعة QR</title></head><body style="text-align:center;font-family:Arial">'+$('qrcode').innerHTML+'<h2>'+$('qrChildName').textContent+'</h2><p>'+$('qrChildClass').textContent+'</p><p style="font-family:monospace;font-size:11px">'+$('qrChildId').textContent+'</p></body></html>');
-  w.document.close(); w.print();
+  w.document.write(`
+    <html dir="rtl"><head><title>طباعة QR - ${name}</title>
+    <style>
+      body{text-align:center;font-family:Arial,sans-serif;padding:30px;}
+      h2{margin:14px 0 4px;}
+      p{margin:2px 0;color:#555;}
+      .qr-box{display:inline-block;padding:20px;border:2px solid #ddd;border-radius:14px;}
+    </style></head>
+    <body><div class="qr-box">${qrHTML}</div><h2>${name}</h2><p>${cls}</p><p style="font-family:monospace;font-size:11px">${cid}</p>
+    <script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
+  w.document.close();
+}
+
+function downloadQR(){
+  const container = $('qrcode');
+  const img = container.querySelector('img');
+  const canvas = container.querySelector('canvas');
+  const name = $('qrChildName').textContent || 'qr';
+  let dataUrl = null;
+  if(canvas){
+    dataUrl = canvas.toDataURL('image/png');
+  } else if(img){
+    dataUrl = img.src;
+  }
+  if(!dataUrl){ toast('فشل التحميل','error'); return; }
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = `QR_${name.replace(/\s/g,'_')}.png`;
+  a.click();
+  toast('✓ تم تحميل QR','success');
 }
 
 function openProfile(id){
@@ -1682,6 +1707,7 @@ function openProfile(id){
       <h2>${c.name}</h2>
       <p style="color:var(--text-light)">${getClassName(c.class_id)}</p>
       <div class="child-id-badge" style="margin-top:6px;">${c.id}</div>
+      <button class="btn btn-info btn-sm" style="margin-top:10px;" onclick="closeModal('profileModal');showQR('${c.id}')"><i class="fas fa-qrcode"></i> عرض QR</button>
     </div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-value">${balance}</div><div class="stat-label">الرصيد</div></div>
@@ -1841,15 +1867,10 @@ async function commitBulkAdd(){
   showLoader(false);
   closeModal('bulkModal');
   toast(`✓ تم إضافة ${ok} طفل${fail?` (فشل ${fail})`:''}`, ok?'success':'error');
-  if(errors.length){
-    $('genericTitle').textContent = `أخطاء الإضافة (${errors.length})`;
-    $('genericBody').innerHTML = '<div style="max-height:400px;overflow-y:auto;font-size:12px;">'+errors.map(e=>`<div style="padding:6px;border-bottom:1px solid var(--border);">${e}</div>`).join('')+'</div>';
-    openModal('genericModal');
-  }
 }
 
 /* =========================================================
-   📷 QR SCANNER — Improved
+   📷 SCANNER
    ========================================================= */
 let scannerInstance = null;
 let scannerActive = false;
@@ -1866,7 +1887,7 @@ async function startScanner(){
       { facingMode: state.cameraFacing },
       { fps: 15, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
       onScanSuccess,
-      () => {} // silent errors
+      () => {}
     );
     scannerActive = true;
     toast('📷 الكاميرا تعمل','info');
@@ -1881,9 +1902,7 @@ async function startScanner(){
 async function stopScanner(){
   if(!scannerInstance) return;
   try{
-    if(scannerActive){
-      await scannerInstance.stop();
-    }
+    if(scannerActive) await scannerInstance.stop();
     scannerInstance.clear();
   }catch(e){ console.warn('Scanner stop:', e); }
   finally{
@@ -1900,11 +1919,10 @@ async function toggleCameraFacing(){
     await stopScanner();
     setTimeout(()=>startScanner(), 250);
   }
-  toast('تم تبديل الكاميرا: '+(state.cameraFacing==='environment'?'الخلفية':'الأمامية'),'info');
+  toast('تم تبديل الكاميرا','info');
 }
 
 async function onScanSuccess(text){
-  // Prevent rapid duplicate scans (same QR within 3s)
   if(scanInProgress) return;
   if(lastScan[text] && Date.now()-lastScan[text]<3000) return;
   lastScan[text] = Date.now();
@@ -1916,20 +1934,15 @@ async function onScanSuccess(text){
     const ptsRaw = $('scannerPoints').value;
     const pts = (ptsRaw && !isNaN(parseInt(ptsRaw))) ? parseInt(ptsRaw) : (state.settings.points_default || 1);
     vibrate(80); playBeep();
-
-    // For "info" mode: stop camera and show child card with action buttons
     if(f === 'info'){
       await stopScanner();
       showScanResult(c);
       addScanHistoryEntry(c, 'عرض البطاقة');
       return;
     }
-
-    // For other modes: directly perform action
     if(f==='attendance') await registerAttendance(c, 'present', pts);
     else if(f==='addPoints') await addPoints(c, pts);
     else if(f==='deductPoints') await addPoints(c, -pts);
-
     addScanHistoryEntry(c, f==='attendance'?`حضور (+${pts})`:f==='addPoints'?`+${pts} رصيد`:`-${pts} رصيد`);
   } finally {
     setTimeout(()=>{ scanInProgress = false; }, 500);
@@ -1937,8 +1950,7 @@ async function onScanSuccess(text){
 }
 
 function addScanHistoryEntry(c, label){
-  const h = $('scanHistory');
-  if(!h) return;
+  const h = $('scanHistory'); if(!h) return;
   const item = document.createElement('div');
   item.style.cssText='padding:10px 12px;background:var(--surface);border-radius:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;animation:slideDown 0.3s;';
   item.innerHTML = `<i class="fas fa-check-circle" style="color:#10b981;font-size:16px;"></i> <strong style="font-size:13px;">${c.name}</strong> <span style="color:var(--text-light);font-size:11px;">${label}</span> <span style="margin-right:auto;color:var(--text-muted);font-size:10px;">${new Date().toLocaleTimeString('ar-EG')}</span>`;
@@ -1946,7 +1958,6 @@ function addScanHistoryEntry(c, label){
   while(h.children.length>10) h.lastChild.remove();
 }
 
-// Show child card after scan with all action buttons
 function showScanResult(c){
   const img = c.photo_url ? `<img src="${c.photo_url}">` : initials(c.name);
   const bg = c.photo_url ? '' : `style="background:${avatarColor(c.name)}"`;
@@ -1958,7 +1969,6 @@ function showScanResult(c){
   const todayStatus = todayAtt
     ? (todayAtt.status==='present'?'<span class="badge badge-success"><i class="fas fa-check"></i> حاضر اليوم</span>':'<span class="badge badge-danger"><i class="fas fa-times"></i> غائب اليوم</span>')
     : '<span class="badge badge-warning"><i class="fas fa-minus"></i> لم يسجل اليوم</span>';
-
   $('scanResultBody').innerHTML = `
     <div style="text-align:center;margin-bottom:18px;">
       <div class="child-avatar" ${bg} style="width:90px;height:90px;font-size:32px;margin:0 auto 12px;border-radius:24px;">${img}</div>
@@ -2013,7 +2023,6 @@ async function scanResultCancelAttendance(childId){
 /* =========================================================
    📊 STATISTICS
    ========================================================= */
-let _currentStatsTab = 'attendance';
 function renderStats(){
   const presentRows = state.attendance.filter(a=>a.status==='present');
   $('statTotalAttendance').textContent = presentRows.length;
@@ -2024,7 +2033,6 @@ function renderStats(){
   $('statTotalCalls').textContent = state.callHistory.length;
   drawStatsCharts();
 }
-
 function drawStatsCharts(){
   const pg = $('page-statistics');
   if(!pg || !pg.classList.contains('active')) return;
@@ -2033,7 +2041,7 @@ function drawStatsCharts(){
     const labels=[], data=[];
     for(let i=6;i>=0;i--){
       const d=new Date(); d.setDate(d.getDate()-i);
-      const ds=d.toISOString().split('T')[0];
+      const ds=formatLocalDate(d);
       labels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
       data.push(state.attendance.filter(a=>a.date===ds && a.status==='present').length);
     }
@@ -2058,9 +2066,7 @@ function drawStatsCharts(){
     state.charts.growth = new Chart(grCanvas,{type:'line',data:{labels:g_labels,datasets:[{label:'الأطفال',data:g_data,borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,0.15)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}});
   }
 }
-
 function switchStatsTab(tab,e){
-  _currentStatsTab = tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   e.target.classList.add('active');
   renderStats();
@@ -2137,7 +2143,7 @@ async function delEvent(id){
 }
 
 /* =========================================================
-   ⚙️ SETTINGS MODALS
+   ⚙️ SETTINGS
    ========================================================= */
 function openServiceConfigModal(){
   $('genericTitle').textContent = 'إعدادات الخدمة';
@@ -2149,14 +2155,12 @@ function openServiceConfigModal(){
       ${state.settings.service_logo?'<button class="btn btn-danger btn-sm" onclick="removeLogo()"><i class="fas fa-trash"></i> إزالة الشعار</button>':''}
     </div>
     <div class="form-group"><label class="form-label">اسم الخدمة</label><input class="form-input" id="svcName" value="${state.settings.service_name||''}"></div>
-    <div class="form-group"><label class="form-label">اختصار الخدمة (للـ ID)</label>
-      <input class="form-input" id="svcAbbr" value="${state.settings.service_abbreviation||'StMary'}" placeholder="StMary, StGeorge, etc">
-      <small style="color:var(--text-light);font-size:11px;">سيتم استخدامه في ID الأطفال (مثال: StMary1708701492802)</small>
+    <div class="form-group"><label class="form-label">اختصار الخدمة</label>
+      <input class="form-input" id="svcAbbr" value="${state.settings.service_abbreviation||'StMary'}" placeholder="StMary">
     </div>
     <div class="form-group">
       <label class="form-label"><i class="fas fa-coins"></i> نقاط الحضور الافتراضية</label>
       <input type="number" class="form-input" id="svcPts" value="${state.settings.points_default||1}" min="1">
-      <small style="color:var(--text-light);font-size:11px;">يتم استخدامها كقيمة افتراضية في الماسح والإجراءات السريعة</small>
     </div>
     <button class="btn btn-primary btn-block btn-lg" onclick="saveServiceConfig()"><i class="fas fa-save"></i> حفظ ومزامنة</button>`;
   openModal('genericModal');
@@ -2195,7 +2199,7 @@ async function saveServiceConfig(){
     applySettings();
     _pendingLogo = null;
     closeModal('genericModal');
-    toast('✓ تم الحفظ ومزامنته لكل الأجهزة','success');
+    toast('✓ تم الحفظ','success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 
@@ -2258,36 +2262,81 @@ async function delClass(id){
   try{ await DB.remove('classes',id); openClassesModal(); }catch(e){ toast(e.message,'error'); }
 }
 
-// Service Days — multi-select chips
+/* =========================================================
+   ⭐ FIX: SERVICE DAYS MODAL — fully clickable chips
+   Uses an in-memory tracking array and rebuilds UI on toggle.
+   ========================================================= */
+let _serviceDaysSelection = [];
+
 function openServiceDaysModal(){
   $('genericTitle').textContent='أيام الخدمة';
-  const sd = state.settings.service_days || [0,5];
-  const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-  $('genericBody').innerHTML = `
-    <p style="margin-bottom:10px;font-size:13px;color:var(--text-light);"><i class="fas fa-info-circle"></i> حدد أيام الاجتماع. سيتنقل زر اليوم التالي/السابق بين هذه الأيام فقط.</p>
-    <div class="day-grid">
-      ${days.map((d,i)=>`
-        <label class="day-chip ${sd.includes(i)?'active':''}" onclick="this.classList.toggle('active');this.querySelector('input').checked=!this.querySelector('input').checked;">
-          <input type="checkbox" ${sd.includes(i)?'checked':''} data-day="${i}">
-          <i class="fas fa-calendar-day"></i> ${d}
-        </label>
-      `).join('')}
-    </div>
-    <button class="btn btn-primary btn-block btn-lg" onclick="saveServiceDays()"><i class="fas fa-save"></i> حفظ</button>`;
+  // Initialize selection from current settings
+  _serviceDaysSelection = [...getServiceDays()];
+  renderServiceDaysModal();
   openModal('genericModal');
 }
+
+function renderServiceDaysModal(){
+  const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  $('genericBody').innerHTML = `
+    <p style="margin-bottom:14px;font-size:13px;color:var(--text-light);line-height:1.6;">
+      <i class="fas fa-info-circle" style="color:var(--primary)"></i>
+      اضغط على اليوم لتفعيله أو إلغاؤه. سيتنقل زر اليوم التالي/السابق بين هذه الأيام فقط.
+    </p>
+    <div class="day-grid" id="dayChipGrid">
+      ${days.map((d,i)=>`
+        <div class="day-chip ${_serviceDaysSelection.includes(i)?'active':''}" data-day="${i}" onclick="toggleServiceDay(${i})">
+          <i class="fas fa-calendar-day"></i>
+          <span>${d}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="padding:12px;background:var(--surface);border-radius:12px;margin-bottom:14px;font-size:13px;">
+      <strong>المحدد:</strong>
+      <span id="selectedDaysLabel">${
+        _serviceDaysSelection.length
+          ? _serviceDaysSelection.sort((a,b)=>a-b).map(i=>days[i]).join('، ')
+          : '<span style="color:var(--danger)">لا يوجد</span>'
+      }</span>
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" onclick="saveServiceDays()"><i class="fas fa-save"></i> حفظ</button>
+  `;
+}
+
+// Toggle a day on/off in the selection array, then re-render
+function toggleServiceDay(dayIndex){
+  dayIndex = parseInt(dayIndex);
+  const idx = _serviceDaysSelection.indexOf(dayIndex);
+  if(idx > -1){
+    _serviceDaysSelection.splice(idx,1);
+  } else {
+    _serviceDaysSelection.push(dayIndex);
+  }
+  // Re-render to reflect the new state
+  renderServiceDaysModal();
+}
+
 async function saveServiceDays(){
-  const days = [...document.querySelectorAll('#genericBody input[data-day]:checked')].map(i=>parseInt(i.dataset.day));
-  if(!days.length){ toast('اختر يوماً واحداً على الأقل','warning'); return; }
+  if(!_serviceDaysSelection.length){ toast('اختر يوماً واحداً على الأقل','warning'); return; }
+  const days = [..._serviceDaysSelection].sort((a,b)=>a-b);
   try{
+    showLoader(true);
     const settings = await DB.fetchAll('settings','updated_at');
-    const payload = {service_days: days, updated_at: new Date().toISOString()};
+    const payload = { service_days: days, updated_at: new Date().toISOString() };
     if(settings[0]) await DB.update('settings', settings[0].id, payload);
     else await DB.insert('settings', payload);
     state.settings.service_days = days;
     closeModal('genericModal');
-    toast('تم الحفظ','success');
-  }catch(e){ toast(e.message,'error'); }
+    toast('✓ تم حفظ أيام الخدمة','success');
+    // If currently selected date is NOT a service day, auto-jump to nearest
+    if(!days.includes(parseLocalDate(state.selectedDate).getDay())){
+      state.selectedDate = findNearestServiceDay();
+      renderDateSelector();
+      renderHome();
+      if($('page-children').classList.contains('active')) renderChildren();
+    }
+  }catch(e){ toast('فشل: '+e.message,'error'); }
+  finally{ showLoader(false); }
 }
 
 function openTemplatesModal(){
@@ -2384,25 +2433,19 @@ function openBirthdays(){
    ========================================================= */
 function backupData(){
   const cleanData = {
-    version:'4.0', exported_at:new Date().toISOString(),
+    version:'4.1', exported_at:new Date().toISOString(),
     exported_by:state.user?.name||'Unknown',
-    children:state.children.map(c=>({...c, _balance:getBalance(c.id), _attendance_count:getAttendanceCount(c.id)})),
+    children:state.children.map(c=>({...c, _balance:getBalance(c.id)})),
     classes:state.classes, attendance:state.attendance, pointsHistory:state.pointsHistory,
     callHistory:state.callHistory, servants:state.servants, events:state.events,
-    childNotes:state.childNotes,
-    settings:{
-      service_name:state.settings.service_name, service_abbreviation:state.settings.service_abbreviation,
-      service_logo:state.settings.service_logo, service_days:state.settings.service_days,
-      points_default:state.settings.points_default, whatsapp_template:state.settings.whatsapp_template,
-      sms_template:state.settings.sms_template
-    }
+    childNotes:state.childNotes, settings:state.settings
   };
   try{
     const blob = new Blob([JSON.stringify(cleanData,null,2)],{type:'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob); a.download = 'backup_'+today()+'.json'; a.click();
     URL.revokeObjectURL(a.href);
-    toast(`✓ نسخة احتياطية (${cleanData.children.length} طفل)`,'success');
+    toast(`✓ نسخة احتياطية`,'success');
   }catch(e){ toast('فشل: '+e.message,'error'); }
 }
 function exportData(){ backupData(); }
@@ -2426,21 +2469,19 @@ function importData(){
         }
         const pick = (row, ...keys)=>{ for(const k of keys){ for(const rk of Object.keys(row)){ if(rk.trim()===k) return row[rk]; } } return ''; };
         let ok=0, fail=0;
-        const errors = [];
         const defaultClass = state.classes[0]?.id || null;
         for(let i=0;i<rows.length;i++){
           const row = rows[i];
           try{
             const codeRaw = pick(row,'الكود','code','ID','id','Code');
             const name = (pick(row,'الاسم رباعي','الاسم','name','Name')||'').toString().trim();
-            if(!name || name.length<2){ fail++; errors.push(`صف ${i+1}: اسم غير صالح`); continue; }
-            const phone = (pick(row,'رقم التليفون','الهاتف','phone','Phone','الموبايل')||'').toString().trim();
-            const birthR = pick(row,'تاريخ الميلاد','birth_date','Birth','الميلاد');
+            if(!name || name.length<2){ fail++; continue; }
+            const phone = (pick(row,'رقم التليفون','الهاتف','phone','Phone')||'').toString().trim();
+            const birthR = pick(row,'تاريخ الميلاد','birth_date');
             const birth = normalizeDate(birthR instanceof Date ? birthR.toISOString().slice(0,10) : birthR);
-            const address = (pick(row,'العنوان','address','Address')||'').toString().trim();
-            const notes = (pick(row,'ملاحظات','notes','Notes')||'').toString().trim();
-            const photo = (pick(row,'صورة','photo','photo_url','Photo')||'').toString().trim();
-            const balRaw = pick(row,'الرصيد','balance','Balance','النقاط','points');
+            const address = (pick(row,'العنوان','address')||'').toString().trim();
+            const notes = (pick(row,'ملاحظات','notes')||'').toString().trim();
+            const balRaw = pick(row,'الرصيد','balance','points');
             const balance = parseInt(String(balRaw).replace(/[^\d\-]/g,''))||0;
             await new Promise(res=>setTimeout(res,5));
             let id = codeRaw && String(codeRaw).trim() ? String(codeRaw).trim() : null;
@@ -2448,12 +2489,10 @@ function importData(){
               let attempts=0;
               do { id = generateChildId(); attempts++; if(attempts>5) break; }
               while(await DB.exists('children', id));
-            } else if(await DB.exists('children', id)){
-              errors.push(`صف ${i+1}: الكود ${id} موجود مسبقاً`); fail++; continue;
-            }
+            } else if(await DB.exists('children', id)){ fail++; continue; }
             await DB.insert('children',{
               id, qr_id:id, name, phone:phone||null, birth_date:birth||null,
-              address:address||null, notes:notes||null, photo_url:photo||null,
+              address:address||null, notes:notes||null,
               status:'active', class_id:defaultClass, created_by:currentUserId()
             });
             if(balance !== 0){
@@ -2463,15 +2502,10 @@ function importData(){
               });
             }
             ok++;
-          }catch(err){ fail++; errors.push(`صف ${i+1}: ${err.message}`); console.error(err); }
+          }catch(err){ fail++; console.error(err); }
         }
         showLoader(false);
         toast(`✓ تم استيراد ${ok} طفل${fail?` (فشل ${fail})`:''}`, ok?'success':'error');
-        if(errors.length){
-          $('genericTitle').textContent = `تقرير الاستيراد`;
-          $('genericBody').innerHTML = '<div style="max-height:400px;overflow-y:auto;font-size:12px;">'+errors.slice(0,50).map(e=>`<div style="padding:6px;border-bottom:1px solid var(--border);">${e}</div>`).join('')+'</div>';
-          openModal('genericModal');
-        }
       }catch(err){ showLoader(false); toast('خطأ: '+err.message,'error'); }
     };
     r.readAsArrayBuffer(f);
@@ -2493,7 +2527,7 @@ function showAbout(){
     <div class="login-logo" style="margin:0 auto 15px;">${state.settings.service_logo?`<img src="${state.settings.service_logo}">`:'<i class="fas fa-church"></i>'}</div>
     <h2 style="margin-bottom:6px;">${state.settings.service_name}</h2>
     <p style="color:var(--text-light);margin:8px 0;">نظام متكامل متزامن لحظياً</p>
-    <p>الإصدار 4.0.0 — Production Edition</p>
+    <p>الإصدار 4.1.0</p>
     <p style="margin-top:15px;color:#10b981;"><i class="fas fa-bolt"></i> ${state.rtChannels.length} قنوات مباشرة</p>
     <p style="margin-top:20px;">صُنع بمحبة ❤️</p>
   </div>`;
@@ -2517,9 +2551,6 @@ function openNotifications(){
   openModal('genericModal');
 }
 
-/* =========================================================
-   🌐 CONNECTION
-   ========================================================= */
 function updateConnectionStatus(){
   if(navigator.onLine){
     state.isOnline = true;
@@ -2535,14 +2566,8 @@ function updateConnectionStatus(){
 }
 window.addEventListener('online', updateConnectionStatus);
 window.addEventListener('offline', updateConnectionStatus);
+window.addEventListener('beforeunload', ()=>{ stopScanner(); RT.stop(); });
 
-// Cleanup camera on unload (prevent memory leaks)
-window.addEventListener('beforeunload', ()=>{
-  stopScanner();
-  RT.stop();
-});
-
-// Home search wiring
 document.addEventListener('DOMContentLoaded', ()=>{
   const hs = $('homeSearch');
   if(hs) hs.addEventListener('input', e=>{
@@ -2555,9 +2580,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
-/* =========================================================
-   🚀 STARTUP
-   ========================================================= */
 (async function(){
   const savedTheme = localStorage.getItem('theme');
   if(savedTheme) document.documentElement.setAttribute('data-theme',savedTheme);
