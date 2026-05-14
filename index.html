@@ -521,12 +521,59 @@ a{color:inherit;text-decoration:none;}
       </div>
 
       <div class="section">
-        <div class="section-title"><span><i class="fas fa-trophy"></i> الأطفال الأعلى رصيداً</span></div>
+        <div class="section-title">
+          <span><i class="fas fa-trophy"></i> الأطفال الأعلى <span id="topModeLabel">رصيداً</span></span>
+        </div>
+        <div class="controls" style="margin-bottom:10px;">
+          <select id="topMode" onchange="renderTopChildren()" style="flex:1;min-width:130px;">
+            <option value="points">حسب الرصيد</option>
+            <option value="attendance">حسب الحضور</option>
+          </select>
+          <select id="topClassFilter" onchange="renderTopChildren()" style="flex:1;min-width:130px;">
+            <option value="">كل الفصول</option>
+          </select>
+          <input type="date" id="topFromDate" onchange="renderTopChildren()" title="من تاريخ" style="flex:1;min-width:130px;">
+          <input type="date" id="topToDate" onchange="renderTopChildren()" title="إلى تاريخ" style="flex:1;min-width:130px;">
+          <select id="topLimit" onchange="renderTopChildren()" style="max-width:90px;">
+            <option value="5">أعلى 5</option>
+            <option value="10">أعلى 10</option>
+            <option value="20">أعلى 20</option>
+            <option value="50">أعلى 50</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="resetTopFilters()" title="مسح الفلاتر"><i class="fas fa-eraser"></i></button>
+        </div>
         <div id="topChildren"></div>
       </div>
 
       <div class="section">
-        <div class="section-title"><span><i class="fas fa-history"></i> أحدث الأنشطة (مباشر)</span></div>
+        <div class="section-title"><span><i class="fas fa-history"></i> سجل العمليات (مباشر)</span></div>
+        <div class="controls" style="margin-bottom:10px;">
+          <select id="logClassFilter" onchange="renderActivityLog()" style="flex:1;min-width:120px;">
+            <option value="">كل الفصول</option>
+          </select>
+          <select id="logUserFilter" onchange="renderActivityLog()" style="flex:1;min-width:120px;">
+            <option value="">كل المستخدمين</option>
+          </select>
+          <select id="logTypeFilter" onchange="renderActivityLog()" style="flex:1;min-width:120px;">
+            <option value="">كل العمليات</option>
+            <option value="attendance">الحضور</option>
+            <option value="points">النقاط</option>
+            <option value="call">التواصل</option>
+            <option value="child">إضافة/تعديل طفل</option>
+            <option value="note">ملاحظات</option>
+            <option value="event">فعاليات</option>
+          </select>
+          <input type="date" id="logFromDate" onchange="renderActivityLog()" title="من تاريخ" style="flex:1;min-width:130px;">
+          <input type="date" id="logToDate" onchange="renderActivityLog()" title="إلى تاريخ" style="flex:1;min-width:130px;">
+          <select id="logLimit" onchange="renderActivityLog()" style="max-width:90px;">
+            <option value="20">20</option>
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="0">الكل</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="resetLogFilters()" title="مسح الفلاتر"><i class="fas fa-eraser"></i></button>
+        </div>
         <div id="recentActivities"></div>
       </div>
     </div>
@@ -843,6 +890,20 @@ function getLastAttendance(childId){
   return rows.length ? rows[rows.length-1] : null;
 }
 
+/* =========================================================
+   📞 PHONE HELPERS — Egypt WhatsApp formatting
+   Convert local Egyptian phone (01xxxxxxxxx) -> 201xxxxxxxxx
+   ========================================================= */
+function waPhone(phone){
+  if(!phone) return '';
+  let p = String(phone).replace(/\D/g,'');
+  if(!p) return '';
+  if(p.startsWith('20')) return p;
+  if(p.startsWith('0')) return '2' + p;
+  if(p.startsWith('1') && p.length >= 10) return '20' + p;
+  return p;
+}
+
 let _lastIdCounter = 0;
 function generateChildId(){
   const abbr = state.settings.service_abbreviation || 'StMary';
@@ -1019,11 +1080,8 @@ const RT = {
     if(eventType==='INSERT'){
       if(!state[stateKey].find(x=>x.id===N.id)){
         state[stateKey].unshift(N);
-        if(table==='children' && state.user && N.created_by !== state.user.id) toast(`👶 طفل جديد: ${N.name}`,'live');
-        if(table==='attendance' && state.user && N.recorded_by !== state.user.id){
-          const ch = state.children.find(c=>c.id===N.child_id);
-          if(ch){ toast(`✓ حضور: ${ch.name}`,'live'); playBeep(900); }
-        }
+        // NOTE: Toast notifications for other users' operations removed by request.
+        // Realtime data still updates instantly, and the home activity log shows the operation.
       }
     } else if(eventType==='UPDATE'){
       const i = state[stateKey].findIndex(x=>x.id===N.id);
@@ -1226,29 +1284,255 @@ function renderHome(){
   const rate = state.children.length ? Math.round((state.attendance.filter(a=>a.date===d && a.status==='present').length/state.children.length)*100) : 0;
   $('attendanceRate').textContent = rate+'%';
 
-  const top = [...state.children].map(c=>({...c, _balance:getBalance(c.id)})).sort((a,b)=>b._balance-a._balance).slice(0,5);
-  $('topChildren').innerHTML = top.length ? top.map((c,i)=>`
+  populateHomeFilters();
+  renderTopChildren();
+  renderActivityLog();
+  drawHomeChart();
+}
+
+function populateHomeFilters(){
+  // Populate class selectors for top + log
+  const classOpts = state.classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  ['topClassFilter','logClassFilter'].forEach(id=>{
+    const el = $(id); if(!el) return;
+    const cur = el.value;
+    el.innerHTML = '<option value="">كل الفصول</option>' + classOpts;
+    if(cur) el.value = cur;
+  });
+  // Populate users selector for log
+  const userSel = $('logUserFilter');
+  if(userSel){
+    const cur = userSel.value;
+    // Collect unique user IDs from all activity sources
+    const userIds = new Set();
+    state.attendance.forEach(a=>{ if(a.recorded_by) userIds.add(a.recorded_by); });
+    state.pointsHistory.forEach(p=>{ if(p.awarded_by) userIds.add(p.awarded_by); });
+    state.callHistory.forEach(c=>{ if(c.called_by) userIds.add(c.called_by); });
+    state.children.forEach(c=>{ if(c.created_by) userIds.add(c.created_by); });
+    state.childNotes.forEach(n=>{ if(n.created_by) userIds.add(n.created_by); });
+    state.events.forEach(e=>{ if(e.created_by) userIds.add(e.created_by); });
+    const userOpts = [...userIds].map(uid=>{
+      const u = state.servants.find(s=>s.id===uid);
+      const name = u ? (u.full_name || u.username) : (uid===state.user?.id ? (state.user.name+' (أنا)') : uid.slice(0,8));
+      return `<option value="${uid}">${name}</option>`;
+    }).join('');
+    userSel.innerHTML = '<option value="">كل المستخدمين</option>' + userOpts;
+    if(cur) userSel.value = cur;
+  }
+}
+
+/* =========================================================
+   🏆 TOP CHILDREN — by points or attendance, with filters
+   ========================================================= */
+function renderTopChildren(){
+  const mode = ($('topMode')?.value)||'points';
+  const cls = $('topClassFilter')?.value || '';
+  const from = $('topFromDate')?.value || '';
+  const to = $('topToDate')?.value || '';
+  const limit = parseInt($('topLimit')?.value)||5;
+
+  const labelEl = $('topModeLabel');
+  if(labelEl) labelEl.textContent = mode==='attendance' ? 'حضوراً' : 'رصيداً';
+
+  let list = state.children.filter(c=>!cls || c.class_id===cls);
+
+  list = list.map(c=>{
+    let value = 0;
+    if(mode==='attendance'){
+      value = state.attendance.filter(a=>{
+        if(a.child_id!==c.id || a.status!=='present') return false;
+        if(from && (a.date||'') < from) return false;
+        if(to && (a.date||'') > to) return false;
+        return true;
+      }).length;
+    } else {
+      value = state.pointsHistory.filter(p=>{
+        if(p.child_id!==c.id) return false;
+        const pd = p.date || (p.created_at||'').slice(0,10);
+        if(from && pd < from) return false;
+        if(to && pd > to) return false;
+        return true;
+      }).reduce((s,p)=>s+(Number(p.points)||0), 0);
+    }
+    return {...c, _value:value};
+  })
+  .filter(c=>c._value > 0)
+  .sort((a,b)=>b._value - a._value)
+  .slice(0, limit);
+
+  const icon = mode==='attendance' ? 'fa-check-circle' : 'fa-star';
+  const badgeClass = mode==='attendance' ? 'badge-success' : 'badge-warning';
+  const suffix = mode==='attendance' ? ' مرة' : '';
+
+  $('topChildren').innerHTML = list.length ? list.map((c,i)=>`
     <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;">
       <div style="width:32px;height:32px;border-radius:50%;background:${i<3?'var(--gradient)':'var(--border)'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${i+1}</div>
       <div style="flex:1;min-width:0;"><strong>${c.name}</strong><br><small style="color:var(--text-light)">${getClassName(c.class_id)}</small></div>
-      <span class="badge badge-warning"><i class="fas fa-star"></i> ${c._balance}</span>
+      <span class="badge ${badgeClass}"><i class="fas ${icon}"></i> ${c._value}${suffix}</span>
     </div>`).join('') : '<div class="empty-state"><i class="fas fa-trophy"></i><p>لا توجد بيانات</p></div>';
+}
 
-  const acts = [
-    ...state.attendance.map(a=>({...a,_t:'att'})),
-    ...state.pointsHistory.map(p=>({...p,_t:'pts'}))
-  ].sort((a,b)=>new Date(b.created_at||b.date) - new Date(a.created_at||a.date)).slice(0,8);
+function resetTopFilters(){
+  ['topClassFilter','topFromDate','topToDate'].forEach(id=>{ const el=$(id); if(el) el.value=''; });
+  if($('topMode')) $('topMode').value='points';
+  if($('topLimit')) $('topLimit').value='5';
+  renderTopChildren();
+}
 
-  $('recentActivities').innerHTML = acts.length ? acts.map(a=>{
-    const c = state.children.find(ch=>ch.id===a.child_id);
-    return `<div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;">
-      <i class="fas fa-${a._t==='pts'?'star':'check'}" style="color:var(--primary);"></i>
-      <div style="flex:1;min-width:0;"><strong>${c?c.name:'-'}</strong><br><small style="color:var(--text-light)">${a._t==='pts'?(a.points>0?'+':'')+a.points+' رصيد':(a.status==='absent'?'تسجيل غياب':'تسجيل حضور')}</small></div>
-      <small>${(a.date||'').slice(5)}</small>
-    </div>`;
-  }).join('') : '<div class="empty-state"><i class="fas fa-history"></i><p>لا توجد أنشطة بعد</p></div>';
+/* =========================================================
+   📜 ACTIVITY LOG — All operations (attendance, points,
+   calls, children, notes, events) with class/user/date filters
+   ========================================================= */
+function getUserName(uid){
+  if(!uid) return 'النظام';
+  if(state.user && uid===state.user.id) return (state.user.name||'أنا')+' (أنا)';
+  const u = state.servants.find(s=>s.id===uid);
+  return u ? (u.full_name || u.username) : (typeof uid==='string'?uid.slice(0,8):'-');
+}
 
-  drawHomeChart();
+function buildAllActivities(){
+  const acts = [];
+  state.attendance.forEach(a=>{
+    acts.push({
+      _t:'attendance',
+      _date: a.date || (a.created_at||'').slice(0,10),
+      _time: a.created_at || a.date,
+      _user: a.recorded_by,
+      _childId: a.child_id,
+      _icon: a.status==='present'?'fa-check-circle':'fa-times-circle',
+      _color: a.status==='present'?'#10b981':'#ef4444',
+      _label: a.status==='present'?'تسجيل حضور':'تسجيل غياب'
+    });
+  });
+  state.pointsHistory.forEach(p=>{
+    acts.push({
+      _t:'points',
+      _date: p.date || (p.created_at||'').slice(0,10),
+      _time: p.created_at || p.date,
+      _user: p.awarded_by,
+      _childId: p.child_id,
+      _icon: (p.points>=0)?'fa-star':'fa-minus-circle',
+      _color: (p.points>=0)?'#f59e0b':'#ef4444',
+      _label: `${p.points>0?'+':''}${p.points} ${p.reason?'· '+p.reason:'رصيد'}`
+    });
+  });
+  state.callHistory.forEach(c=>{
+    const typeIcons = {phone:'fa-phone',whatsapp:'fa-whatsapp',sms:'fa-sms'};
+    const typeLabel = {phone:'مكالمة',whatsapp:'واتساب',sms:'رسالة SMS'};
+    acts.push({
+      _t:'call',
+      _date: (c.created_at||'').slice(0,10),
+      _time: c.created_at,
+      _user: c.called_by,
+      _childId: c.child_id,
+      _icon: typeIcons[c.type]||'fa-phone',
+      _color: '#3b82f6',
+      _label: typeLabel[c.type]||'تواصل'
+    });
+  });
+  state.children.forEach(c=>{
+    acts.push({
+      _t:'child',
+      _date: (c.created_at||'').slice(0,10),
+      _time: c.created_at,
+      _user: c.created_by,
+      _childId: c.id,
+      _icon: 'fa-user-plus',
+      _color: '#8b5cf6',
+      _label: 'إضافة طفل جديد'
+    });
+  });
+  state.childNotes.forEach(n=>{
+    acts.push({
+      _t:'note',
+      _date: (n.created_at||'').slice(0,10),
+      _time: n.created_at,
+      _user: n.created_by,
+      _childId: n.child_id,
+      _icon: 'fa-sticky-note',
+      _color: '#f59e0b',
+      _label: 'ملاحظة: '+ (n.note||'').slice(0,60)
+    });
+  });
+  state.events.forEach(e=>{
+    acts.push({
+      _t:'event',
+      _date: e.event_date || (e.created_at||'').slice(0,10),
+      _time: e.created_at || e.event_date,
+      _user: e.created_by,
+      _childId: null,
+      _icon: 'fa-calendar-alt',
+      _color: '#ec4899',
+      _label: 'فعالية: '+(e.title||'')
+    });
+  });
+  return acts;
+}
+
+function renderActivityLog(){
+  const cls = $('logClassFilter')?.value || '';
+  const uid = $('logUserFilter')?.value || '';
+  const typ = $('logTypeFilter')?.value || '';
+  const from = $('logFromDate')?.value || '';
+  const to = $('logToDate')?.value || '';
+  const limit = parseInt($('logLimit')?.value); // 0 = all
+
+  let acts = buildAllActivities();
+
+  // Filter by type
+  if(typ) acts = acts.filter(a=>a._t===typ);
+  // Filter by user
+  if(uid) acts = acts.filter(a=>a._user===uid);
+  // Filter by date range
+  if(from) acts = acts.filter(a=>(a._date||'') >= from);
+  if(to) acts = acts.filter(a=>(a._date||'') <= to);
+  // Filter by class (children-related events only)
+  if(cls){
+    acts = acts.filter(a=>{
+      if(!a._childId) return false;
+      const c = state.children.find(ch=>ch.id===a._childId);
+      return c && c.class_id===cls;
+    });
+  }
+
+  acts.sort((a,b)=> new Date(b._time||b._date||0) - new Date(a._time||a._date||0));
+  if(limit && limit>0) acts = acts.slice(0, limit);
+
+  $('recentActivities').innerHTML = acts.length ? `
+    <div style="margin-bottom:10px;padding:8px 12px;background:var(--surface);border-radius:10px;font-size:12px;color:var(--text-light);">
+      <i class="fas fa-list"></i> عرض ${acts.length} عملية
+    </div>
+    ${acts.map(a=>{
+      const c = a._childId ? state.children.find(ch=>ch.id===a._childId) : null;
+      const childName = c ? c.name : (a._t==='event' ? '' : '-');
+      const className = c ? getClassName(c.class_id) : '';
+      const userName = getUserName(a._user);
+      const timeStr = a._time ? new Date(a._time).toLocaleString('ar-EG',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}) : (a._date||'');
+      return `<div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;">
+        <i class="fas ${a._icon}" style="color:${a._color};font-size:16px;width:20px;text-align:center;"></i>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            ${childName?`<strong>${childName}</strong>`:''}
+            ${className?`<span class="badge badge-info" style="font-size:9px;">${className}</span>`:''}
+          </div>
+          <small style="color:var(--text-light);display:block;margin-top:2px;">
+            ${a._label}
+            <span style="margin:0 6px;color:var(--text-muted);">·</span>
+            <i class="fas fa-user-circle"></i> ${userName}
+          </small>
+        </div>
+        <small style="color:var(--text-muted);font-size:10px;white-space:nowrap;">${timeStr}</small>
+      </div>`;
+    }).join('')}
+  ` : '<div class="empty-state"><i class="fas fa-history"></i><p>لا توجد أنشطة مطابقة للفلاتر</p></div>';
+}
+
+function resetLogFilters(){
+  ['logClassFilter','logUserFilter','logTypeFilter','logFromDate','logToDate'].forEach(id=>{
+    const el=$(id); if(el) el.value='';
+  });
+  if($('logLimit')) $('logLimit').value='50';
+  renderActivityLog();
 }
 
 function drawHomeChart(){
@@ -1386,7 +1670,7 @@ async function execAction(id){
       window.open('tel:'+c.phone); await logCall(c.id,'phone'); break;
     case 'whatsapp':
       if(!c.phone){ toast('لا يوجد رقم هاتف','warning'); return; }
-      window.open(`https://wa.me/${(c.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent((state.settings.whatsapp_template||'سلام المسيح يا {name}').replace('{name}',c.name))}`);
+      window.open(`https://wa.me/${waPhone(c.phone)}?text=${encodeURIComponent((state.settings.whatsapp_template||'سلام المسيح يا {name}').replace('{name}',c.name))}`);
       await logCall(c.id,'whatsapp'); break;
     case 'sms':
       if(!c.phone){ toast('لا يوجد رقم هاتف','warning'); return; }
@@ -2406,26 +2690,91 @@ function execBulkMessage(){
   toast(`فتح ${list.length} رسالة...`,'info');
   list.forEach((c,i)=>setTimeout(()=>{
     const txt = msg.replace('{name}',c.name);
-    if(ch==='whatsapp') window.open(`https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank');
+    if(ch==='whatsapp') window.open(`https://wa.me/${waPhone(c.phone)}?text=${encodeURIComponent(txt)}`,'_blank');
     else window.open(`sms:${c.phone}?body=${encodeURIComponent(txt)}`,'_blank');
   }, i*500));
 }
 
+let _birthdayMonth = new Date().getMonth();
+let _birthdayClassFilter = '';
+
 function openBirthdays(){
-  const m = new Date().getMonth();
-  const list = state.children.filter(c=>c.birth_date && new Date(c.birth_date).getMonth()===m)
-    .sort((a,b)=>new Date(a.birth_date).getDate() - new Date(b.birth_date).getDate());
-  $('genericTitle').textContent = 'أعياد الميلاد - هذا الشهر';
-  $('genericBody').innerHTML = list.length ? list.map(c=>{
-    const d = new Date(c.birth_date);
-    const phoneClean = (c.phone||'').replace(/\D/g,'');
-    return `<div style="padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
-      <i class="fas fa-birthday-cake" style="color:#f59e0b;font-size:20px;"></i>
-      <div style="flex:1;min-width:0;"><strong>${c.name}</strong><br><small>${d.getDate()}/${d.getMonth()+1}</small></div>
-      ${c.phone?`<button class="btn btn-success btn-sm" onclick="window.open('https://wa.me/${phoneClean}?text=${encodeURIComponent('كل سنة وأنت طيب يا '+c.name+' 🎂')}')"><i class="fab fa-whatsapp"></i></button>`:''}
-    </div>`;
-  }).join('') : '<div class="empty-state"><i class="fas fa-birthday-cake"></i><p>لا توجد أعياد ميلاد هذا الشهر</p></div>';
+  _birthdayMonth = new Date().getMonth();
+  _birthdayClassFilter = '';
+  $('genericTitle').textContent = 'أعياد الميلاد';
+  renderBirthdaysModal();
   openModal('genericModal');
+}
+
+function renderBirthdaysModal(){
+  const arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const monthOpts = arMonths.map((m,i)=>`<option value="${i}" ${i===_birthdayMonth?'selected':''}>${m}</option>`).join('');
+  const classOpts = '<option value="">كل الفصول</option>' + state.classes.map(cl=>`<option value="${cl.id}" ${cl.id===_birthdayClassFilter?'selected':''}>${cl.name}</option>`).join('');
+
+  let list = state.children.filter(c=>c.birth_date && new Date(c.birth_date).getMonth()===_birthdayMonth);
+  if(_birthdayClassFilter) list = list.filter(c=>c.class_id===_birthdayClassFilter);
+  list = list.sort((a,b)=>new Date(a.birth_date).getDate() - new Date(b.birth_date).getDate());
+
+  // Group by class for an overview
+  const byClass = {};
+  list.forEach(c=>{
+    const cn = getClassName(c.class_id);
+    if(!byClass[cn]) byClass[cn] = 0;
+    byClass[cn]++;
+  });
+  const classSummary = Object.keys(byClass).length
+    ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+        ${Object.entries(byClass).map(([cn,n])=>`<span class="badge badge-info"><i class="fas fa-layer-group"></i> ${cn}: ${n}</span>`).join('')}
+       </div>`
+    : '';
+
+  $('genericBody').innerHTML = `
+    <div class="controls" style="margin-bottom:14px;">
+      <div style="flex:1;min-width:140px;">
+        <label class="form-label" style="margin-bottom:4px;font-size:11px;">الشهر</label>
+        <select class="form-input" id="bdayMonthSel" onchange="changeBirthdayMonth(this.value)">${monthOpts}</select>
+      </div>
+      <div style="flex:1;min-width:140px;">
+        <label class="form-label" style="margin-bottom:4px;font-size:11px;">الفصل</label>
+        <select class="form-input" id="bdayClassSel" onchange="changeBirthdayClass(this.value)">${classOpts}</select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="shiftBirthdayMonth(-1)"><i class="fas fa-chevron-right"></i> السابق</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="shiftBirthdayMonth(1)">التالي <i class="fas fa-chevron-left"></i></button>
+      <button type="button" class="btn btn-primary btn-sm" onclick="_birthdayMonth=new Date().getMonth();renderBirthdaysModal();"><i class="fas fa-calendar-day"></i> الشهر الحالي</button>
+    </div>
+    <div style="padding:12px;background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(236,72,153,0.1));border-radius:12px;margin-bottom:12px;text-align:center;">
+      <i class="fas fa-birthday-cake" style="color:#f59e0b;font-size:20px;"></i>
+      <strong style="margin:0 6px;">${arMonths[_birthdayMonth]}</strong>
+      <span class="badge badge-warning">${list.length} طفل</span>
+    </div>
+    ${classSummary}
+    ${list.length ? list.map(c=>{
+      const d = new Date(c.birth_date);
+      const className = getClassName(c.class_id);
+      const today = new Date();
+      const isToday = d.getMonth()===today.getMonth() && d.getDate()===today.getDate();
+      return `<div style="padding:12px;background:var(--surface);border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;${isToday?'border:2px solid #f59e0b;':''}">
+        <div style="width:42px;height:42px;border-radius:50%;background:${isToday?'linear-gradient(135deg,#f59e0b,#ec4899)':'var(--card)'};color:${isToday?'#fff':'#f59e0b'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">
+          ${d.getDate()}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <strong>${c.name}</strong> ${isToday?'<span class="badge badge-warning" style="margin-right:4px;">اليوم 🎉</span>':''}
+          <br>
+          <small style="color:var(--text-light)"><i class="fas fa-layer-group"></i> ${className} · ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}</small>
+        </div>
+        ${c.phone?`<button class="btn btn-success btn-sm" onclick="window.open('https://wa.me/${waPhone(c.phone)}?text=${encodeURIComponent('كل سنة وأنت طيب يا '+c.name+' 🎂')}')"><i class="fab fa-whatsapp"></i></button>`:''}
+      </div>`;
+    }).join('') : '<div class="empty-state"><i class="fas fa-birthday-cake"></i><p>لا توجد أعياد ميلاد بهذه المعطيات</p></div>'}
+  `;
+}
+
+function changeBirthdayMonth(m){ _birthdayMonth = parseInt(m); renderBirthdaysModal(); }
+function changeBirthdayClass(c){ _birthdayClassFilter = c; renderBirthdaysModal(); }
+function shiftBirthdayMonth(dir){
+  _birthdayMonth = (_birthdayMonth + dir + 12) % 12;
+  renderBirthdaysModal();
 }
 
 /* =========================================================
@@ -2588,5 +2937,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   updateConnectionStatus();
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
